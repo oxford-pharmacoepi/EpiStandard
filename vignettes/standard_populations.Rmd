@@ -1,0 +1,19 @@
+---
+title: "standard_populations"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{standard_populations}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(dsr2)
+```
