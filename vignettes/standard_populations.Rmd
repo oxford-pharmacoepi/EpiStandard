@@ -10,10 +10,18 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  warning = FALSE, 
+  message = FALSE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5
 )
 ```
 
-```{r setup}
+```{r}
 library(dsr2)
+library(gt)
+
+pop <- standardPopulation("esp2013")
+gt(pop)
 ```

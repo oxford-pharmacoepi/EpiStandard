@@ -2,5 +2,6 @@
 
 export(dsr)
 export(standardPopulation)
+importFrom(rlang,":=")
 importFrom(rlang,.data)
 importFrom(rlang,.env)

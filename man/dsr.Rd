@@ -2,47 +2,57 @@
 % Please edit documentation in R/dsr.R
 \name{dsr}
 \alias{dsr}
-\title{Compute Directly Standardized Rates}
+\title{Calculate directly standardised rates}
 \usage{
 dsr(
   data,
   event,
-  fu,
-  subgroup,
-  ...,
-  refdata,
-  mp,
+  time,
+  age = "age_group",
+  pop = "pop",
+  strata = NULL,
+  refdata = standardPopulation("esp2013"),
+  mp = 1000,
   method = "normal",
   sig = 0.95,
-  decimals
+  decimals = 4
 )
 }
 \arguments{
-\item{data}{A data frame with counts and unit-times summarized by the standardization variables.}
+\item{data}{A data frame with counts and unit-times summarised by the
+standardisation variables.}
 
-\item{event}{A variable within the input data that corresponds to the event counts.}
+\item{event}{Name of the variable in data that corresponds to the event
+counts.}
 
-\item{fu}{A variable within the input data that corresponds to the unit-time.}
+\item{time}{Name of the variable in data that corresponds to the unit-time.}
 
-\item{subgroup}{A variable within the input data frame for which rates are calculated by.}
+\item{age}{Name of the variable in data that corresponds to age}
 
-\item{...}{Variables(s) within the input data that for which rates are to be standardized by. The input data and ref data should both be summarized by these.}
+\item{pop}{Name of the variable in data that corresponds to population}
 
-\item{refdata}{A data frame with population unit-times summarized by the standardization variables. The unit-time variable name must named pop.}
+\item{strata}{A variable within the input data frame for which rates are
+calculated by.}
+
+\item{refdata}{A data frame with population unit-times summarised by the
+standardisation variables. The unit-time variable name must named pop.}
 
 \item{mp}{A constant to multiply rates by (e.g. mp=1000 for rates per 1000).}
 
-\item{method}{Choose between normal, lognormal and gamma confidence intervals for crude and standardized rates. The default method is normal.}
+\item{method}{Choose between normal, lognormal and gamma confidence intervals
+for crude and standardised rates. The default method is normal.}
 
-\item{sig}{The desired level of confidence in computing confidence intervals. The default is 0.95 for 95 percent CIs.}
+\item{sig}{The desired level of confidence in computing confidence intervals.
+The default is 0.95 for 95 percent CIs.}
 
 \item{decimals}{Round estimates to a desired decimal place.}
 }
 \description{
-Computes crude and directly standardized rates by subgroup with confidence intervals.
+Computes crude and directly standardised rates. Rates can be stratified by
+variables of interest.
 }
 \examples{
-#An example of calculating directly standardized rates
+#An example of calculating directly standardised rates
 #Data from Table 1, Page 132 of Schoenbach (2000)
 
 #State specific death counts and fu
@@ -55,26 +65,13 @@ df_study <- data.frame(state=rep(c('Miami',"Alaska"), c(5,5)),
 df_ref  <- data.frame(age=c('00-14','15-24','25-44','45-64','65+'),
                      pop=c(23961000,15420000,21353000,19601000,10685000))
 
-#Directly Standardized Rates (per 1000) - 95\% CI's using the gamma method
-my_results <- dsr(data=df_study,
-                 event=deaths,
-                 fu=fu,
-                 subgroup=state,
-                 age,
-                 refdata=df_ref,
-                 method="gamma",
-                 sig=0.95,
-                 mp=1000,
-                 decimals=4)
+#Directly standardised Rates (per 1000) - 95\% CI's using the gamma method
+my_results <- dsr(data = df_study,
+                  event = "deaths",
+                  time = "fu",
+                  strata = "state",
+                  age = "age",
+                  refdata = df_ref)
 #View results
 my_results
-}
-\references{
-Fay, M.P., & Feuer, E.J. (1997). Confidence intervals for directly standardized rates: a method based on the gamma distribution. Statistics in Medicine,16, 791-801.
-
-Elandt-Johnson, R. C., and Johnson, N. L. (1980). Survival Models and Data Analysis. New York: John Wiley & Sons.
-
-Chiang C. Standard error of the age-adjusted death rate. US Department of Health, Education and Welfare: Vital Statistics Special Reports 1961;47:271-285.
-
-Schoenbach, V., and Rosamond W. (2000) Understanding the fundamentals of epidemiology: An evolving text.
 }
