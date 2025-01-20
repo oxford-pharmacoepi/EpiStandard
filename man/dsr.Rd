@@ -9,6 +9,7 @@ dsr(
   event,
   time,
   age = "age_group",
+  sex = NULL,
   pop = "pop",
   strata = NULL,
   refdata = standardPopulation("esp2013"),
@@ -28,6 +29,9 @@ counts.}
 \item{time}{Name of the variable in data that corresponds to the unit-time.}
 
 \item{age}{Name of the variable in data that corresponds to age}
+
+\item{sex}{Name of the variable in data that corresponds to sex. Only use if
+standardising by age and sex.}
 
 \item{pop}{Name of the variable in data that corresponds to population}
 

@@ -7,7 +7,7 @@
 standardPopulation(name = "esp2013")
 }
 \arguments{
-\item{name}{Dataset to use. One of "esp2013" or ""wsp2025".}
+\item{name}{Dataset to use. One of "esp2013", "wsp2025", "esp2013_by_sex" or "wsp2025_by_sex".}
 }
 \value{
 Tibble
