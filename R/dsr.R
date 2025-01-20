@@ -9,6 +9,8 @@
 #' counts.
 #' @param time Name of the variable in data that corresponds to the unit-time.
 #' @param age Name of the variable in data that corresponds to age
+#' @param sex Name of the variable in data that corresponds to sex. Only use if
+#' standardising by age and sex.
 #' @param pop Name of the variable in data that corresponds to population
 #' @param strata A variable within the input data frame for which rates are
 #' calculated by.
@@ -53,6 +55,7 @@ dsr <- function(data,
                 event,
                 time,
                 age = "age_group",
+                sex = NULL,
                 pop = "pop",
                 strata = NULL,
                 refdata  = standardPopulation("esp2013"),
@@ -61,8 +64,27 @@ dsr <- function(data,
                 sig = 0.95,
                 decimals = 4) {
 
-  all_data_st <- data |>
-    dplyr::left_join(refdata, by = dplyr::join_by(!!rlang::sym(age)))
+  if(is.null(age)){
+    cli::cli_abort("Age argument cannot be null.")
+  }
+
+  if(!(age %in% names(data))){
+    cli::cli_abort(paste0("No  column called '", age, "' in data."))
+  }
+
+  if(!is.null(sex) && !(sex %in% names(refdata))){
+    cli::cli_warn(paste0("No column called '", sex, "' in standard population data.
+                     Data will be standardised by age only."))
+    sex <- NULL
+  }
+
+   if(is.null(sex)){
+    all_data_st <- data |>
+      dplyr::left_join(refdata, by = dplyr::join_by(!!rlang::sym(age)))
+  } else {
+    all_data_st <- data |>
+      dplyr::left_join(refdata, by = dplyr::join_by(!!rlang::sym(age), !!rlang::sym(sex)))
+  }
 
   if (!is.null(strata)) {
     all_data_st <- all_data_st |>
