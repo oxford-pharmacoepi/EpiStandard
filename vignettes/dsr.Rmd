@@ -12,8 +12,92 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+devtools::load_all()
 ```
 
 ```{r setup}
 library(dsr2)
+```
+
+```{r, omopexample}
+library(dplyr)
+con <- DBI::dbConnect(duckdb::duckdb(), CDMConnector::eunomiaDir("GiBleed"))
+cdm <- CDMConnector::cdmFromCon(con, cdmSchema = "main", writeSchema = "main")
+
+cdm$gibleed <- cdm |> 
+  CohortConstructor::conceptCohort(conceptSet = list("gibleed" = 192671L),
+                name = "gibleed")
+
+### esp
+cdm <- IncidencePrevalence::generateDenominatorCohortSet(
+  cdm = cdm,
+  name = "denominator_esp",
+  ageGroup = ageGroups(name = "esp2013"),
+  sex = "Both",
+  cohortDateRange = as.Date(c("2012-01-01", "2022-01-01"))
+)
+
+inc_data_esp <- IncidencePrevalence::estimateIncidence(
+  cdm = cdm,
+  denominatorTable = "denominator_esp",
+  outcomeTable = "gibleed",
+  interval = "years",
+  repeatedEvents = TRUE,
+  outcomeWashout = 30,
+  completeDatabaseIntervals = FALSE
+)
+
+inc_tidy_esp <- omopTidy(inc_data_esp)
+
+inc_std_esp <- dsr(data = inc_tidy_esp,
+               event = "outcome_count",
+               time = "person_years",
+               strata = c("incidence_start_date"),
+               refdata = standardPopulation("esp2013")
+               )
+
+##### wsp
+cdm <- IncidencePrevalence::generateDenominatorCohortSet(
+  cdm = cdm,
+  name = "denominator_wsp",
+  ageGroup = ageGroups(name = "wsp2025"),
+  sex = "Both",
+  cohortDateRange = as.Date(c("2012-01-01", "2022-01-01"))
+)
+
+inc_data_wsp <- IncidencePrevalence::estimateIncidence(
+  cdm = cdm,
+  denominatorTable = "denominator_wsp",
+  outcomeTable = "gibleed",
+  interval = "years",
+  repeatedEvents = TRUE,
+  outcomeWashout = 30,
+  completeDatabaseIntervals = FALSE
+)
+
+inc_tidy_wsp <- omopTidy(inc_data_wsp)
+
+inc_std_wsp <- dsr(data = inc_tidy_wsp,
+                   event = "outcome_count",
+                   time = "person_years",
+                   strata = c("incidence_start_date"),
+                   refdata = standardPopulation("wsp2025")
+)
+```
+
+```{r, std plot}
+library(ggplot2)
+
+inc_std_esp <- inc_std_esp %>%
+  mutate(std_pop = "esp_2013")
+
+inc_std_wsp <- inc_std_wsp %>%
+  mutate(std_pop = "wsp_2025")
+
+inc_std <- rbind(inc_std_esp, inc_std_wsp)
+
+p <- ggplot(inc_std, aes(x = incidence_start_date, y = `Std Rate (per 1000)`, color = std_pop)) +
+  geom_point() 
+
+p
 ```
