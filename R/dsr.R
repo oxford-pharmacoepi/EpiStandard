@@ -166,7 +166,8 @@ dsr <- function(data,
       !!c_upper_name := "c_upper",
       !!s_rate_name := "s_rate",
       !!s_lower_name := "s_lower",
-      !!s_upper_name := "s_upper")
+      !!s_upper_name := "s_upper") |>
+    distinct()
 
   tmp1
 
