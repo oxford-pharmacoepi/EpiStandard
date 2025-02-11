@@ -19,7 +19,8 @@ Imports:
     cli,
     dplyr,
     rlang,
-    DBI
+    DBI,
+    duckdb
 VignetteBuilder: knitr
 Depends: 
     R (>= 4.1.0)
