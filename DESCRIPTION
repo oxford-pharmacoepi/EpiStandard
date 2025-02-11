@@ -13,15 +13,16 @@ Suggests:
     gt,
     knitr,
     rmarkdown,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+        DBI,
+    duckdb,
+    CDMConnector,
+    IncidencePrevalence
 Config/testthat/edition: 3
 Imports: 
     cli,
     dplyr,
-    rlang,
-    DBI,
-    duckdb,
-    CDMConnector
+    rlang
 VignetteBuilder: knitr
 Depends: 
     R (>= 4.1.0)
