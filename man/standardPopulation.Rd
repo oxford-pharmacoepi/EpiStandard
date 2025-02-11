@@ -15,6 +15,3 @@ Tibble
 \description{
 Standard population
 }
-\examples{
-standardPopulation()
-}
