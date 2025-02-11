@@ -32,7 +32,7 @@ omopTidy <- function(data) {
     )
 
   inc_tidy <- dplyr::bind_cols(cleanedData, cleanedData_1) |>
-    rename(age_group = denominator_age_group)
+    dplyr::rename(age_group = denominator_age_group)
 
   inc_tidy
 }
