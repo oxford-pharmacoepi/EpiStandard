@@ -13,25 +13,25 @@ omopTidy <- function(data) {
 
   omopgenerics::validateResultArgument(data)
 
-  cleanedData <- data %>%
-    omopgenerics::splitAdditional() %>%
-    omopgenerics::splitGroup() %>%
-    omopgenerics::addSettings() %>%
-    dplyr::filter(variable_name == "Outcome") %>%
+  cleanedData <- data |>
+    omopgenerics::splitAdditional() |>
+    omopgenerics::splitGroup() |>
+    omopgenerics::addSettings() |>
+    dplyr::filter(variable_name == "Outcome") |>
     omopgenerics::pivotEstimates(pivotEstimatesBy = "estimate_name")
 
-  cleanedData_1 <- data %>%
-    omopgenerics::splitAdditional() %>%
-    omopgenerics::splitGroup() %>%
-    omopgenerics::addSettings() %>%
-    dplyr::filter(variable_name == "Denominator") %>%
-    omopgenerics::pivotEstimates(pivotEstimatesBy = "estimate_name") %>%
+  cleanedData_1 <- data |>
+    omopgenerics::splitAdditional() |>
+    omopgenerics::splitGroup() |>
+    omopgenerics::addSettings() |>
+    dplyr::filter(variable_name == "Denominator") |>
+    omopgenerics::pivotEstimates(pivotEstimatesBy = "estimate_name") |>
     dplyr::select(person_days,
            person_years,
            denominator_count
     )
 
-  inc_tidy <- dplyr::bind_cols(cleanedData, cleanedData_1) %>%
+  inc_tidy <- dplyr::bind_cols(cleanedData, cleanedData_1) |>
     rename(age_group = denominator_age_group)
 
   inc_tidy
