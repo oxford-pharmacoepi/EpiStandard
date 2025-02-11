@@ -20,7 +20,8 @@ Imports:
     dplyr,
     rlang,
     DBI,
-    duckdb
+    duckdb,
+    CDMConnector
 VignetteBuilder: knitr
 Depends: 
     R (>= 4.1.0)
