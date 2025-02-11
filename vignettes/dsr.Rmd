@@ -19,6 +19,7 @@ library(dsr2)
 ```
 
 ```{r, omopexample}
+library(dplyr)
 con <- DBI::dbConnect(duckdb::duckdb(), CDMConnector::eunomiaDir("GiBleed"))
 cdm <- CDMConnector::cdmFromCon(con, cdmSchema = "main", writeSchema = "main")
 

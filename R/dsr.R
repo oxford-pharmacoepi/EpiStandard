@@ -167,7 +167,7 @@ dsr <- function(data,
       !!s_rate_name := "s_rate",
       !!s_lower_name := "s_lower",
       !!s_upper_name := "s_upper") |>
-    distinct()
+    dplyr::distinct()
 
   tmp1
 
