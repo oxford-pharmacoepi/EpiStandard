@@ -5,10 +5,6 @@
 #' @return List
 #' @export
 #'
-#' @examples
-#' ageGroups(name = "esp2013")
-#' @export
-#'
 
 ageGroups <- function(name = "esp2013"){
 
