@@ -15,6 +15,3 @@ List
 \description{
 Age groups
 }
-\examples{
-ageGroups(name = "esp2013")
-}

@@ -5,9 +5,7 @@
 #'
 #' @return Tibble
 #' @export
-#'
-#' @examples
-#' standardPopulation()
+
 standardPopulation <- function(name = "esp2013"){
 
   supported_names <- c("esp2013", "wsp2025")
