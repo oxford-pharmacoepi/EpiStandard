@@ -5,8 +5,6 @@
 #' @param data A data frame with incidence estimates produced by the
 #' function `estimateIncidence()` in the IncidencePrevalence package.
 #' @return Data frame
-#' @examples
-#' # example code
 #'
 #' @export
 #'
