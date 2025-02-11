@@ -17,7 +17,8 @@ Suggests:
         DBI,
     duckdb,
     CDMConnector,
-    IncidencePrevalence
+    IncidencePrevalence,
+    ggplot2
 Config/testthat/edition: 3
 Imports: 
     cli,
