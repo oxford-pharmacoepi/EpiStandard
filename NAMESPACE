@@ -2,7 +2,6 @@
 
 export(ageGroups)
 export(dsr)
-export(omopTidy)
 export(standardPopulation)
 importFrom(rlang,":=")
 importFrom(rlang,.data)

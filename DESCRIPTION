@@ -15,16 +15,12 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0),
         DBI,
-    duckdb,
-    CDMConnector,
-    IncidencePrevalence,
-    ggplot2
+    duckdb
 Config/testthat/edition: 3
 Imports: 
     cli,
     dplyr,
-    rlang,
-    omopgenerics
+    rlang
 VignetteBuilder: knitr
 Depends: 
     R (>= 4.1.0)
