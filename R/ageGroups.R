@@ -19,7 +19,7 @@ ageGroups <- function(name = "esp2013", type = "broad"){
   }
 
   if(name == "esp2013" & type == "narrow"){
-    return(list(
+    groups <- list(
       c(0,4),
       c(5,9),
       c(10,14),
@@ -39,19 +39,27 @@ ageGroups <- function(name = "esp2013", type = "broad"){
       c(80,84),
       c(85,89),
       c(90,150)
-    ))
+    )
+
+    # Convert to readable labels like "0-4"
+    labels <- sapply(groups, function(x) paste0(x[1], "-", x[2]))
+    return(labels)
   }
 
   if(name == "esp2013" & type == "broad"){
-    return(list(
+    groups <- list(
       c(0,19),
       c(20,64),
       c(65,150)
-    ))
+    )
+
+    # Convert to readable labels like "0-4"
+    labels <- sapply(groups, function(x) paste0(x[1], "-", x[2]))
+    return(labels)
   }
 
-  if(name == "wsp2025" & type == narrow){
-    return(list(
+  if(name == "wsp2025" & type == "narrow"){
+    groups <- list(
       c(0,4),
       c(5,9),
       c(10,14),
@@ -70,15 +78,23 @@ ageGroups <- function(name = "esp2013", type = "broad"){
       c(75,79),
       c(80,84),
       c(85,150)
-    ))
+    )
+
+    # Convert to readable labels like "0-4"
+    labels <- sapply(groups, function(x) paste0(x[1], "-", x[2]))
+    return(labels)
   }
 
   if(name == "wsp2025" & type == "broad"){
-    return(list(
+    groups <- list(
       c(0,19),
       c(20,64),
       c(65,150)
-    ))
+    )
+
+    # Convert to readable labels like "0-4"
+    labels <- sapply(groups, function(x) paste0(x[1], "-", x[2]))
+    return(labels)
   }
 
 }
