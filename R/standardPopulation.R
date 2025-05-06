@@ -1,7 +1,7 @@
 
 #' Standard population
 #'
-#' @param name Dataset to use. One of "esp2013" or ""wsp2025".
+#' @param name Dataset to use. One of "esp2013" or wsp2025".
 #' @param ageType Choose whether to use broad or narrow age groups.
 #'
 #' @return Tibble
