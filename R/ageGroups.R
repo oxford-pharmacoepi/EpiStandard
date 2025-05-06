@@ -1,19 +1,24 @@
 #' Age groups
 #'
 #' @param name Dataset - One of "esp2013" or ""wsp2025".
-#'
+#' @param type Choose whether to use broad or narrow age groups.
 #' @return List
 #' @export
 #'
 
-ageGroups <- function(name = "esp2013"){
+ageGroups <- function(name = "esp2013", type = "broad"){
 
   supported_names <- c("esp2013", "wsp2025")
   if(!name %in% supported_names){
     cli::cli_abort("{name} not available - name must be one of: {supported_names}")
   }
 
-  if(name == "esp2013"){
+  supported_types <- c("broad", "narrow")
+  if(!type %in% supported_types){
+    cli::cli_abort("{type} not available - name must be one of: {supported_types}")
+  }
+
+  if(name == "esp2013" & type == "narrow"){
     return(list(
       c(0,4),
       c(5,9),
@@ -37,7 +42,15 @@ ageGroups <- function(name = "esp2013"){
     ))
   }
 
-  if(name == "wsp2025"){
+  if(name == "esp2013" & type == "broad"){
+    return(list(
+      c(0,19),
+      c(20,64),
+      c(65,150)
+    ))
+  }
+
+  if(name == "wsp2025" & type == narrow){
     return(list(
       c(0,4),
       c(5,9),
@@ -57,6 +70,14 @@ ageGroups <- function(name = "esp2013"){
       c(75,79),
       c(80,84),
       c(85,150)
+    ))
+  }
+
+  if(name == "wsp2025" & type == "broad"){
+    return(list(
+      c(0,19),
+      c(20,64),
+      c(65,150)
     ))
   }
 

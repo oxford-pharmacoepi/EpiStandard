@@ -4,10 +4,12 @@
 \alias{ageGroups}
 \title{Age groups}
 \usage{
-ageGroups(name = "esp2013")
+ageGroups(name = "esp2013", type = "broad")
 }
 \arguments{
 \item{name}{Dataset - One of "esp2013" or ""wsp2025".}
+
+\item{type}{Choose whether to use broad or narrow age groups.}
 }
 \value{
 List
