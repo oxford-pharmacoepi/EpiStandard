@@ -4,10 +4,12 @@
 \alias{standardPopulation}
 \title{Standard population}
 \usage{
-standardPopulation(name = "esp2013")
+standardPopulation(name = "esp2013", ageType = "narrow")
 }
 \arguments{
 \item{name}{Dataset to use. One of "esp2013" or ""wsp2025".}
+
+\item{ageType}{Choose whether to use broad or narrow age groups.}
 }
 \value{
 Tibble
