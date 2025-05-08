@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(dsr2)
+library(EpiStandard)
 
-test_check("dsr2")
+test_check("EpiStandard")
