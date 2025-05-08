@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r}
-library(dsr2)
+library(EpiStandard)
 library(gt)
 
 pop <- standardPopulation("esp2013")

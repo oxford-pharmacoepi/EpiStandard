@@ -1,21 +1,21 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# dsr2
+# EpiStandard
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of dsr2 is to …
+The goal of EpiStandard is to …
 
 ## Installation
 
-You can install the development version of dsr2 from
+You can install the development version of EpiStandard from
 [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("oxford-pharmacoepi/dsr2")
+devtools::install_github("oxford-pharmacoepi/EpiStandard")
 ```
 
 ## Example
@@ -23,11 +23,7 @@ devtools::install_github("oxford-pharmacoepi/dsr2")
 This is a basic example which shows you how to solve a common problem:
 
 ``` r
-library(dsr2)
-#> Warning: replacing previous import 'dplyr::lag' by 'stats::lag' when loading
-#> 'dsr2'
-#> Warning: replacing previous import 'dplyr::filter' by 'stats::filter' when
-#> loading 'dsr2'
+library(EpiStandard)
 ## basic example code
 ```
 
