@@ -5,6 +5,11 @@
 #'
 #' @return Tibble
 #' @export
+#' @examples
+#' \donttest{
+#' standard_data <- standardPopulation("esp2013")
+#' }
+#'
 
 standardPopulation <- function(name = "esp2013"){
 
