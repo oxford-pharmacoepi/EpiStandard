@@ -2,6 +2,7 @@
 
 export(ageGroups)
 export(dsr)
+export(mergeAgeGroups)
 export(standardPopulation)
 importFrom(rlang,":=")
 importFrom(rlang,.data)
