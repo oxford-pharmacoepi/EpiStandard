@@ -6,7 +6,8 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of EpiStandard is to …
+The goal of EpiStandard is to provide functions to allow for age
+standardisation of results produced from epidemiological studies.
 
 ## Installation
 
@@ -18,35 +19,45 @@ You can install the development version of EpiStandard from
 devtools::install_github("oxford-pharmacoepi/EpiStandard")
 ```
 
-## Example
-
-This is a basic example which shows you how to solve a common problem:
+## Main functionalities
 
 ``` r
 library(EpiStandard)
-## basic example code
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+The main functionality of the package is to calculate directly
+standardised rates.
+
+### Example
 
 ``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
+ df_study <- data.frame(state=rep(c('Miami',"Alaska"), c(5,5)),
+                       age=rep(c('00-14','15-24','25-44','45-64','65+'),2),
+                       deaths=c(136,57,208,1016,3605,59,18,37,90,81),
+                       fu=c(114350,80259,133440,142670,92168,37164,20036,32693,14947,2077))
+
+ #US standard population
+ df_ref  <- data.frame(age=c('00-14','15-24','25-44','45-64','65+'),
+                      pop=c(23961000,15420000,21353000,19601000,10685000))
+
+ #Directly standardised Rates (per 1000) - 95% CI's using the gamma method
+ my_results <- dsr(data = df_study,
+                   event = "deaths",
+                   time = "fu",
+                   strata = "state",
+                   age = "age",
+                   refdata = df_ref)
+ 
+ my_results |> dplyr::glimpse()
+#> Rows: 2
+#> Columns: 9
+#> $ state                   <chr> "Miami", "Alaska"
+#> $ Numerator               <dbl> 5022, 285
+#> $ Denominator             <dbl> 562887, 106917
+#> $ `Crude Rate (per 1000)` <dbl> 8.9219, 2.6656
+#> $ `95% LCL (Crude)`       <dbl> 8.6751, 2.3561
+#> $ `95% UCL (Crude)`       <dbl> 9.1686, 2.9751
+#> $ `Std Rate (per 1000)`   <dbl> 6.9242, 6.7104
+#> $ `95% LCL (Std)`         <dbl> 6.7304, 5.6667
+#> $ `95% UCL (Std)`         <dbl> 7.1181, 7.7541
 ```
-
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this.
-
-You can also embed plots, for example:
-
-<img src="man/figures/README-pressure-1.png" width="100%" />
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
