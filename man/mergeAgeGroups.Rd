@@ -4,7 +4,7 @@
 \alias{mergeAgeGroups}
 \title{Create new merged age groups}
 \usage{
-mergeAgeGroups(data, new_ranges)
+mergeAgeGroups(data, newGroups)
 }
 \arguments{
 \item{data}{Standard population dataset you want to use.}

@@ -17,7 +17,7 @@
 #'
 #' }
 
-mergeAgeGroups <- function(data, new_ranges) {
+mergeAgeGroups <- function(data, newGroups) {
 
   # Check input columns
   if (!all(c("age_group", "pop") %in% colnames(data))) {
@@ -50,7 +50,7 @@ mergeAgeGroups <- function(data, new_ranges) {
 
   merged_list <- list()
 
-  for (range_label in new_ranges) {
+  for (range_label in newGroups) {
     # Parse target range
     range_vals <- parse_age_bounds(range_label)
     if (anyNA(range_vals)) {
