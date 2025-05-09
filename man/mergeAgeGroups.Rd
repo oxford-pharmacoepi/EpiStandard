@@ -20,7 +20,7 @@ Create new merged age groups
 \examples{
 \donttest{
 
-data <- standardPopulation(name = "esp2013", ageType = "narrow")
+data <- standardPopulation(name = "esp2013")
 
 data |> dplyr::glimpse()
 
