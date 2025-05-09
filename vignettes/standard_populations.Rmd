@@ -38,7 +38,9 @@ pop <- standardPopulation("esp2013")
 gt(pop)
 ```
 
-You can also choose whether to use narrow or broad age categories.
+You can create new age groups using the 'mergeAgeGroups()' function. This allows you to combine the age groups in the standard population.
 
-
-You can also create your own age categories using the function 'ageGroups()'. 
+```{r merge}
+merged_data <- mergeAgeGroups(pop, c("0-19", "20-64", "65-150"))
+gt(merged_data)
+```
