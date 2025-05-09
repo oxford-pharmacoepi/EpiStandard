@@ -1,5 +1,5 @@
 ---
-title: "standard_populations"
+title: "Standard Populations"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{standard_populations}
@@ -18,10 +18,29 @@ knitr::opts_chunk$set(
 )
 ```
 
+# Introduction
+In this vignette, we will explore the EpiStandard functions designed to retrieve or create a standard population data table. There are two functions to help with this:
+
+- `standardPopulation()`
+- `ageGroups()`
+
+## Retrieve standard population data
+
+The package contains two standard population data tables:
+
+- ESP2013: 
+- WSP2025:
 ```{r}
 library(EpiStandard)
 library(gt)
 
 pop <- standardPopulation("esp2013")
 gt(pop)
+```
+
+You can create new age groups using the 'mergeAgeGroups()' function. This allows you to combine the age groups in the standard population.
+
+```{r merge}
+merged_data <- mergeAgeGroups(pop, c("0-19", "20-64", "65-150"))
+gt(merged_data)
 ```
