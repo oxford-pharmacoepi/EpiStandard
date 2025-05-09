@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 In this vignette, we will explore the EpiStandard functions designed to retrieve or create a standard population data table. There are two functions to help with this:
 
 - `standardPopulation()`
-- `ageGroups()`
+- `mergeAgeGroups()`
 
 ## Retrieve standard population data
 
