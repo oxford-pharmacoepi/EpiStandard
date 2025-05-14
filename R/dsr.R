@@ -74,7 +74,7 @@ dsr <- function(data,
     dplyr::mutate(
       cr_rate = .data$n / .data$d,
       cr_var = .data$n / .data$d ^ 2,
-      wts = .data$pop / sum(.data$pop),
+      wts = !!rlang::sym(pop) / sum(!!rlang::sym(pop)),
       st_rate = sum(.data$wts * (!!rlang::sym(event) / !!rlang::sym(time))),
       st_var = sum(as.numeric((.data$wts ^ 2) * (
         !!rlang::sym(event) / (!!rlang::sym(time)) ^ 2
