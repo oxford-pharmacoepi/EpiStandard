@@ -3,18 +3,17 @@
 #' Computes crude and directly standardised rates. Rates can be stratified by
 #' variables of interest.
 #'
-#' @param data A data frame with counts and unit-times summarised by the
-#' standardisation variables.
-#' @param event Name of the variable in data that corresponds to the event
-#' counts.
-#' @param time Name of the variable in data that corresponds to the unit-time.
-#' @param age Name of the variable in data that corresponds to age
-#' @param pop Name of the variable in data that corresponds to population
-#' @param strata A variable within the input data frame for which rates are
-#' calculated by.
-#' @param refdata A data frame with population unit-times summarised by the
-#' standardisation variables. The unit-time variable name must named pop.
-#' @param mp A constant to multiply rates by (e.g. mp=1000 for rates per 1000).
+#' @param data A data frame with the event counts to be standardised.
+#' @param refdata A data frame representing the standard population. It must contain two columns:
+#' age, with the different age groups (notice that this column name must be the same as
+#' in data, defined by the input age); and pop, with the number of individuals in each corresponding
+#' age group.
+#' @param event Name of the column in data that corresponds to the event counts.
+#' @param time Name of the column in data that corresponds to the unit-time (denominator).
+#' @param age Name of the column in data and refdata that corresponds to age groups.
+#' @param pop Name of the column in refdata that corresponds to the standard population in each age group.
+#' @param strata Name of the columns in data for which rates are calculated by.
+#' @param mp A constant to multiply rates by (e.g. mp = 1000 for rates per 1000).
 #' @param method Choose between normal, lognormal and gamma confidence intervals
 #' for crude and standardised rates. The default method is normal.
 #' @param sig The desired level of confidence in computing confidence intervals.
@@ -25,37 +24,46 @@
 #' @importFrom rlang ":="
 #'
 #' @examples
-#' #An example of calculating directly standardised rates
-#' #Data from Table 1, Page 132 of Schoenbach (2000)
+#' # An example of calculating directly standardised rates
+#' # Data example is from Table 1 (p.132) of Fundamentals of Epidemiology by Schoenbach, 2000.
 #'
-#' #State specific death counts and fu
-#' df_study <- data.frame(state=rep(c('Miami',"Alaska"), c(5,5)),
-#'                       age=rep(c('00-14','15-24','25-44','45-64','65+'),2),
-#'                       deaths=c(136,57,208,1016,3605,59,18,37,90,81),
-#'                       fu=c(114350,80259,133440,142670,92168,37164,20036,32693,14947,2077))
+#' # The following table shows the number of deaths, for 5 different age groups,
+#' # in the states of Miami and Alaska:
+#' data <- data.frame(
+#'       state = rep(c('Miami',"Alaska"), c(5,5)),
+#'       age_groups = rep(c('00-14','15-24','25-44','45-64','65+'),2),
+#'       deaths = c(136, 57, 208, 1016, 3605, 59, 18, 37, 90, 81),
+#'       general_population = c(114350,80259,133440,142670,92168,37164,20036,32693,14947,2077))
 #'
-#' #US standard population
-#' df_ref  <- data.frame(age=c('00-14','15-24','25-44','45-64','65+'),
-#'                      pop=c(23961000,15420000,21353000,19601000,10685000))
+#' # We aim to standardise the number of deaths per each state. To do that, we will use the following
+#' # US standard population:
+#' standardised_population <- data.frame(
+#'                             age_groups = c('00-14','15-24','25-44','45-64','65+'),
+#'                             pop = c(23961000,15420000,21353000,19601000,10685000))
 #'
-#' #Directly standardised Rates (per 1000) - 95% CI's using the gamma method
-#' my_results <- dsr(data = df_study,
+#' # Now we will use the function dsr to calculate the direct standardised rates
+#' # (per 1000 individuals) using a 95% CI calculated by the gamma method:
+#' my_results <- dsr(data = data,
+#'                   refdata = standardised_population,
 #'                   event = "deaths",
-#'                   time = "fu",
+#'                   time  = "general_population",
+#'                   age   = "age_groups",
+#'                   pop   = "pop",
 #'                   strata = "state",
-#'                   age = "age",
-#'                   refdata = df_ref)
-#' #View results
+#'                   mp = 1000,
+#'                   method = "gamma",
+#'                   sig = 0.95,
+#'                   decimals = 8)
+#' # View results
 #' my_results
 #' @export
-
 dsr <- function(data,
+                refdata  = standardPopulation("esp2013"),
                 event,
                 time,
                 age = "age_group",
                 pop = "pop",
                 strata = NULL,
-                refdata  = standardPopulation("esp2013"),
                 mp = 1000,
                 method = "normal",
                 sig = 0.95,
