@@ -36,7 +36,8 @@ Config/testthat/edition: 3
 Imports: 
     cli,
     dplyr,
-    rlang
+    rlang,
+    stringr
 VignetteBuilder: knitr
 Depends: 
     R (>= 4.1.0)
