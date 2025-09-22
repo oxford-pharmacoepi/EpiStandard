@@ -14,8 +14,7 @@ dsr(
   strata = NULL,
   mp = 1000,
   method = "normal",
-  sig = 0.95,
-  decimals = 4
+  sig = 0.95
 )
 }
 \arguments{
@@ -43,8 +42,6 @@ for crude and standardised rates. The default method is normal.}
 
 \item{sig}{The desired level of confidence in computing confidence intervals.
 The default is 0.95 for 95 percent CIs.}
-
-\item{decimals}{Round estimates to a desired decimal place.}
 }
 \description{
 Computes crude and directly standardised rates. Rates can be stratified by
@@ -79,8 +76,7 @@ my_results <- dsr(data = data,
                   strata = "state",
                   mp = 1000,
                   method = "gamma",
-                  sig = 0.95,
-                  decimals = 8)
+                  sig = 0.95)
 # View results
 my_results
 }

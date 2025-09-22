@@ -18,7 +18,6 @@
 #' for crude and standardised rates. The default method is normal.
 #' @param sig The desired level of confidence in computing confidence intervals.
 #' The default is 0.95 for 95 percent CIs.
-#' @param decimals Round estimates to a desired decimal place.
 #'
 #' @importFrom rlang .data
 #' @importFrom rlang ":="
@@ -52,8 +51,7 @@
 #'                   strata = "state",
 #'                   mp = 1000,
 #'                   method = "gamma",
-#'                   sig = 0.95,
-#'                   decimals = 8)
+#'                   sig = 0.95)
 #' # View results
 #' my_results
 #' @export
@@ -66,8 +64,7 @@ dsr <- function(data,
                 strata = NULL,
                 mp = 1000,
                 method = "normal",
-                sig = 0.95,
-                decimals = 4) {
+                sig = 0.95) {
 
   #validations
 
@@ -192,7 +189,7 @@ dsr <- function(data,
   #Clean up and output
   tmp1 <- tmp1 |>
     dplyr::mutate(across(c(c_rate, c_lower, c_upper, s_rate, s_lower, s_upper),
-                  ~ round(.x, digits = decimals)))
+                  ~ round(.x, digits = 4)))
 
   c_rate_name <- paste0('Crude Rate (per ', mp, ')')
   c_lower_name <- paste0(sig * 100, '% LCL (Crude)')
