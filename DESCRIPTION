@@ -41,4 +41,5 @@ Imports:
 VignetteBuilder: knitr
 Depends: 
     R (>= 4.1.0)
+URL: https://oxford-pharmacoepi.github.io/EpiStandard/, https://github.com/oxford-pharmacoepi/EpiStandard
 LazyData: true
