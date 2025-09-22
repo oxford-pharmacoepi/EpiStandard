@@ -13,9 +13,11 @@ knitr::opts_chunk$set(
 )
 ```
 
-# EpiStandard <img src="man/figures/hexsticker.png" align="right" height="200"/>
+# EpiStandard 
 
 <!-- badges: start -->
+
+<img src="man/figures/hexsticker.png" align="right" height="200"/>
 
 <!-- badges: end -->
 
