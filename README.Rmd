@@ -4,24 +4,15 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/README-",
-  out.width = "100%"
-)
-```
 
-# EpiStandard 
+# EpiStandard <img src="man/figures/hexsticker.png" align="right" height="180"/>
 
 <!-- badges: start -->
 
-<img src="man/figures/hexsticker.png" align="right" height="200"/>
-
 <!-- badges: end -->
 
-The goal of EpiStandard is to provide functions to allow for age standardisation of results produced from epidemiological studies.
+The goal of EpiStandard is to provide functions to allow for age 
+standardisation of results produced from epidemiological studies.
 
 ## Installation
 
