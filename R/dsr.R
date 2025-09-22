@@ -69,6 +69,44 @@ dsr <- function(data,
                 sig = 0.95,
                 decimals = 4) {
 
+  #validations
+
+  if(isFALSE(is.data.frame(data))){
+    cli::cli_abort("'data' must be a dataframe")
+  }
+
+  if(isFALSE(is.data.frame(refdata))){
+    cli::cli_abort("'refdata' must be a dataframe")
+  }
+
+  if(!event %in% names(data)) {
+    cli::cli_abort("'event' must be a column in 'data'")
+  }
+
+  if(!time %in% names(data)) {
+    cli::cli_abort("'time' must be a column in 'data'")
+  }
+
+  if(!pop %in% names(refdata)) {
+    cli::cli_abort("'pop' must be a column in 'refdata'")
+  }
+
+  if(!age %in% names(refdata) |!age %in% names(data) ) {
+    cli::cli_abort("'age' must be a column in 'refdata' and 'data'")
+  }
+
+  if(is.null(strata) == FALSE){
+  if(!all(strata %in% names(data))) {
+    cli::cli_abort("'strata' must be a column or columns in 'data'")
+  }
+  }
+
+  if (!setequal(unique(data[age]), unique(refdata[age]))) {
+    cli::cli_abort("'age' values differ between 'data' and 'refdata'")
+  }
+
+  #function
+
   all_data_st <- data |>
     dplyr::left_join(refdata, by = dplyr::join_by(!!rlang::sym(age)))
 
@@ -147,15 +185,14 @@ dsr <- function(data,
             (.data$st_rate)
         ))
       )
+  } else {
+    cli::cli_abort("method must be set as 'normal', 'lognormal', or 'gamma'")
   }
 
   #Clean up and output
-  tmp1$c_rate  <- round(tmp1$c_rate, digits = decimals)
-  tmp1$c_lower <- round(tmp1$c_lower, digits = decimals)
-  tmp1$c_upper <- round(tmp1$c_upper, digits = decimals)
-  tmp1$s_rate  <- round(tmp1$s_rate, digits = decimals)
-  tmp1$s_lower <- round(tmp1$s_lower, digits = decimals)
-  tmp1$s_upper <- round(tmp1$s_upper, digits = decimals)
+  tmp1 <- tmp1 |>
+    dplyr::mutate(across(c(c_rate, c_lower, c_upper, s_rate, s_lower, s_upper),
+                  ~ round(.x, digits = decimals)))
 
   c_rate_name <- paste0('Crude Rate (per ', mp, ')')
   c_lower_name <- paste0(sig * 100, '% LCL (Crude)')
