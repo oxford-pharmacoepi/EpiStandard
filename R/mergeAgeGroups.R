@@ -43,7 +43,11 @@ mergeAgeGroups <- function(refdata,
 
   refdata <- refdata |>
     dplyr::mutate(age_low = stringr::str_extract(.data[[age]], "\\d+"),
-                  age_high = stringr::str_extract(.data[[age]], "\\d+$"))
+                  age_high = stringr::str_extract(.data[[age]], "\\d+$")) |>
+    dplyr::mutate(
+      age_low  = as.integer(age_low),
+      age_high = as.integer(age_high)
+    )
 
   # Validate parsed bounds
   if (anyNA(refdata$age_high) | anyNA(refdata$age_low)) {
@@ -55,6 +59,7 @@ mergeAgeGroups <- function(refdata,
       for example {.val '0-4'} or {.val '0 to 4'}."
     ))
   }
+
   merged_list <- vector("list", length(newGroups))
 
   for (i in seq_along(newGroups)) {

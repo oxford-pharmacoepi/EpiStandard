@@ -41,6 +41,6 @@ gt(pop)
 You can create new age groups using the 'mergeAgeGroups()' function. This allows you to combine the age groups in the standard population.
 
 ```{r merge}
-merged_data <- mergeAgeGroups(pop, c("0-19", "20-64", "65-150"))
+merged_data <- mergeAgeGroups(refdata = standardPopulation("esp2013"), newGroups = c("0-19", "20-64", "65-150"))
 gt(merged_data)
 ```
