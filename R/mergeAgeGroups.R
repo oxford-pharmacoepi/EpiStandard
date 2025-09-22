@@ -18,6 +18,13 @@
 #' merged_data |> dplyr::glimpse()
 #'
 #' }
+#'
+
+
+utils::globalVariables(c(
+"age_high", "age_low", "across", "c_lower", "c_rate", "c_upper",
+"s_lower", "s_rate", "s_upper"
+))
 
 mergeAgeGroups <- function(refdata,
                            newGroups,
