@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# EpiStandard
+# EpiStandard <img src="man/figures/hexsticker.png" align="right" height="180"/>
 
 <!-- badges: start -->
 <!-- badges: end -->
