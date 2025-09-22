@@ -1,9 +1,9 @@
 #' Create new merged age groups
 #'
 #' @param refdata Standard population dataset you want to use.
+#' @param newGroups Create a list of new age groups you want to create.
 #' @param age Column in refdata with age values.
 #' @param pop Column in refdata with population counts.
-#' @param newGroups Create a list of new age groups you want to create.
 #' @return Table
 #' @export
 #' @examples
@@ -19,12 +19,6 @@
 #'
 #' }
 #'
-
-
-utils::globalVariables(c(
-"age_high", "age_low", "across", "c_lower", "c_rate", "c_upper",
-"s_lower", "s_rate", "s_upper"
-))
 
 mergeAgeGroups <- function(refdata,
                            newGroups,

@@ -4,12 +4,16 @@
 \alias{mergeAgeGroups}
 \title{Create new merged age groups}
 \usage{
-mergeAgeGroups(data, newGroups)
+mergeAgeGroups(refdata, newGroups, age = "age_group", pop = "pop")
 }
 \arguments{
-\item{data}{Standard population dataset you want to use.}
+\item{refdata}{Standard population dataset you want to use.}
 
-\item{newGroups}{Create a list of new age groups you want to create}
+\item{newGroups}{Create a list of new age groups you want to create.}
+
+\item{age}{Column in refdata with age values.}
+
+\item{pop}{Column in refdata with population counts.}
 }
 \value{
 Table
@@ -20,13 +24,14 @@ Create new merged age groups
 \examples{
 \donttest{
 
-data <- standardPopulation(name = "esp2013")
+refdata <- standardPopulation(name = "esp2013")
 
-data |> dplyr::glimpse()
+refdata |> dplyr::glimpse()
 
-merged_data <- mergeAgeGroups(data, c("0-19", "20-64", "65-150"))
+merged_data <- mergeAgeGroups(refdata, c("0-19", "20-64", "65-150"))
 
 merged_data |> dplyr::glimpse()
 
 }
+
 }
