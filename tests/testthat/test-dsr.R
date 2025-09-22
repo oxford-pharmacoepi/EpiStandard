@@ -22,8 +22,7 @@ test_that("dsr gamma", {
                    refdata=df_ref,
                    method="gamma",
                    sig=0.95,
-                   mp=1000,
-                   decimals=4))
+                   mp=1000))
   expect_true(inherits(my_results, "data.frame"))
 
 })
@@ -52,8 +51,7 @@ test_that("dsr normal", {
                                     refdata=df_ref,
                                     method="normal",
                                     sig=0.95,
-                                    mp=1000,
-                                    decimals=4))
+                                    mp=1000))
 
 })
 
@@ -81,8 +79,7 @@ test_that("dsr lognormal", {
                                     refdata=df_ref,
                                     method="lognormal",
                                     sig=0.95,
-                                    mp=1000,
-                                    decimals=4))
+                                    mp=1000))
 
 })
 
