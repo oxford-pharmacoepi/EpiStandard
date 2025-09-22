@@ -20,9 +20,7 @@ test_that("dsr gamma", {
                    strata="state",
                    age = "age",
                    refdata=df_ref,
-                   method="gamma",
-                   sig=0.95,
-                   mp=1000))
+                   method="gamma"))
   expect_true(inherits(my_results, "data.frame"))
 
 })
@@ -49,9 +47,7 @@ test_that("dsr normal", {
                                     strata="state",
                                     age = "age",
                                     refdata=df_ref,
-                                    method="normal",
-                                    sig=0.95,
-                                    mp=1000))
+                                    method="normal"))
 
 })
 
@@ -77,9 +73,7 @@ test_that("dsr lognormal", {
                                     strata="state",
                                     age = "age",
                                     refdata=df_ref,
-                                    method="lognormal",
-                                    sig=0.95,
-                                    mp=1000))
+                                    method="lognormal"))
 
 })
 

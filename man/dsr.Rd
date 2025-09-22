@@ -12,7 +12,7 @@ dsr(
   age = "age_group",
   pop = "pop",
   strata = NULL,
-  mp = 1000,
+  multiplier = 1000,
   method = "normal",
   sig = 0.95
 )
@@ -35,7 +35,7 @@ age group.}
 
 \item{strata}{Name of the columns in data for which rates are calculated by.}
 
-\item{mp}{A constant to multiply rates by (e.g. mp = 1000 for rates per 1000).}
+\item{multiplier}{A constant to multiply rates by (e.g. multiplier = 1000 for rates per 1000).}
 
 \item{method}{Choose between normal, lognormal and gamma confidence intervals
 for crude and standardised rates. The default method is normal.}
@@ -74,7 +74,7 @@ my_results <- dsr(data = data,
                   age   = "age_groups",
                   pop   = "pop",
                   strata = "state",
-                  mp = 1000,
+                  multiplier = 1000,
                   method = "gamma",
                   sig = 0.95)
 # View results
