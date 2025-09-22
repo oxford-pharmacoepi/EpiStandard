@@ -20,9 +20,9 @@
 #' }
 
 mergeAgeGroups <- function(refdata,
+                           newGroups,
                            age = "age_group",
-                           pop = "pop",
-                           newGroups) {
+                           pop = "pop") {
 
   if(isFALSE(is.data.frame(refdata))){
     cli::cli_abort("'refdata' must be a dataframe")
