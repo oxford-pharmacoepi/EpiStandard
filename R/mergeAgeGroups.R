@@ -1,84 +1,93 @@
 #' Create new merged age groups
 #'
-#' @param data Standard population dataset you want to use.
-#' @param newGroups Create a list of new age groups you want to create
+#' @param refdata Standard population dataset you want to use.
+#' @param age Column in refdata with age values.
+#' @param pop Column in refdata with population counts.
+#' @param newGroups Create a list of new age groups you want to create.
 #' @return Table
 #' @export
 #' @examples
 #' \donttest{
 #'
-#' data <- standardPopulation(name = "esp2013")
+#' refdata <- standardPopulation(name = "esp2013")
 #'
-#' data |> dplyr::glimpse()
+#' refdata |> dplyr::glimpse()
 #'
-#' merged_data <- mergeAgeGroups(data, c("0-19", "20-64", "65-150"))
+#' merged_data <- mergeAgeGroups(refdata, c("0-19", "20-64", "65-150"))
 #'
 #' merged_data |> dplyr::glimpse()
 #'
 #' }
 
-mergeAgeGroups <- function(data, newGroups) {
+mergeAgeGroups <- function(refdata,
+                           age = "age_group",
+                           pop = "pop",
+                           newGroups) {
+
+  if(isFALSE(is.data.frame(refdata))){
+    cli::cli_abort("'refdata' must be a dataframe")
+  }
+
+  if(isFALSE(is.vector(newGroups))){
+    cli::cli_abort("'newGroups' must be a vector")
+  }
 
   # Check input columns
-  if (!all(c("age_group", "pop") %in% colnames(data))) {
-    cli::cli_abort("Input data must contain {.field age_group} and {.field pop} columns.")
+  if (!age %in% names(refdata)) {
+    cli::cli_abort("Input data must contain {.field age_group}")
   }
 
-  # Helper: parse age group bounds (supports "X-Y" and "X to Y")
-  parse_age_bounds <- function(age_group) {
-    normalized <- gsub(" to ", "-", age_group)  # Normalize "to" to "-"
-    if (!grepl("^\\d+-\\d+$", normalized)) return(c(NA, NA))
-    start <- as.numeric(sub("-.*", "", normalized))
-    end   <- as.numeric(sub(".*-", "", normalized))
-    return(c(start, end))
+  if (!pop %in% names(refdata)) {
+    cli::cli_abort("Input data must contain {.field pop}")
   }
 
-  # Parse age group bounds
-  age_bounds <- t(sapply(data$age_group, parse_age_bounds))
-  data$age_start <- age_bounds[, 1]
-  data$age_end   <- age_bounds[, 2]
+  refdata <- refdata |>
+    dplyr::mutate(age_low = stringr::str_extract(.data[[age]], "\\d+"),
+                  age_high = stringr::str_extract(.data[[age]], "\\d+$"))
 
   # Validate parsed bounds
-  if (anyNA(data$age_start) | anyNA(data$age_end)) {
-    bad_vals <- data$age_group[is.na(data$age_start) | is.na(data$age_end)]
+  if (anyNA(refdata$age_high) | anyNA(refdata$age_low)) {
+    bad_vals <- refdata[[age]][is.na(refdata$age_low) | is.na(refdata$age_high)]
     cli::cli_abort(c(
       "Some {.field age_group} values could not be parsed.",
       "x" = "Invalid labels: {.val {bad_vals}}",
-      "i" = "Use formats like {.val '0-4'} or {.val '0 to 4'} only."
+      "i" = "Use format that includes lower and upper bound of each age group,
+      for example {.val '0-4'} or {.val '0 to 4'}."
     ))
   }
+  merged_list <- vector("list", length(newGroups))
 
-  merged_list <- list()
+  for (i in seq_along(newGroups)) {
+    # Parse target range for this group
+    start <- as.integer(stringr::str_extract(newGroups[[i]], "\\d+"))
+    end   <- as.integer(stringr::str_extract(newGroups[[i]], "\\d+$"))
 
-  for (range_label in newGroups) {
-    # Parse target range
-    range_vals <- parse_age_bounds(range_label)
-    if (anyNA(range_vals)) {
-      cli::cli_abort("Invalid custom age range format: {.val {range_label}}")
-    }
-    start <- range_vals[1]
-    end <- range_vals[2]
+    # Rows fully inside [start, end]
+    in_range <- refdata[refdata$age_low >= start & refdata$age_high <= end, , drop = FALSE]
 
-    # Find matching rows in data
-    in_range <- data[data$age_start >= start & data$age_end <= end, ]
-
-    # Check for misalignment with original groups
-    if (nrow(in_range) == 0 || min(in_range$age_start) > start || max(in_range$age_end) < end) {
+    # Check alignment with existing boundaries
+    if (nrow(in_range) == 0L ||
+        min(in_range$age_low,  na.rm = TRUE) != start ||
+        max(in_range$age_high, na.rm = TRUE) != end) {
       cli::cli_abort(c(
-        "Cannot create custom range {.val {range_label}}.",
+        "Cannot create custom range {.val {newGroups[[i]]}}.",
         "x" = "It does not align with existing age group boundaries."
       ))
     }
 
-    total_pop <- sum(in_range$pop)
+    total_pop <- sum(in_range$pop, na.rm = TRUE)
 
-    merged_list[[length(merged_list) + 1]] <- data.frame(
-      age_group = range_label,
-      pop = total_pop
+    merged_list[[i]] <- data.frame(
+      age_group = newGroups[[i]],
+      pop = total_pop,
+      stringsAsFactors = FALSE
     )
   }
 
-  result <- do.call(rbind, merged_list)
+  # If you want a single data frame at the end:
+  result <- dplyr::bind_rows(merged_list)
+
   rownames(result) <- NULL
+
   return(result)
 }
