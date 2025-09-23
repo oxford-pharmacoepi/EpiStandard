@@ -8,7 +8,7 @@ dsr(
   data,
   refdata = standardPopulation("esp2013"),
   event,
-  time,
+  denominator,
   age = "age_group",
   pop = "pop",
   strata = NULL,
@@ -27,7 +27,7 @@ age group.}
 
 \item{event}{Name of the column in data that corresponds to the event counts.}
 
-\item{time}{Name of the column in data that corresponds to the unit-time (denominator).}
+\item{denominator}{Name of the column in data that corresponds to the denominator population.}
 
 \item{age}{Name of the column in data and refdata that corresponds to age groups.}
 
@@ -70,7 +70,7 @@ standardised_population <- data.frame(
 my_results <- dsr(data = data,
                   refdata = standardised_population,
                   event = "deaths",
-                  time  = "general_population",
+                  denominator  = "general_population",
                   age   = "age_groups",
                   pop   = "pop",
                   strata = "state",

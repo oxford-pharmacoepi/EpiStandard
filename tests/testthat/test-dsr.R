@@ -16,7 +16,7 @@ test_that("dsr gamma", {
   # Directly Standardized Rates (per 1000) - 95% CI's using the gamma method
   expect_no_error(my_results <- dsr(data=df_study,
                    event="deaths",
-                   time="fu",
+                   denominator="fu",
                    strata="state",
                    age = "age",
                    refdata=df_ref,
@@ -43,7 +43,7 @@ test_that("dsr normal", {
   # Directly Standardized Rates (per 1000) - 95% CI's using the gamma method
   expect_no_error(my_results <- dsr(data=df_study,
                                     event="deaths",
-                                    time="fu",
+                                    denominator="fu",
                                     strata="state",
                                     age = "age",
                                     refdata=df_ref,
@@ -69,7 +69,7 @@ test_that("dsr lognormal", {
   # Directly Standardized Rates (per 1000) - 95% CI's using the gamma method
   expect_no_error(my_results <- dsr(data=df_study,
                                     event="deaths",
-                                    time="fu",
+                                    denominator="fu",
                                     strata="state",
                                     age = "age",
                                     refdata=df_ref,
@@ -91,10 +91,10 @@ test_that("using package populations", {
       "90 to 150"
     ),
     deaths= rep(5, 19),
-    time = rep(100, 19))
+    denominator = rep(100, 19))
 
   expect_no_error(dsr(data = stud_result,
-      event = "deaths", time = "time",
+      event = "deaths", denominator = "denominator",
       refdata  = standardPopulation("esp2013")))
 })
 
@@ -112,10 +112,10 @@ test_that("using strata", {
       "90 to 150"
     ),2),
     deaths= c(rep(5, 19),rep(10, 19)),
-    time = rep(100, 38))
+    denominator = rep(100, 38))
 
   expect_no_error(dsr(data = stud_result,
-                      event = "deaths", time = "time",
+                      event = "deaths", denominator = "denominator",
                       strata = "var_1",
                       refdata  = standardPopulation("esp2013")))
 })
@@ -135,10 +135,10 @@ test_that("using multiple strata", {
       "90 to 150"
     ),2),
     deaths= c(rep(5, 19),rep(10, 19)),
-    time = rep(100, 38))
+    denominator = rep(100, 38))
 
   expect_no_error(dsr(data = stud_result,
-                      event = "deaths", time = "time",
+                      event = "deaths", denominator = "denominator",
                       strata = c("var_1", "var_2"),
                       refdata  = standardPopulation("esp2013")))
 })
@@ -156,11 +156,11 @@ test_that("error when using invalid method", {
       "90 to 150"
     ),
     deaths= rep(5, 19),
-    time = rep(100, 19))
+    denominator = rep(100, 19))
 
   # european
   expect_error(dsr(data = stud_result,
-                      event = "deaths", time = "time",
+                      event = "deaths", denominator = "denominator",
                       refdata  = standardPopulation("esp2013"),
                       method = "exponential"))
 
@@ -183,7 +183,7 @@ test_that("refdata is dataframe", {
       "90 to 150"
     ),
     deaths= rep(5, 19),
-    time = rep(100, 19))
+    denominator = rep(100, 19))
 
   refdata = c(
     "0 to 4", "5 to 9", "10 to 14",
@@ -196,7 +196,7 @@ test_that("refdata is dataframe", {
   )
 
   expect_error(dsr(data = stud_result,
-                   event = "deaths", time = "time",
+                   event = "deaths", denominator = "denominator",
                    refdata  = refdata))
 
 })
@@ -214,7 +214,7 @@ test_that("data is dataframe", {
   )
 
   expect_error(dsr(data = stud_result,
-                   event = "deaths", time = "time"))
+                   event = "deaths", denominator = "denominator"))
 
 })
 
@@ -231,14 +231,14 @@ test_that("event is column in data", {
       "90 to 150"
     ),
     deaths= rep(5, 19),
-    time = rep(100, 19))
+    denominator = rep(100, 19))
 
   expect_error(dsr(data = stud_result,
-                   event = "death_count", time = "time"))
+                   event = "death_count", denominator = "denominator"))
 
 })
 
-test_that("time is column in data", {
+test_that("denominator is column in data", {
 
   stud_result <- data.frame(
     age_group = c(
@@ -251,10 +251,10 @@ test_that("time is column in data", {
       "90 to 150"
     ),
     deaths= rep(5, 19),
-    time = rep(100, 19))
+    denominator = rep(100, 19))
 
   expect_error(dsr(data = stud_result,
-                   event = "deaths", time = "time (months)"))
+                   event = "deaths", denominator = "denominator (months)"))
 
 })
 
@@ -271,10 +271,10 @@ test_that("strata is column in data", {
       "90 to 150"
     ),
     deaths= rep(5, 19),
-    time = rep(100, 19))
+    denominator = rep(100, 19))
 
   expect_error(dsr(data = stud_result,
-                   event = "deaths", time = "time",
+                   event = "deaths", denominator = "denominator",
                    strata = "sex"))
 
 })
@@ -292,10 +292,10 @@ test_that("strata is column in data", {
       "90 to 150"
     ),
     deaths= rep(5, 19),
-    time = rep(100, 19))
+    denominator = rep(100, 19))
 
   expect_error(dsr(data = stud_result,
-                   event = "deaths", time = "time",
+                   event = "deaths", denominator = "denominator",
                    strata = "sex"))
 
 })
@@ -313,10 +313,10 @@ test_that("pop is column in data", {
       "90 to 150"
     ),
     deaths= rep(5, 19),
-    time = rep(100, 19))
+    denominator = rep(100, 19))
 
   expect_error(dsr(data = stud_result,
-                   event = "deaths", time = "time",
+                   event = "deaths", denominator = "denominator",
                    pop = "population"))
 
 })
@@ -334,10 +334,10 @@ test_that("age is a column in data and refdata", {
       "90 to 150"
     ),
     deaths= rep(5, 19),
-    time = rep(100, 19))
+    denominator = rep(100, 19))
 
   expect_error(dsr(data = stud_result,
-                   event = "deaths", time = "time",
+                   event = "deaths", denominator = "denominator",
                    age = "age_group"))
 
   df_study <- data.frame(state=rep(c('Miami',"Alaska"), c(5,5)),
@@ -350,7 +350,7 @@ test_that("age is a column in data and refdata", {
                         pop=c(23961000,15420000,21353000,19601000,10685000))
 
   expect_error(dsr(data = df_study,
-                   event = "deaths", time = "fu",
+                   event = "deaths", denominator = "fu",
                    refdata = df_ref,
                    age = "age"))
 
@@ -368,7 +368,7 @@ test_that("same age values in data and refdata", {
                         pop=c(23961000,15420000,21353000,19601000,10685000))
 
   expect_error(dsr(data = df_study,
-                   event = "deaths", time = "fu",
+                   event = "deaths", denominator = "fu",
                    refdata = df_ref,
                    age = "age"))
 

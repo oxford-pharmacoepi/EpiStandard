@@ -9,7 +9,7 @@
 #' in data, defined by the input age); and pop, with the number of individuals in each corresponding
 #' age group.
 #' @param event Name of the column in data that corresponds to the event counts.
-#' @param time Name of the column in data that corresponds to the unit-time (denominator).
+#' @param denominator Name of the column in data that corresponds to the denominator population.
 #' @param age Name of the column in data and refdata that corresponds to age groups.
 #' @param pop Name of the column in refdata that corresponds to the standard population in each age group.
 #' @param strata Name of the columns in data for which rates are calculated by.
@@ -45,7 +45,7 @@
 #' my_results <- dsr(data = data,
 #'                   refdata = standardised_population,
 #'                   event = "deaths",
-#'                   time  = "general_population",
+#'                   denominator  = "general_population",
 #'                   age   = "age_groups",
 #'                   pop   = "pop",
 #'                   strata = "state",
@@ -58,7 +58,7 @@
 dsr <- function(data,
                 refdata  = standardPopulation("esp2013"),
                 event,
-                time,
+                denominator,
                 age = "age_group",
                 pop = "pop",
                 strata = NULL,
@@ -80,8 +80,8 @@ dsr <- function(data,
     cli::cli_abort("'event' must be a column in 'data'")
   }
 
-  if(!time %in% names(data)) {
-    cli::cli_abort("'time' must be a column in 'data'")
+  if(!denominator %in% names(data)) {
+    cli::cli_abort("'denominator' must be a column in 'data'")
   }
 
   if(!pop %in% names(refdata)) {
@@ -113,14 +113,14 @@ dsr <- function(data,
   }
   all_data_st <- all_data_st |>
     dplyr::mutate(n = sum(!!rlang::sym(event)),
-                  d = sum(!!rlang::sym(time))) |>
+                  d = sum(!!rlang::sym(denominator))) |>
     dplyr::mutate(
       cr_rate = .data$n / .data$d,
       cr_var = .data$n / .data$d ^ 2,
       wts = !!rlang::sym(pop) / sum(!!rlang::sym(pop)),
-      st_rate = sum(.data$wts * (!!rlang::sym(event) / !!rlang::sym(time))),
+      st_rate = sum(.data$wts * (!!rlang::sym(event) / !!rlang::sym(denominator))),
       st_var = sum(as.numeric((.data$wts ^ 2) * (
-        !!rlang::sym(event) / (!!rlang::sym(time)) ^ 2
+        !!rlang::sym(event) / (!!rlang::sym(denominator)) ^ 2
       )))
     ) |>
     dplyr::distinct(!!!strata, .keep_all = TRUE) |>
