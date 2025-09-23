@@ -5,7 +5,7 @@ articles:
   dsr: dsr.html
   omop: omop.html
   standard_populations: standard_populations.html
-last_built: 2025-09-23T09:56Z
+last_built: 2025-09-23T14:02Z
 urls:
-  reference: https://oxford-pharmacoepi.github.io/EpiStandard/reference
-  article: https://oxford-pharmacoepi.github.io/EpiStandard/articles
+  reference: https://github.com/oxford-pharmacoepi/EpiStandard/reference
+  article: https://github.com/oxford-pharmacoepi/EpiStandard/articles
