@@ -8,14 +8,13 @@ dsr(
   data,
   refdata = standardPopulation("esp2013"),
   event,
-  time,
+  denominator,
   age = "age_group",
   pop = "pop",
   strata = NULL,
-  mp = 1000,
+  multiplier = 1000,
   method = "normal",
-  sig = 0.95,
-  decimals = 4
+  sig = 0.95
 )
 }
 \arguments{
@@ -28,7 +27,7 @@ age group.}
 
 \item{event}{Name of the column in data that corresponds to the event counts.}
 
-\item{time}{Name of the column in data that corresponds to the unit-time (denominator).}
+\item{denominator}{Name of the column in data that corresponds to the denominator population.}
 
 \item{age}{Name of the column in data and refdata that corresponds to age groups.}
 
@@ -36,15 +35,13 @@ age group.}
 
 \item{strata}{Name of the columns in data for which rates are calculated by.}
 
-\item{mp}{A constant to multiply rates by (e.g. mp = 1000 for rates per 1000).}
+\item{multiplier}{A constant to multiply rates by (e.g. multiplier = 1000 for rates per 1000).}
 
 \item{method}{Choose between normal, lognormal and gamma confidence intervals
 for crude and standardised rates. The default method is normal.}
 
 \item{sig}{The desired level of confidence in computing confidence intervals.
 The default is 0.95 for 95 percent CIs.}
-
-\item{decimals}{Round estimates to a desired decimal place.}
 }
 \description{
 Computes crude and directly standardised rates. Rates can be stratified by
@@ -73,14 +70,13 @@ standardised_population <- data.frame(
 my_results <- dsr(data = data,
                   refdata = standardised_population,
                   event = "deaths",
-                  time  = "general_population",
+                  denominator  = "general_population",
                   age   = "age_groups",
                   pop   = "pop",
                   strata = "state",
-                  mp = 1000,
+                  multiplier = 1000,
                   method = "gamma",
-                  sig = 0.95,
-                  decimals = 8)
+                  sig = 0.95)
 # View results
 my_results
 }

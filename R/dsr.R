@@ -9,16 +9,15 @@
 #' in data, defined by the input age); and pop, with the number of individuals in each corresponding
 #' age group.
 #' @param event Name of the column in data that corresponds to the event counts.
-#' @param time Name of the column in data that corresponds to the unit-time (denominator).
+#' @param denominator Name of the column in data that corresponds to the denominator population.
 #' @param age Name of the column in data and refdata that corresponds to age groups.
 #' @param pop Name of the column in refdata that corresponds to the standard population in each age group.
 #' @param strata Name of the columns in data for which rates are calculated by.
-#' @param mp A constant to multiply rates by (e.g. mp = 1000 for rates per 1000).
+#' @param multiplier A constant to multiply rates by (e.g. multiplier = 1000 for rates per 1000).
 #' @param method Choose between normal, lognormal and gamma confidence intervals
 #' for crude and standardised rates. The default method is normal.
 #' @param sig The desired level of confidence in computing confidence intervals.
 #' The default is 0.95 for 95 percent CIs.
-#' @param decimals Round estimates to a desired decimal place.
 #'
 #' @importFrom rlang .data
 #' @importFrom rlang ":="
@@ -46,28 +45,26 @@
 #' my_results <- dsr(data = data,
 #'                   refdata = standardised_population,
 #'                   event = "deaths",
-#'                   time  = "general_population",
+#'                   denominator  = "general_population",
 #'                   age   = "age_groups",
 #'                   pop   = "pop",
 #'                   strata = "state",
-#'                   mp = 1000,
+#'                   multiplier = 1000,
 #'                   method = "gamma",
-#'                   sig = 0.95,
-#'                   decimals = 8)
+#'                   sig = 0.95)
 #' # View results
 #' my_results
 #' @export
 dsr <- function(data,
                 refdata  = standardPopulation("esp2013"),
                 event,
-                time,
+                denominator,
                 age = "age_group",
                 pop = "pop",
                 strata = NULL,
-                mp = 1000,
+                multiplier = 1000,
                 method = "normal",
-                sig = 0.95,
-                decimals = 4) {
+                sig = 0.95) {
 
   #validations
 
@@ -83,8 +80,8 @@ dsr <- function(data,
     cli::cli_abort("'event' must be a column in 'data'")
   }
 
-  if(!time %in% names(data)) {
-    cli::cli_abort("'time' must be a column in 'data'")
+  if(!denominator %in% names(data)) {
+    cli::cli_abort("'denominator' must be a column in 'data'")
   }
 
   if(!pop %in% names(refdata)) {
@@ -116,14 +113,14 @@ dsr <- function(data,
   }
   all_data_st <- all_data_st |>
     dplyr::mutate(n = sum(!!rlang::sym(event)),
-                  d = sum(!!rlang::sym(time))) |>
+                  d = sum(!!rlang::sym(denominator))) |>
     dplyr::mutate(
       cr_rate = .data$n / .data$d,
       cr_var = .data$n / .data$d ^ 2,
       wts = !!rlang::sym(pop) / sum(!!rlang::sym(pop)),
-      st_rate = sum(.data$wts * (!!rlang::sym(event) / !!rlang::sym(time))),
+      st_rate = sum(.data$wts * (!!rlang::sym(event) / !!rlang::sym(denominator))),
       st_var = sum(as.numeric((.data$wts ^ 2) * (
-        !!rlang::sym(event) / (!!rlang::sym(time)) ^ 2
+        !!rlang::sym(event) / (!!rlang::sym(denominator)) ^ 2
       )))
     ) |>
     dplyr::distinct(!!!strata, .keep_all = TRUE) |>
@@ -140,47 +137,47 @@ dsr <- function(data,
   if (method == "gamma") {
     tmp1 <- all_data_st |>
       dplyr::mutate(
-        c_rate = mp * .data$cr_rate,
-        c_lower = mp * stats::qgamma((1 - sig) / 2, shape = .data$cr_rate ^
+        c_rate = multiplier * .data$cr_rate,
+        c_lower = multiplier * stats::qgamma((1 - sig) / 2, shape = .data$cr_rate ^
                                        2 / (.data$cr_var)) / (.data$cr_rate / .data$cr_var),
-        c_upper = mp * stats::qgamma(1 - ((1 - sig) / 2), shape = 1 + .data$cr_rate ^
+        c_upper = multiplier * stats::qgamma(1 - ((1 - sig) / 2), shape = 1 + .data$cr_rate ^
                                        2 / (.data$cr_var)) / (.data$cr_rate / .data$cr_var),
-        s_rate = mp * .data$st_rate,
-        s_lower = mp * stats::qgamma((1 - sig) / 2, shape = .data$st_rate ^
+        s_rate = multiplier * .data$st_rate,
+        s_lower = multiplier * stats::qgamma((1 - sig) / 2, shape = .data$st_rate ^
                                        2 / .data$st_var) / (.data$st_rate / .data$st_var),
-        s_upper = mp * stats::qgamma(1 - ((1 - sig) / 2), shape = 1 + (.data$st_rate ^
+        s_upper = multiplier * stats::qgamma(1 - ((1 - sig) / 2), shape = 1 + (.data$st_rate ^
                                                                          2 / .data$st_var)) / (.data$st_rate / .data$st_var)
       )
 
   } else if (method == "normal") {
     tmp1 <- all_data_st |>
       dplyr::mutate(
-        c_rate = mp * .data$cr_rate,
-        c_lower = mp * (.data$cr_rate + stats::qnorm((1 - sig) / 2) * sqrt(.data$cr_var)),
-        c_upper = mp * (.data$cr_rate - stats::qnorm((1 - sig) / 2) * sqrt(.data$cr_var)),
-        s_rate = mp * .data$st_rate,
-        s_lower = mp * (.data$st_rate + stats::qnorm((1 - sig) / 2) * sqrt(.data$st_var)),
-        s_upper = mp * (.data$st_rate - stats::qnorm((1 - sig) / 2) * sqrt(.data$st_var))
+        c_rate = multiplier * .data$cr_rate,
+        c_lower = multiplier * (.data$cr_rate + stats::qnorm((1 - sig) / 2) * sqrt(.data$cr_var)),
+        c_upper = multiplier * (.data$cr_rate - stats::qnorm((1 - sig) / 2) * sqrt(.data$cr_var)),
+        s_rate = multiplier * .data$st_rate,
+        s_lower = multiplier * (.data$st_rate + stats::qnorm((1 - sig) / 2) * sqrt(.data$st_var)),
+        s_upper = multiplier * (.data$st_rate - stats::qnorm((1 - sig) / 2) * sqrt(.data$st_var))
       )
 
   } else if (method == "lognormal") {
     tmp1 <- all_data_st |>
       dplyr::mutate(
-        c_rate = mp * .data$cr_rate,
-        c_lower = mp * exp((
+        c_rate = multiplier * .data$cr_rate,
+        c_lower = multiplier * exp((
           log(.data$cr_rate) + stats::qnorm((1 - sig) / 2) * sqrt(.data$cr_var) /
             (.data$cr_rate)
         )),
-        c_upper = mp * exp((
+        c_upper = multiplier * exp((
           log(.data$cr_rate) - stats::qnorm((1 - sig) / 2) * sqrt(.data$cr_var) /
             (.data$cr_rate)
         )),
-        s_rate = mp * .data$st_rate,
-        s_lower = mp * exp((
+        s_rate = multiplier * .data$st_rate,
+        s_lower = multiplier * exp((
           log(.data$st_rate) + stats::qnorm((1 - sig) / 2) * sqrt(.data$st_var) /
             (.data$st_rate)
         )),
-        s_upper = mp * exp((
+        s_upper = multiplier * exp((
           log(.data$st_rate) - stats::qnorm((1 - sig) / 2) * sqrt(.data$st_var) /
             (.data$st_rate)
         ))
@@ -192,12 +189,12 @@ dsr <- function(data,
   #Clean up and output
   tmp1 <- tmp1 |>
     dplyr::mutate(across(c(c_rate, c_lower, c_upper, s_rate, s_lower, s_upper),
-                  ~ round(.x, digits = decimals)))
+                  ~ round(.x, digits = 4)))
 
-  c_rate_name <- paste0('Crude Rate (per ', mp, ')')
+  c_rate_name <- paste0('Crude Rate (per ', multiplier, ')')
   c_lower_name <- paste0(sig * 100, '% LCL (Crude)')
   c_upper_name <- paste0(sig * 100, '% UCL (Crude)')
-  s_rate_name <- paste0('Std Rate (per ', mp, ')')
+  s_rate_name <- paste0('Std Rate (per ', multiplier, ')')
   s_lower_name <- paste0(sig * 100, '% LCL (Std)')
   s_upper_name <- paste0(sig * 100, '% UCL (Std)')
 

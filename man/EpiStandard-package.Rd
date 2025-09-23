@@ -8,6 +8,14 @@
 \description{
 What the package does (one paragraph).
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://oxford-pharmacoepi.github.io/EpiStandard/}
+  \item \url{https://github.com/oxford-pharmacoepi/EpiStandard}
+}
+
+}
 \author{
 \strong{Maintainer}: Elin Rowlands \email{elin.rowlands@ndorms.ox.ac.uk} (\href{https://orcid.org/0009-0005-5166-0417}{ORCID})
 
