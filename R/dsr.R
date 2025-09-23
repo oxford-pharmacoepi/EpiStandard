@@ -99,7 +99,8 @@ dsr <- function(data,
   }
 
   if (!setequal(unique(data[age]), unique(refdata[age]))) {
-    cli::cli_abort("'age' values differ between 'data' and 'refdata'")
+    cli::cli_abort("'age' values differ between 'data' and 'refdata'. Please
+                   ensure that both tables use the same format (e.g 0-4 or '0 to 4'.")
   }
 
   #function

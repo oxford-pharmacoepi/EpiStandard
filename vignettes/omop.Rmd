@@ -1,0 +1,83 @@
+---
+title: "Using EpiStandards"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{omop}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r base, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  warning = FALSE, 
+  message = FALSE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5
+)
+```
+
+# Introduction
+In this vignette, we will explore how the EpiStandard functions can be used with results produced from the DARWIN package IncidencePrevalence.
+
+## Create CDM
+
+```{r cdm}
+library(EpiStandard)
+library(IncidencePrevalence)
+
+cdm <- IncidencePrevalence::mockIncidencePrevalence(
+  sampleSize = 10000,
+  outPre = 0.25
+)
+
+cdm <- IncidencePrevalence::generateDenominatorCohortSet(
+  cdm = cdm,
+  name = "denominator",
+  cohortDateRange = as.Date(c("2008-01-01", "2020-01-01")),
+  ageGroup = list(c(0, 19), c(20, 64), c(65, 150)),
+  sex = c("Male", "Female"),
+  daysPriorObservation = 0
+)
+```
+
+```{r crude inc}
+inc <- IncidencePrevalence::estimateIncidence(
+  cdm = cdm,
+  denominatorTable = "denominator",
+  outcomeTable = "outcome",
+  interval = "years",
+  outcomeWashout = 0,
+  repeatedEvents = FALSE
+)
+```
+
+```{r tidy}
+inc_tidy <- inc |>
+  omopgenerics::addSettings() |>
+  omopgenerics::splitAdditional() |>
+  omopgenerics::splitGroup() |>
+  dplyr::select(outcome_cohort_name, estimate_name, estimate_value, denominator_age_group, denominator_sex, incidence_start_date) |>
+  dplyr::filter(estimate_name %in% c("denominator_count", "outcome_count")) |>
+  tidyr::pivot_wider(names_from = estimate_name, values_from = estimate_value) |>
+  dplyr::rename(age_group = denominator_age_group) |>
+  dplyr::mutate(outcome_count = as.numeric(outcome_count),
+                denominator_count = as.numeric(denominator_count))
+```
+
+
+```{r standard pop}
+standardPop <- mergeAgeGroups(standardPopulation(), newGroups = c("0 to 19", "20 to 64", "65 to 150"))
+```
+
+```{r standard inc}
+standardInc <- dsr(data = inc_tidy,
+                   refdata = standardPop,
+                   event = "outcome_count",
+                   denominator = "denominator_count",
+                   age = "age_group",
+                   pop = "pop",
+                   strata = c("incidence_start_date", "denominator_sex")
+                   )
+```
