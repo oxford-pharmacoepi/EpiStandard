@@ -31,7 +31,9 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0),
     DBI,
-    duckdb
+    duckdb,
+    IncidencePrevalence,
+    omopgenerics
 Config/testthat/edition: 3
 Imports: 
     cli,
