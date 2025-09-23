@@ -9,7 +9,8 @@
 #' in data, defined by the input age); and pop, with the number of individuals in each corresponding
 #' age group.
 #' @param event Name of the column in data that corresponds to the event counts.
-#' @param denominator Name of the column in data that corresponds to the denominator population.
+#' @param denominator Name of the column in data that corresponds to the denominator population (in person-time, e.g person-days,
+#' person-years etc).
 #' @param age Name of the column in data and refdata that corresponds to age groups.
 #' @param pop Name of the column in refdata that corresponds to the standard population in each age group.
 #' @param strata Name of the columns in data for which rates are calculated by.

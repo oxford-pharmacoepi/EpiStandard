@@ -78,6 +78,6 @@ standardInc <- dsr(data = inc_tidy,
                    denominator = "denominator_count",
                    age = "age_group",
                    pop = "pop",
-                   strata = c("incidence_start_date", "denominator_sex")
+                   strata = c("incidence_start_date", "denominator_sex", "outcome_cohort_name")
                    )
 ```

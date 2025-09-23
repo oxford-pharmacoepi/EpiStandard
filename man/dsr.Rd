@@ -27,7 +27,8 @@ age group.}
 
 \item{event}{Name of the column in data that corresponds to the event counts.}
 
-\item{denominator}{Name of the column in data that corresponds to the denominator population.}
+\item{denominator}{Name of the column in data that corresponds to the denominator population (in person-time, e.g person-days,
+person-years etc).}
 
 \item{age}{Name of the column in data and refdata that corresponds to age groups.}
 
