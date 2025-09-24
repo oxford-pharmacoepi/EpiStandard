@@ -58,12 +58,13 @@ inc_tidy <- inc |>
   omopgenerics::addSettings() |>
   omopgenerics::splitAdditional() |>
   omopgenerics::splitGroup() |>
-  dplyr::select(outcome_cohort_name, estimate_name, estimate_value, denominator_age_group, denominator_sex, incidence_start_date) |>
-  dplyr::filter(estimate_name %in% c("denominator_count", "outcome_count")) |>
+  dplyr::select(cdm_name, outcome_cohort_name, estimate_name, estimate_value, denominator_age_group, denominator_sex, incidence_start_date) |>
+  dplyr::filter(estimate_name %in% c("person_years", "outcome_count")) |>
+  dplyr::mutate(estimate_value = ifelse(estimate_value == "-", 4, estimate_value)) |>
   tidyr::pivot_wider(names_from = estimate_name, values_from = estimate_value) |>
   dplyr::rename(age_group = denominator_age_group) |>
   dplyr::mutate(outcome_count = as.numeric(outcome_count),
-                denominator_count = as.numeric(denominator_count))
+                person_years = as.numeric(person_years))
 ```
 
 
@@ -75,9 +76,11 @@ standardPop <- mergeAgeGroups(standardPopulation(), newGroups = c("0 to 19", "20
 standardInc <- dsr(data = inc_tidy,
                    refdata = standardPop,
                    event = "outcome_count",
-                   denominator = "denominator_count",
+                   denominator = "person_years",
                    age = "age_group",
                    pop = "pop",
                    strata = c("incidence_start_date", "denominator_sex", "outcome_cohort_name")
                    )
 ```
+
+How to deal with minimum cell counts?
