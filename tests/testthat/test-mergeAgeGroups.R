@@ -69,4 +69,32 @@ test_that("no NA values", {
 
 })
 
+test_that("strata works", {
 
+  df_ref  <- data.frame(age_group = rep(c('0-14','15-24','25-44','45-64','65-80'), 2),
+                        pop = rep(c(23961000,15420000,21353000,19601000,10685000),2),
+                        sex = rep(c("Male", "Female"),5))
+
+  expect_no_error(my_results <- mergeAgeGroups(df_ref,
+                                               newGroups = c("0-24", "25-64", "65-80"),
+                                               strata = "sex"))
+
+  expect_error(my_results <- mergeAgeGroups(df_ref,
+                                               newGroups = c("0-24", "25-64", "65-80"),
+                                               strata = "country"))
+
+})
+
+test_that("age group checks", {
+
+  df_ref  <- data.frame(age_group = rep(c('0-14','15-24','25-44','45-64','65+'), 2),
+                        pop = rep(c(23961000,15420000,21353000,19601000,10685000),2),
+                        sex = rep(c("Male", "Female"),5))
+
+
+
+
+  expect_error(my_results <- mergeAgeGroups(df_ref,
+                                            newGroups = c("0-24", "25-64", "65-80"),
+                                            strata = "sex"))
+})
