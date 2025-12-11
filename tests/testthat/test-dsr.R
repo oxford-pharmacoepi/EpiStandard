@@ -375,4 +375,38 @@ test_that("same age values in data and refdata", {
 
 })
 
+test_that("low outcome counts get warnings",{
+
+  df_study <- data.frame(state=rep(c('Miami',"Alaska"), c(5,5)),
+                         age=rep(c('00-14','15-24','25-44','45-64','65+'),2),
+                         deaths=c(1,1,2,1,3,5,1,3,9,8),
+                         fu=c(114350,80259,133440,142670,92168,37164,20036,32693,14947,2077))
+
+  df_ref  <- data.frame(age=c('00-14','15-24','25-44','45-64','65+'),
+                        pop=c(23961000,15420000,21353000,19601000,10685000))
+
+  expect_warning(dsr(data = df_study,
+                     event = "deaths",
+                     denominator = "fu",
+                     refdata = df_ref,
+                     age = "age"))
+})
+
+test_that("low outcome counts get warnings (2)",{
+
+  df_study <- data.frame(state=rep(c('Miami',"Alaska"), c(5,5)),
+                         age=rep(c('00-14','15-24','25-44','45-64','65+'),2),
+                         deaths=c(1,1,2,1,0,0,1,3,0,0),
+                         fu=c(114350,80259,133440,142670,92168,37164,20036,32693,14947,2077))
+
+  df_ref  <- data.frame(age=c('00-14','15-24','25-44','45-64','65+'),
+                        pop=c(23961000,15420000,21353000,19601000,10685000))
+
+  expect_warning(dsr(data = df_study,
+                     event = "deaths",
+                     denominator = "fu",
+                     refdata = df_ref,
+                     age = "age"))
+})
+
 
