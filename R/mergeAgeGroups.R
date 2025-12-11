@@ -2,8 +2,10 @@
 #'
 #' @param refdata Standard population dataset you want to use.
 #' @param newGroups Create a list of new age groups you want to create.
+#' @param event Column in refdata with outcome counts.
 #' @param age Column in refdata with age values.
-#' @param pop Column in refdata with population counts.
+#' @param pop Column in refdata with population counts, preferably in person-time.
+#' @param strata Column or columns to stratify by.
 #' @return Table
 #' @export
 #' @examples
@@ -22,8 +24,10 @@
 
 mergeAgeGroups <- function(refdata,
                            newGroups,
+                           event = NULL,
                            age = "age_group",
-                           pop = "pop") {
+                           pop = "pop",
+                           strata = NULL) {
 
   if(isFALSE(is.data.frame(refdata))){
     cli::cli_abort("'refdata' must be a dataframe")
@@ -42,13 +46,17 @@ mergeAgeGroups <- function(refdata,
     cli::cli_abort("Input data must contain {.field pop}")
   }
 
-  refdata <- refdata |>
-    dplyr::mutate(age_low = stringr::str_extract(.data[[age]], "\\d+"),
-                  age_high = stringr::str_extract(.data[[age]], "\\d+$")) |>
-    dplyr::mutate(
-      age_low  = as.integer(age_low),
-      age_high = as.integer(age_high)
-    )
+  if(is.null(event) == FALSE){
+    if(!all(event %in% names(refdata))){
+    cli::cli_abort("Input data must contain {.field event}.")
+    }
+  }
+
+  if(is.null(strata) == FALSE){
+    if(!all(strata %in% names(refdata))) {
+      cli::cli_abort("'strata' must be a column or columns in 'refdata'")
+    }
+  }
 
   # Validate parsed bounds
   if (anyNA(refdata$age_high) | anyNA(refdata$age_low)) {
@@ -61,25 +69,38 @@ mergeAgeGroups <- function(refdata,
     ))
   }
 
+  refdata <- refdata |>
+    dplyr::mutate(age_low = stringr::str_extract(.data[[age]], "\\d+"),
+                  age_high = stringr::str_extract(.data[[age]], "\\d+$")) |>
+    dplyr::mutate(
+      age_low  = as.integer(age_low),
+      age_high = as.integer(age_high)
+    )
+
+  if(sum(is.na(refdata$age_high)) > 0 | sum(is.na(refdata$age_low))){
+    cli::cli_abort("The minimum and maximum age for each age group in refdata
+    must be defined. For example, cannot have age group '65+'.")
+  }
+
   merged_list <- vector("list", length(newGroups))
 
   for (i in seq_along(newGroups)) {
-    # Parse target range for this group
-    start <- as.integer(stringr::str_extract(newGroups[[i]], "\\d+"))
-    end   <- as.integer(stringr::str_extract(newGroups[[i]], "\\d+$"))
+    start <- as.integer(stringr::str_extract(newGroups[[1]], "\\d+"))
+    end   <- as.integer(stringr::str_extract(newGroups[[1]], "\\d+$"))
 
     # Rows fully inside [start, end]
     in_range <- refdata[refdata$age_low >= start & refdata$age_high <= end, , drop = FALSE]
 
     # Check alignment with existing boundaries
     if (nrow(in_range) == 0L ||
-        min(in_range$age_low,  na.rm = TRUE) != start ||
-        max(in_range$age_high, na.rm = TRUE) != end) {
-      cli::cli_abort(c(
-        "Cannot create custom range {.val {newGroups[[i]]}}.",
-        "x" = "It does not align with existing age group boundaries."
+        min(in_range$age_low) != start ||
+        max(in_range$age_high) != end) {
+      cli::cli_abort(c( + "Cannot create custom range {.val {newGroups[[i]]}}.",
+                        "x" = "It does not align with existing age group boundaries."
       ))
-    }
+      }
+
+    if(is.null(strata) & is.null(event)){
 
     total_pop <- sum(in_range$pop, na.rm = TRUE)
 
@@ -88,6 +109,26 @@ mergeAgeGroups <- function(refdata,
       pop = total_pop,
       stringsAsFactors = FALSE
     )
+    } else if(!is.null(strata) & !is.null(event)){
+
+    total_pop <- in_range |>
+      dplyr::group_by(!!!rlang::syms(strata)) |>
+      dplyr::summarise(pop = sum(.data[[pop]]),
+                        outcome_count = sum(.data[[event]]))
+
+    merged_list[[i]] <- total_pop |>
+      dplyr::mutate(denominator_age_group = newGroups[i])
+
+    } else if(!is.null(strata) & is.null(event)){
+
+      total_pop <- in_range |>
+        dplyr::group_by(!!!rlang::syms(strata)) |>
+        dplyr::summarise(pop = sum(.data[[pop]]))
+
+      merged_list[[i]] <- total_pop |>
+        dplyr::mutate(denominator_age_group = newGroups[i])
+
+    }
   }
 
   # If you want a single data frame at the end:

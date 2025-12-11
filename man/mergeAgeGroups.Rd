@@ -4,16 +4,27 @@
 \alias{mergeAgeGroups}
 \title{Create new merged age groups}
 \usage{
-mergeAgeGroups(refdata, newGroups, age = "age_group", pop = "pop")
+mergeAgeGroups(
+  refdata,
+  newGroups,
+  event = NULL,
+  age = "age_group",
+  pop = "pop",
+  strata = NULL
+)
 }
 \arguments{
 \item{refdata}{Standard population dataset you want to use.}
 
 \item{newGroups}{Create a list of new age groups you want to create.}
 
+\item{event}{Column in refdata with outcome counts.}
+
 \item{age}{Column in refdata with age values.}
 
-\item{pop}{Column in refdata with population counts.}
+\item{pop}{Column in refdata with population counts, preferably in person-time.}
+
+\item{strata}{Column or columns to stratify by.}
 }
 \value{
 Table
