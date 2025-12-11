@@ -104,6 +104,15 @@ dsr <- function(data,
                    ensure that both tables use the same format (e.g 0-4 or '0 to 4'.")
   }
 
+  ## validate counts
+
+  if(sum(data[event]) < 10){
+    cli::cli_warn("Outcome count less than 10 - Standardising not advised.")
+  } else if(sum(data[event]) < 100 & method == "normal") {
+    cli::cli_warn("Outcome count less than 100 - Normal approximation of
+                           confidence intervals not suitable. Use different method.")
+  }
+
   #function
 
   all_data_st <- data |>
@@ -202,7 +211,7 @@ dsr <- function(data,
 
   tmp1 <- tmp1 |>
     dplyr::select(
-      strata,
+      all_of(strata),
       "Numerator" = "n",
       "Denominator" = "d",
       !!c_rate_name := "c_rate",
