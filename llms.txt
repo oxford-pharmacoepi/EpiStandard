@@ -1,0 +1,84 @@
+# EpiStandard ![](reference/figures/hexsticker.png)
+
+The goal of EpiStandard is to provide functions to allow for age
+standardisation of results produced from epidemiological studies.
+
+## Installation
+
+You can install the development version of EpiStandard from
+[GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("oxford-pharmacoepi/EpiStandard")
+```
+
+## Main functionalities
+
+``` r
+library(EpiStandard)
+```
+
+The main functionality of the package is to calculate directly
+standardised rates.
+
+### Example
+
+``` r
+ df_study <- data.frame(state=rep(c('Miami',"Alaska"), c(5,5)),
+                       age=rep(c('00-14','15-24','25-44','45-64','65+'),2),
+                       deaths=c(136,57,208,1016,3605,59,18,37,90,81),
+                       fu=c(114350,80259,133440,142670,92168,37164,20036,32693,14947,2077))
+
+ #US standard population
+ df_ref  <- data.frame(age=c('00-14','15-24','25-44','45-64','65+'),
+                      pop=c(23961000,15420000,21353000,19601000,10685000))
+
+ #Directly standardised Rates (per 1000) - 95% CI's using the gamma method
+ my_results <- dsr(data = df_study,
+                   event = "deaths",
+                   time = "fu",
+                   strata = "state",
+                   age = "age",
+                   refdata = df_ref)
+ 
+ my_results |> dplyr::glimpse()
+#> Rows: 2
+#> Columns: 9
+#> $ state                   <chr> "Miami", "Alaska"
+#> $ Numerator               <dbl> 5022, 285
+#> $ Denominator             <dbl> 562887, 106917
+#> $ `Crude Rate (per 1000)` <dbl> 8.9219, 2.6656
+#> $ `95% LCL (Crude)`       <dbl> 8.6751, 2.3561
+#> $ `95% UCL (Crude)`       <dbl> 9.1686, 2.9751
+#> $ `Std Rate (per 1000)`   <dbl> 6.9242, 6.7104
+#> $ `95% LCL (Std)`         <dbl> 6.7304, 5.6667
+#> $ `95% UCL (Std)`         <dbl> 7.1181, 7.7541
+```
+
+# Package index
+
+## All functions
+
+- [`ageGroups()`](https://github.com/oxford-pharmacoepi/EpiStandard/reference/ageGroups.md)
+  : Age groups
+- [`dsr()`](https://github.com/oxford-pharmacoepi/EpiStandard/reference/dsr.md)
+  : Calculate directly standardised rates
+- [`esp2013`](https://github.com/oxford-pharmacoepi/EpiStandard/reference/esp2013.md)
+  : ESP13
+- [`mergeAgeGroups()`](https://github.com/oxford-pharmacoepi/EpiStandard/reference/mergeAgeGroups.md)
+  : Create new merged age groups
+- [`standardPopulation()`](https://github.com/oxford-pharmacoepi/EpiStandard/reference/standardPopulation.md)
+  : Standard population
+- [`wsp2025`](https://github.com/oxford-pharmacoepi/EpiStandard/reference/wsp2025.md)
+  : WSP
+
+# Articles
+
+### All vignettes
+
+- [dsr](https://github.com/oxford-pharmacoepi/EpiStandard/articles/dsr.md):
+- [Using
+  EpiStandards](https://github.com/oxford-pharmacoepi/EpiStandard/articles/omop.md):
+- [Standard
+  Populations](https://github.com/oxford-pharmacoepi/EpiStandard/articles/standard_populations.md):
