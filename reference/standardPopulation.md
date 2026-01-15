@@ -12,7 +12,8 @@ standardPopulation(name = "esp2013")
 
 - name:
 
-  Dataset to use. One of "esp2013" or "wsp2025".
+  Dataset to use. One of "esp2013", "espSex2013", "wsp2025" or
+  "wspSex2025".
 
 ## Value
 

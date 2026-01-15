@@ -1,4 +1,4 @@
-# Using EpiStandards
+# omop
 
 ## Introduction
 
@@ -52,7 +52,7 @@ inc_tidy <- inc |>
 ```
 
 ``` r
-standardPop <- mergeAgeGroups(standardPopulation(), newGroups = c("0 to 19", "20 to 64", "65 to 150"))
+standardPop <- mergeAgeGroups(esp2013, newGroups = c("0 to 19", "20 to 64", "65 to 150"))
 ```
 
 ``` r
@@ -65,5 +65,3 @@ standardInc <- dsr(data = inc_tidy,
                    strata = c("incidence_start_date", "denominator_sex", "outcome_cohort_name")
                    )
 ```
-
-How to deal with minimum cell counts?

@@ -19,8 +19,7 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/dsr.html">dsr</a></li>
-    <li><a class="dropdown-item" href="../articles/omop.html">Using EpiStandards</a></li>
-    <li><a class="dropdown-item" href="../articles/standard_populations.html">Standard Populations</a></li>
+    <li><a class="dropdown-item" href="../articles/omop.html">omop</a></li>
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -91,23 +90,20 @@
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">refdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="standardPopulation.html">standardPopulation</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"esp2013"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">refdata</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">esp2013</span><span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Rows: 19</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Columns: 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ age_group <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "0 to 4"<span style="color: #949494;">, </span>"5 to 9"<span style="color: #949494;">, </span>"10 to 14"<span style="color: #949494;">, </span>"15 to 19"<span style="color: #949494;">, </span>"20 to 24"<span style="color: #949494;">, </span>"25 …</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ pop       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 5000<span style="color: #949494;">, </span>5500<span style="color: #949494;">, </span>5500<span style="color: #949494;">, </span>5500<span style="color: #949494;">, </span>6000<span style="color: #949494;">, </span>6000<span style="color: #949494;">, </span>6500<span style="color: #949494;">, </span>7000<span style="color: #949494;">, </span>7000<span style="color: #949494;">, </span>7000<span style="color: #949494;">, </span>…</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">merged_data</span> <span class="op">&lt;-</span> <span class="fu">mergeAgeGroups</span><span class="op">(</span><span class="va">refdata</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0-19"</span>, <span class="st">"20-64"</span>, <span class="st">"65-150"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Unknown or uninitialised column: `age_high`.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Unknown or uninitialised column: `age_low`.</span>
+<span class="r-in"><span><span class="va">merged_data</span> <span class="op">&lt;-</span> <span class="fu">mergeAgeGroups</span><span class="op">(</span><span class="fu"><a href="standardPopulation.html">standardPopulation</a></span><span class="op">(</span><span class="st">"esp2013"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0-19"</span>, <span class="st">"20-64"</span>, <span class="st">"65-150"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">merged_data</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Rows: 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Columns: 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ age_group <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "0-19"<span style="color: #949494;">, </span>"20-64"<span style="color: #949494;">, </span>"65-150"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ pop       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 21500<span style="color: #949494;">, </span>21500<span style="color: #949494;">, </span>21500</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ pop       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 21500<span style="color: #949494;">, </span>59000<span style="color: #949494;">, </span>19500</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
