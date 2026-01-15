@@ -57,7 +57,7 @@
 #' my_results
 #' @export
 dsr <- function(data,
-                refdata  = standardPopulation("esp2013"),
+                refdata  = esp2013,
                 event,
                 denominator,
                 age = "age_group",
