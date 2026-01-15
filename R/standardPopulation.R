@@ -1,7 +1,6 @@
-
 #' Standard population
 #'
-#' @param name Dataset to use. One of "esp2013" or "wsp2025".
+#' @param name Dataset to use. One of "esp2013", "espSex2013", "wsp2025" or "wspSex2025".
 #'
 #' @return Tibble
 #' @export
@@ -13,7 +12,7 @@
 
 standardPopulation <- function(name = "esp2013"){
 
-  supported_names <- c("esp2013", "wsp2025")
+  supported_names <- c("esp2013", "wsp2025", "espSex2013", "wspSex2025")
   if(!name %in% supported_names){
     cli::cli_abort("{name} not available - name must be one of: {supported_names}")
   }
@@ -24,5 +23,13 @@ standardPopulation <- function(name = "esp2013"){
 
   if(name == "wsp2025"){
     return(get("wsp2025"))
+  }
+
+  if(name == "espSex2013"){
+    return(get("espSex2013"))
+  }
+
+  if(name == "wspSex2025"){
+    return(get("wspSex2025"))
   }
 }

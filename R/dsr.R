@@ -101,10 +101,19 @@ dsr <- function(data,
 
   if (!setequal(unique(data[age]), unique(refdata[age]))) {
     cli::cli_abort("'age' values differ between 'data' and 'refdata'. Please
-                   ensure that both tables use the same format (e.g 0-4 or '0 to 4'.")
+                   ensure that both tables use the same values and format (e.g 0-4 or '0 to 4'.")
   }
 
   ## validate counts
+  if(is.null(strata)){
+    sum_data <- data |>
+      dplyr::summarise(n = sum(.data[[event]]))
+  } else if(!is.null(strata)){
+    sum_data <- data |>
+      dplyr::group_by(!!!rlang::syms(strata)) |>
+      dplyr::summarise(n = sum(.data[[event]]))
+  }
+
 
   if(sum(data[event]) < 10){
     cli::cli_warn("Outcome count less than 10 - Standardising not advised.")
@@ -112,6 +121,35 @@ dsr <- function(data,
     cli::cli_warn("Outcome count less than 100 - Normal approximation of
                            confidence intervals not suitable. Use different method.")
   }
+
+  if(!is.null(strata)){
+    for(i in 1:nrow(sum_data)){
+      if(sum_data$n[i] < 10){
+
+        excl_strata <- sum_data[strata][i,]
+
+        strata_msg <- excl_strata |>
+          dplyr::select(all_of(strata)) |>
+          tidyr::unite("pair", all_of(strata), sep = " and ", remove = FALSE) |>
+          dplyr::pull(pair)
+
+        cli::cli_warn(paste0("Outcome count less than 10 for ", strata_msg, ". Standardisation not advised."))
+
+      }else if(sum_data$n[i] < 100 & method == "normal") {
+
+        excl_strata <- sum_data[strata][i,]
+
+        strata_msg <- excl_strata |>
+          dplyr::select(all_of(strata)) |>
+          tidyr::unite("pair", all_of(strata), sep = " and ", remove = FALSE) |>
+          dplyr::pull(pair)
+
+        cli::cli_warn(paste0("Outcome count less than 100 for ", strata_msg, ". Normal approximation of
+                           confidence intervals not suitable. Use different method."))
+      }
+    }
+  }
+
 
   #function
 
@@ -135,9 +173,7 @@ dsr <- function(data,
       )))
     ) |>
     dplyr::distinct(!!!strata, .keep_all = TRUE) |>
-    dplyr::select(dplyr::all_of(c(
-      strata, "n", "d", "cr_rate", "cr_var", "st_rate", "st_var"
-    )))
+    dplyr::select(c(strata, "n", "d", "cr_rate", "cr_var", "st_rate", "st_var"))
 
   if (!is.null(strata)) {
     all_data_st <- all_data_st |>
@@ -199,7 +235,7 @@ dsr <- function(data,
 
   #Clean up and output
   tmp1 <- tmp1 |>
-    dplyr::mutate(across(c(c_rate, c_lower, c_upper, s_rate, s_lower, s_upper),
+    dplyr::mutate(dplyr::across(c(c_rate, c_lower, c_upper, s_rate, s_lower, s_upper),
                   ~ round(.x, digits = 4)))
 
   c_rate_name <- paste0('Crude Rate (per ', multiplier, ')')
@@ -211,7 +247,7 @@ dsr <- function(data,
 
   tmp1 <- tmp1 |>
     dplyr::select(
-      all_of(strata),
+      tidyselect::all_of(strata),
       "Numerator" = "n",
       "Denominator" = "d",
       !!c_rate_name := "c_rate",
