@@ -11,11 +11,10 @@
 #' @examples
 #' \donttest{
 #'
-#' refdata <- standardPopulation(name = "esp2013")
 #'
-#' refdata |> dplyr::glimpse()
+#' esp2013|> dplyr::glimpse()
 #'
-#' merged_data <- mergeAgeGroups(refdata, c("0-19", "20-64", "65-150"))
+#' merged_data <- mergeAgeGroups(esp2013, c("0-19", "20-64", "65-150"))
 #'
 #' merged_data |> dplyr::glimpse()
 #'
@@ -58,6 +57,14 @@ mergeAgeGroups <- function(refdata,
     }
   }
 
+  refdata <- refdata |>
+    dplyr::mutate(age_low = stringr::str_extract(.data[[age]], "\\d+"),
+                  age_high = stringr::str_extract(.data[[age]], "\\d+$")) |>
+    dplyr::mutate(
+      age_low  = as.integer(age_low),
+      age_high = as.integer(age_high)
+    )
+
   # Validate parsed bounds
   if (anyNA(refdata$age_high) | anyNA(refdata$age_low)) {
     bad_vals <- refdata[[age]][is.na(refdata$age_low) | is.na(refdata$age_high)]
@@ -69,14 +76,6 @@ mergeAgeGroups <- function(refdata,
     ))
   }
 
-  refdata <- refdata |>
-    dplyr::mutate(age_low = stringr::str_extract(.data[[age]], "\\d+"),
-                  age_high = stringr::str_extract(.data[[age]], "\\d+$")) |>
-    dplyr::mutate(
-      age_low  = as.integer(age_low),
-      age_high = as.integer(age_high)
-    )
-
   if(sum(is.na(refdata$age_high)) > 0 | sum(is.na(refdata$age_low))){
     cli::cli_abort("The minimum and maximum age for each age group in refdata
     must be defined. For example, cannot have age group '65+'.")
@@ -85,8 +84,8 @@ mergeAgeGroups <- function(refdata,
   merged_list <- vector("list", length(newGroups))
 
   for (i in seq_along(newGroups)) {
-    start <- as.integer(stringr::str_extract(newGroups[[1]], "\\d+"))
-    end   <- as.integer(stringr::str_extract(newGroups[[1]], "\\d+$"))
+    start <- as.integer(stringr::str_extract(newGroups[[i]], "\\d+"))
+    end   <- as.integer(stringr::str_extract(newGroups[[i]], "\\d+$"))
 
     # Rows fully inside [start, end]
     in_range <- refdata[refdata$age_low >= start & refdata$age_high <= end, , drop = FALSE]

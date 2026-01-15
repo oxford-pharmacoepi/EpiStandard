@@ -95,7 +95,7 @@ test_that("using package populations", {
 
   expect_no_error(dsr(data = stud_result,
       event = "deaths", denominator = "denominator",
-      refdata  = standardPopulation("esp2013")))
+      refdata  = esp2013))
 })
 
 test_that("using strata", {
@@ -117,7 +117,7 @@ test_that("using strata", {
   expect_no_error(dsr(data = stud_result,
                       event = "deaths", denominator = "denominator",
                       strata = "var_1",
-                      refdata  = standardPopulation("esp2013")))
+                      refdata  = esp2013))
 })
 
 test_that("using multiple strata", {
@@ -140,7 +140,7 @@ test_that("using multiple strata", {
   expect_no_error(dsr(data = stud_result,
                       event = "deaths", denominator = "denominator",
                       strata = c("var_1", "var_2"),
-                      refdata  = standardPopulation("esp2013")))
+                      refdata  = esp2013))
 })
 
 test_that("error when using invalid method", {
@@ -161,7 +161,7 @@ test_that("error when using invalid method", {
   # european
   expect_error(dsr(data = stud_result,
                       event = "deaths", denominator = "denominator",
-                      refdata  = standardPopulation("esp2013"),
+                      refdata  = esp2013,
                       method = "exponential"))
 
 
