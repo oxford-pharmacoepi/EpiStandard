@@ -111,8 +111,8 @@ test_that("using strata", {
       "75 to 79","80 to 84","85 to 89",
       "90 to 150"
     ),2),
-    deaths= c(rep(5, 19),rep(10, 19)),
-    denominator = rep(100, 38))
+    deaths= c(rep(50, 190),rep(100, 190)),
+    denominator = rep(1000, 380))
 
   expect_no_error(dsr(data = stud_result,
                       event = "deaths", denominator = "denominator",
@@ -134,8 +134,8 @@ test_that("using multiple strata", {
       "75 to 79","80 to 84","85 to 89",
       "90 to 150"
     ),2),
-    deaths= c(rep(5, 19),rep(10, 19)),
-    denominator = rep(100, 38))
+    deaths= c(rep(50, 190),rep(100, 190)),
+    denominator = rep(1000, 380))
 
   expect_no_error(dsr(data = stud_result,
                       event = "deaths", denominator = "denominator",
