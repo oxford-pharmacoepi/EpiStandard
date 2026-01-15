@@ -17,14 +17,14 @@
 Source:
 [`DESCRIPTION`](https://github.com/oxford-pharmacoepi/EpiStandard/blob/main/DESCRIPTION)
 
-Alcalde-Herraiz M, Rowlands E, Burn E, Newby D (2025). *EpiStandard:
+Alcalde-Herraiz M, Rowlands E, Burn E, Newby D (2026). *EpiStandard:
 What the Package Does (One Line, Title Case)*. R package version
 0.0.0.9000, <https://oxford-pharmacoepi.github.io/EpiStandard/>.
 
     @Manual{,
       title = {EpiStandard: What the Package Does (One Line, Title Case)},
       author = {Marta Alcalde-Herraiz and Elin Rowlands and Edward Burn and Danielle Newby},
-      year = {2025},
+      year = {2026},
       note = {R package version 0.0.0.9000},
       url = {https://oxford-pharmacoepi.github.io/EpiStandard/},
     }
