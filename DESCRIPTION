@@ -39,7 +39,9 @@ Imports:
     cli,
     dplyr,
     rlang,
-    stringr
+    stringr,
+    tidyr,
+    tidyselect
 VignetteBuilder: knitr
 Depends: 
     R (>= 4.1.0)

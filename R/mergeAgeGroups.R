@@ -14,7 +14,7 @@
 #'
 #' esp2013|> dplyr::glimpse()
 #'
-#' merged_data <- mergeAgeGroups(esp2013, c("0-19", "20-64", "65-150"))
+#' merged_data <- mergeAgeGroups(standardPopulation("esp2013"), c("0-19", "20-64", "65-150"))
 #'
 #' merged_data |> dplyr::glimpse()
 #'
