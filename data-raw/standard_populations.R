@@ -40,7 +40,7 @@ wspSex2025 <- readr::read_csv(
     WorldStandardPopulation = "integer"))|>
   dplyr::rename("age_group" = AgeGroup,
                 "pop" = WorldStandardPopulation,
-                sex = "Sex") %>%
+                "sex" = Sex) %>%
   dplyr::mutate(age_group = stringr::str_remove(age_group, " years")) %>%
   dplyr::mutate(age_group = stringr::str_replace(age_group, "-", " to ")) %>%
   dplyr::mutate(age_group = stringr::str_replace(age_group, "plus", " to 150"))
