@@ -116,7 +116,7 @@ mergeAgeGroups <- function(refdata,
                         outcome_count = sum(.data[[event]]))
 
     merged_list[[i]] <- total_pop |>
-      dplyr::mutate(denominator_age_group = newGroups[i])
+      dplyr::mutate(age_group = newGroups[i])
 
     } else if(!is.null(strata) & is.null(event)){
 
@@ -125,7 +125,7 @@ mergeAgeGroups <- function(refdata,
         dplyr::summarise(pop = sum(.data[[pop]]))
 
       merged_list[[i]] <- total_pop |>
-        dplyr::mutate(denominator_age_group = newGroups[i])
+        dplyr::mutate(age_group = newGroups[i])
 
     }
   }
