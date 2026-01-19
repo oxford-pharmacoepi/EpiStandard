@@ -19,11 +19,11 @@ knitr::opts_chunk$set(
 ```
 
 # Introduction
-This vignette illustrates how EpiStandard can be used to standardise results from the IncidencePrevalence package, a DARWIN-EU package to estimate incidence and prevalence from data mapped to the OMOP Common Data Model.
+This vignette illustrates how `EpiStandard` can be used to standardise results from the `IncidencePrevalence` package, a DARWIN-EU package for estimating incidence and prevalence from data mapped to the OMOP Common Data Model.
 
 ## Set-up
 
-We first load the relevant packages, and then create a mock datased OMOP-formatted containing a population and an outcome of interest. 
+We first load the relevant packages and then create a mock OMOP-formatted dataset containing a population and an outcome of interest.
 
 ```{r cdm}
 library(EpiStandard)
@@ -38,10 +38,11 @@ cdm <- mockIncidencePrevalence(
 ```
 
 ## Estimate Incidence Rates
-We use the package IncidencePrevalence to generate a denomiantor cohort with age and sex stratifications, and then we calculate overall outcome incidence and by calendar year for each strata combination. To know more on how to use this package refer to its [website](https://darwin-eu.github.io/IncidencePrevalence/).
 
-The results generated are stored in the form of a [summarised_result](https://darwin-eu.github.io/omopgenerics/articles/summarised_result.html) object: 
+We use the IncidencePrevalence package to generate a denominator cohort with age and sex stratifications, and then calculate overall outcome incidence and incidence by calendar year for each stratum combination. For more information on how to use this package, refer to its [website](https://darwin-eu.github.io/IncidencePrevalence/).
 
+Notice that the results are stored as a [summarised_result](https://darwin-eu.github.io/omopgenerics/articles/summarised_result.html) object.
+ 
 ```{r crude inc}
 cdm <- generateDenominatorCohortSet(
   cdm = cdm,
@@ -63,7 +64,7 @@ inc <- estimateIncidence(
 
 inc |> glimpse()
 ```
-To use `EpiStandard`, we fist filter incidence results to the age groups of interest for the standardisation, and then convert the incidence results into a format which facilitates its manipulation: 
+To use `EpiStandard`, we first filter the incidence results to the age groups of interest for standardisation and then convert the results into a format that facilitates further manipulation.
 
 ## Standardise Incidence Rates
 
@@ -75,7 +76,7 @@ incidenceTidy <- inc |>
 incidenceTidy |> glimpse()
 ```
 
-Now that we have incidence results in the correct format, we prepare the reference population. For this example we will use the European Standard Population ("eps2013"). This population uses 5-year band age groups, thereby we need to merge these groups to fit into the ones we used to estimate incidence
+Now that the incidence results are in the correct format, we prepare the reference population. In this example, we use the European Standard Population (`esp2013`). As this population uses 5-year age bands, we merge these groups to match those used to estimate incidence.
 
 ```{r standard pop}
 standardPop <- mergeAgeGroups(
@@ -87,7 +88,7 @@ standardPop |> glimpse()
 ```
 
 
-Finally, we use the `dsr` function to standardise result to our reference population. Here we have to specify which columns contain the events and population counts, and person-years to use for the rates, in addition of the column identifying each age group. Additionally, since we want to standardise within each outcome, sex, and calendar time stratification, we use the `strata` argument as follows: 
+Finally, we use the `dsr()` function to standardise the incidence results to the reference population. We specify the columns containing the event counts, person-years, and population weights, as well as the column identifying age groups. Since we want to standardise within each outcome, sex, and calendar-time stratum, we use the `strata` argument as follows:
 
 ```{r standard inc}
 standardInc <- dsr(
