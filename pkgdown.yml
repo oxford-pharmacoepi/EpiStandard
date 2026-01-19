@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   dsr: dsr.html
   omop: omop.html
-last_built: 2026-01-15T16:33Z
+last_built: 2026-01-19T16:10Z
 urls:
   reference: https://github.com/oxford-pharmacoepi/EpiStandard/reference
   article: https://github.com/oxford-pharmacoepi/EpiStandard/articles
