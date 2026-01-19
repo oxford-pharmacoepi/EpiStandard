@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# EpiStandard <img src="man/figures/hexsticker.png" align="right" height="180"/>
+# EpiStandard <img src="man/figures/hexsticker.png" align="right" style="width:25%;"/>
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -43,21 +43,22 @@ standardised rates.
  #Directly standardised Rates (per 1000) - 95% CI's using the gamma method
  my_results <- dsr(data = df_study,
                    event = "deaths",
-                   time = "fu",
+                   denominator = "fu",
                    strata = "state",
                    age = "age",
                    refdata = df_ref)
  
  my_results |> dplyr::glimpse()
-#> Rows: 2
-#> Columns: 9
-#> $ state                   <chr> "Miami", "Alaska"
-#> $ Numerator               <dbl> 5022, 285
-#> $ Denominator             <dbl> 562887, 106917
-#> $ `Crude Rate (per 1000)` <dbl> 8.9219, 2.6656
-#> $ `95% LCL (Crude)`       <dbl> 8.6751, 2.3561
-#> $ `95% UCL (Crude)`       <dbl> 9.1686, 2.9751
-#> $ `Std Rate (per 1000)`   <dbl> 6.9242, 6.7104
-#> $ `95% LCL (Std)`         <dbl> 6.7304, 5.6667
-#> $ `95% UCL (Std)`         <dbl> 7.1181, 7.7541
 ```
+
+    ## Rows: 2
+    ## Columns: 9
+    ## $ state                   <chr> "Miami", "Alaska"
+    ## $ Numerator               <dbl> 5022, 285
+    ## $ Denominator             <dbl> 562887, 106917
+    ## $ `Crude Rate (per 1000)` <dbl> 8.9219, 2.6656
+    ## $ `95% LCL (Crude)`       <dbl> 8.6751, 2.3561
+    ## $ `95% UCL (Crude)`       <dbl> 9.1686, 2.9751
+    ## $ `Std Rate (per 1000)`   <dbl> 6.9242, 6.7104
+    ## $ `95% LCL (Std)`         <dbl> 6.7304, 5.6667
+    ## $ `95% UCL (Std)`         <dbl> 7.1181, 7.7541
