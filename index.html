@@ -77,12 +77,12 @@
 </h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span> <span class="va">df_study</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>state<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'Miami'</span>,<span class="st">"Alaska"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fl">5</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>                       age<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'00-14'</span>,<span class="st">'15-24'</span>,<span class="st">'25-44'</span>,<span class="st">'45-64'</span>,<span class="st">'65+'</span><span class="op">)</span>,<span class="fl">2</span><span class="op">)</span>,</span>
+<span>                       age<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'0-14'</span>,<span class="st">'15-24'</span>,<span class="st">'25-44'</span>,<span class="st">'45-64'</span>,<span class="st">'65-150'</span><span class="op">)</span>,<span class="fl">2</span><span class="op">)</span>,</span>
 <span>                       deaths<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">136</span>,<span class="fl">57</span>,<span class="fl">208</span>,<span class="fl">1016</span>,<span class="fl">3605</span>,<span class="fl">59</span>,<span class="fl">18</span>,<span class="fl">37</span>,<span class="fl">90</span>,<span class="fl">81</span><span class="op">)</span>,</span>
 <span>                       fu<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">114350</span>,<span class="fl">80259</span>,<span class="fl">133440</span>,<span class="fl">142670</span>,<span class="fl">92168</span>,<span class="fl">37164</span>,<span class="fl">20036</span>,<span class="fl">32693</span>,<span class="fl">14947</span>,<span class="fl">2077</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span> <span class="co">#US standard population</span></span>
-<span> <span class="va">df_ref</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>age<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'00-14'</span>,<span class="st">'15-24'</span>,<span class="st">'25-44'</span>,<span class="st">'45-64'</span>,<span class="st">'65+'</span><span class="op">)</span>,</span>
+<span> <span class="va">df_ref</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>age<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'0-14'</span>,<span class="st">'15-24'</span>,<span class="st">'25-44'</span>,<span class="st">'45-64'</span>,<span class="st">'65-150'</span><span class="op">)</span>,</span>
 <span>                      pop<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">23961000</span>,<span class="fl">15420000</span>,<span class="fl">21353000</span>,<span class="fl">19601000</span>,<span class="fl">10685000</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span> <span class="co">#Directly standardised Rates (per 1000) - 95% CI's using the gamma method</span></span>
@@ -136,6 +136,7 @@
 <ul class="list-unstyled">
 <li>Elin Rowlands <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0009-0005-5166-0417" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 <li>Marta Alcalde-Herraiz <br><small class="roles"> Author </small> <a href="https://orcid.org/0009-0002-4405-1814" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
+<li>Nuria Mercade-Besora <br><small class="roles"> Author </small> <a href="https://orcid.org/0009-0006-7948-3747" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 <li>Edward Burn <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-9286-1128" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 <li>Danielle Newby <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-3001-1478" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 </ul>
@@ -148,7 +149,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Elin Rowlands, Marta Alcalde-Herraiz, Edward Burn, Danielle Newby.</p>
+  <p>Developed by Elin Rowlands, Marta Alcalde-Herraiz, Nuria Mercade-Besora, Edward Burn, Danielle Newby.</p>
 </div>
 
 <div class="pkgdown-footer-right">

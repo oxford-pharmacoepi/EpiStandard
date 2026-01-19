@@ -113,7 +113,7 @@ IncidencePrevalence.</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>outcome_count <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">outcome_count</span><span class="op">)</span>,</span>
 <span>                person_years <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">person_years</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">standardPop</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mergeAgeGroups.html">mergeAgeGroups</a></span><span class="op">(</span><span class="fu"><a href="../reference/standardPopulation.html">standardPopulation</a></span><span class="op">(</span><span class="st">"esp2013"</span><span class="op">)</span>, newGroups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0 to 19"</span>, <span class="st">"20 to 64"</span>, <span class="st">"65 to 150"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">standardPop</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mergeAgeGroups.html">mergeAgeGroups</a></span><span class="op">(</span>refdata <span class="op">=</span> <span class="fu"><a href="../reference/standardPopulation.html">standardPopulation</a></span><span class="op">(</span><span class="st">"esp2013"</span><span class="op">)</span>, newGroups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0 to 19"</span>, <span class="st">"20 to 64"</span>, <span class="st">"65 to 150"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">standardInc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dsr.html">dsr</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">inc_tidy</span>,</span>
 <span>                   refdata <span class="op">=</span> <span class="va">standardPop</span>,</span>
@@ -132,7 +132,7 @@ IncidencePrevalence.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Elin Rowlands, Marta Alcalde-Herraiz, Edward Burn, Danielle Newby.</p>
+  <p>Developed by Elin Rowlands, Marta Alcalde-Herraiz, Nuria Mercade-Besora, Edward Burn, Danielle Newby.</p>
 </div>
 
 <div class="pkgdown-footer-right">

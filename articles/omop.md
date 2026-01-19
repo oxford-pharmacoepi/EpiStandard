@@ -52,7 +52,7 @@ inc_tidy <- inc |>
 ```
 
 ``` r
-standardPop <- mergeAgeGroups(standardPopulation("esp2013"), newGroups = c("0 to 19", "20 to 64", "65 to 150"))
+standardPop <- mergeAgeGroups(refdata = standardPopulation("esp2013"), newGroups = c("0 to 19", "20 to 64", "65 to 150"))
 ```
 
 ``` r
