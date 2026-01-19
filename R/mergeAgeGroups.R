@@ -57,17 +57,17 @@ mergeAgeGroups <- function(refdata,
     }
   }
 
-  refdata <- refdata |>
+  newRefdata <- refdata |>
     dplyr::mutate(age_low = stringr::str_extract(.data[[age]], "\\d+"),
                   age_high = stringr::str_extract(.data[[age]], "\\d+$")) |>
     dplyr::mutate(
-      age_low  = as.integer(age_low),
-      age_high = as.integer(age_high)
+      age_low  = as.integer(.data$age_low),
+      age_high = as.integer(.data$age_high)
     )
 
   # Validate parsed bounds
-  if (anyNA(refdata$age_high) | anyNA(refdata$age_low)) {
-    bad_vals <- refdata[[age]][is.na(refdata$age_low) | is.na(refdata$age_high)]
+  if (anyNA(newRefdata$age_high) | anyNA(newRefdata$age_low)) {
+    bad_vals <- newRefdata[[age]][is.na(newRefdata$age_low) | is.na(newRefdata$age_high)]
     cli::cli_abort(c(
       "Some {.field age_group} values could not be parsed.",
       "x" = "Invalid labels: {.val {bad_vals}}",
@@ -76,7 +76,7 @@ mergeAgeGroups <- function(refdata,
     ))
   }
 
-  if(sum(is.na(refdata$age_high)) > 0 | sum(is.na(refdata$age_low))){
+  if(sum(is.na(newRefdata$age_high)) > 0 | sum(is.na(newRefdata$age_low))){
     cli::cli_abort("The minimum and maximum age for each age group in refdata
     must be defined. For example, cannot have age group '65+'.")
   }
@@ -88,7 +88,7 @@ mergeAgeGroups <- function(refdata,
     end   <- as.integer(stringr::str_extract(newGroups[[i]], "\\d+$"))
 
     # Rows fully inside [start, end]
-    in_range <- refdata[refdata$age_low >= start & refdata$age_high <= end, , drop = FALSE]
+    in_range <- newRefdata[newRefdata$age_low >= start & newRefdata$age_high <= end, , drop = FALSE]
 
     # Check alignment with existing boundaries
     if (nrow(in_range) == 0L ||
@@ -103,35 +103,36 @@ mergeAgeGroups <- function(refdata,
 
     total_pop <- sum(in_range$pop, na.rm = TRUE)
 
-    merged_list[[i]] <- data.frame(
-      age_group = newGroups[[i]],
-      pop = total_pop,
+    merged_list[[i]] <- tibble::tibble(
+      !!rlang::sym(age) := newGroups[[i]],
+      !!rlang::sym(pop) := total_pop,
       stringsAsFactors = FALSE
     )
     } else if(!is.null(strata) & !is.null(event)){
 
     total_pop <- in_range |>
       dplyr::group_by(!!!rlang::syms(strata)) |>
-      dplyr::summarise(pop = sum(.data[[pop]]),
-                        outcome_count = sum(.data[[event]]))
+      dplyr::summarise(!!rlang::sym(pop) := sum(.data[[pop]]),
+                       !!rlang::sym(event) := sum(.data[[event]]))
 
     merged_list[[i]] <- total_pop |>
-      dplyr::mutate(age_group = newGroups[i])
+      dplyr::mutate(!!rlang::sym(age) := newGroups[i])
 
     } else if(!is.null(strata) & is.null(event)){
 
       total_pop <- in_range |>
         dplyr::group_by(!!!rlang::syms(strata)) |>
-        dplyr::summarise(pop = sum(.data[[pop]]))
+        dplyr::summarise(!!rlang::sym(pop) := sum(.data[[pop]]))
 
       merged_list[[i]] <- total_pop |>
-        dplyr::mutate(age_group = newGroups[i])
+        dplyr::mutate(!!rlang::sym(age) := newGroups[i])
 
     }
   }
 
   # If you want a single data frame at the end:
-  result <- dplyr::bind_rows(merged_list)
+  result <- dplyr::bind_rows(merged_list) |>
+    dplyr::select(colnames(refdata))
 
   rownames(result) <- NULL
 

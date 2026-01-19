@@ -23,6 +23,17 @@ test_that("dsr gamma", {
                    method="gamma"))
   expect_true(inherits(my_results, "data.frame"))
 
+  # check not all age groups in data
+  df_study <- data.frame(state=rep('Miami', 3),
+                         age=rep(c('00-14','15-24','25-44')),
+                         deaths=c(136,57,208),
+                         fu=c(114350,80259,133440))
+  expect_no_error(my_results <- dsr(data=df_study,
+                                    age = "age",
+                                    event="deaths",
+                                    denominator="fu",
+                                    refdata=df_ref))
+
 })
 
 test_that("dsr normal", {
