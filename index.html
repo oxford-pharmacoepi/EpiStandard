@@ -53,7 +53,7 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="epistandard-">EpiStandard <img src="reference/figures/hexsticker.png" align="right" height="180"><a class="anchor" aria-label="anchor" href="#epistandard-"></a>
+<div class="page-header"><h1 id="epistandard-">EpiStandard <img src="reference/figures/hexsticker.png" align="right" style="width:25%;"><a class="anchor" aria-label="anchor" href="#epistandard-"></a>
 </h1></div>
 <!-- badges: start -->
 <!-- badges: end -->
@@ -88,23 +88,23 @@
 <span> <span class="co">#Directly standardised Rates (per 1000) - 95% CI's using the gamma method</span></span>
 <span> <span class="va">my_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/dsr.html">dsr</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">df_study</span>,</span>
 <span>                   event <span class="op">=</span> <span class="st">"deaths"</span>,</span>
-<span>                   time <span class="op">=</span> <span class="st">"fu"</span>,</span>
+<span>                   denominator <span class="op">=</span> <span class="st">"fu"</span>,</span>
 <span>                   strata <span class="op">=</span> <span class="st">"state"</span>,</span>
 <span>                   age <span class="op">=</span> <span class="st">"age"</span>,</span>
 <span>                   refdata <span class="op">=</span> <span class="va">df_ref</span><span class="op">)</span></span>
 <span> </span>
-<span> <span class="va">my_results</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Rows: 2</span></span>
-<span><span class="co">#&gt; Columns: 9</span></span>
-<span><span class="co">#&gt; $ state                   &lt;chr&gt; "Miami", "Alaska"</span></span>
-<span><span class="co">#&gt; $ Numerator               &lt;dbl&gt; 5022, 285</span></span>
-<span><span class="co">#&gt; $ Denominator             &lt;dbl&gt; 562887, 106917</span></span>
-<span><span class="co">#&gt; $ `Crude Rate (per 1000)` &lt;dbl&gt; 8.9219, 2.6656</span></span>
-<span><span class="co">#&gt; $ `95% LCL (Crude)`       &lt;dbl&gt; 8.6751, 2.3561</span></span>
-<span><span class="co">#&gt; $ `95% UCL (Crude)`       &lt;dbl&gt; 9.1686, 2.9751</span></span>
-<span><span class="co">#&gt; $ `Std Rate (per 1000)`   &lt;dbl&gt; 6.9242, 6.7104</span></span>
-<span><span class="co">#&gt; $ `95% LCL (Std)`         &lt;dbl&gt; 6.7304, 5.6667</span></span>
-<span><span class="co">#&gt; $ `95% UCL (Std)`         &lt;dbl&gt; 7.1181, 7.7541</span></span></code></pre></div>
+<span> <span class="va">my_results</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="do">## Rows: 2</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="do">## Columns: 9</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="do">## $ state                   &lt;chr&gt; "Miami", "Alaska"</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="do">## $ Numerator               &lt;dbl&gt; 5022, 285</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="do">## $ Denominator             &lt;dbl&gt; 562887, 106917</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="do">## $ `Crude Rate (per 1000)` &lt;dbl&gt; 8.9219, 2.6656</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="do">## $ `95% LCL (Crude)`       &lt;dbl&gt; 8.6751, 2.3561</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="do">## $ `95% UCL (Crude)`       &lt;dbl&gt; 9.1686, 2.9751</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="do">## $ `Std Rate (per 1000)`   &lt;dbl&gt; 6.9242, 6.7104</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="do">## $ `95% LCL (Std)`         &lt;dbl&gt; 6.7304, 5.6667</span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="do">## $ `95% UCL (Std)`         &lt;dbl&gt; 7.1181, 7.7541</span></span></code></pre></div>
 </div>
 </div>
 </div>
@@ -134,8 +134,8 @@
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Marta Alcalde-Herraiz <br><small class="roles"> Author </small> <a href="https://orcid.org/0009-0002-4405-1814" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 <li>Elin Rowlands <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0009-0005-5166-0417" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
+<li>Marta Alcalde-Herraiz <br><small class="roles"> Author </small> <a href="https://orcid.org/0009-0002-4405-1814" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 <li>Edward Burn <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-9286-1128" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 <li>Danielle Newby <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-3001-1478" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 </ul>
@@ -148,7 +148,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Marta Alcalde-Herraiz, Elin Rowlands, Edward Burn, Danielle Newby.</p>
+  <p>Developed by Elin Rowlands, Marta Alcalde-Herraiz, Edward Burn, Danielle Newby.</p>
 </div>
 
 <div class="pkgdown-footer-right">
