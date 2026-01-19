@@ -7,9 +7,12 @@ Authors@R: c(
         role = c("aut", "cre"), comment = c(ORCID = "0009-0005-5166-0417")
     ),
     person( 
-        "Marta", "Alcalde-Herraiz", 
-        email = "marta.alcaldeherraiz@ndorms.ox.ac.uk", role = c("aut"), 
-        comment = c(ORCID = "0009-0002-4405-1814")
+        "Marta", "Alcalde-Herraiz", email = "marta.alcaldeherraiz@ndorms.ox.ac.uk", 
+        role = c("aut"), comment = c(ORCID = "0009-0002-4405-1814")
+    ),
+    person(
+        "Nuria", "Mercade-Besora", email = "nuria.mercadebesora@ndorms.ox.ac.uk", 
+        role = c("aut"), comment = c(ORCID = "0009-0006-7948-3747")
     ),
     person(
         "Edward", "Burn", email = "edward.burn@ndorms.ox.ac.uk", 
@@ -41,7 +44,8 @@ Imports:
     rlang,
     stringr,
     tidyr,
-    tidyselect
+    tidyselect,
+    tibble
 VignetteBuilder: knitr
 Depends: 
     R (>= 4.1.0)
