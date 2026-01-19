@@ -1,5 +1,5 @@
 ---
-title: "omop"
+title: "Standardise OMOP results"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{omop}
@@ -19,66 +19,85 @@ knitr::opts_chunk$set(
 ```
 
 # Introduction
-In this vignette, we will explore how the EpiStandard functions can be used with results produced from the DARWIN package IncidencePrevalence.
+This vignette illustrates how EpiStandard can be used to standardise results from the IncidencePrevalence package, a DARWIN-EU package to estimate incidence and prevalence from data mapped to the OMOP Common Data Model.
 
-## Create CDM
+## Set-up
+
+We first load the relevant packages, and then create a mock datased OMOP-formatted containing a population and an outcome of interest. 
 
 ```{r cdm}
 library(EpiStandard)
 library(IncidencePrevalence)
+library(omopgenerics)
+library(dplyr)
 
-cdm <- IncidencePrevalence::mockIncidencePrevalence(
+cdm <- mockIncidencePrevalence(
   sampleSize = 10000,
   outPre = 0.25
 )
+```
 
-cdm <- IncidencePrevalence::generateDenominatorCohortSet(
+## Estimate Incidence Rates
+We use the package IncidencePrevalence to generate a denomiantor cohort with age and sex stratifications, and then we calculate overall outcome incidence and by calendar year for each strata combination. To know more on how to use this package refer to its [website](https://darwin-eu.github.io/IncidencePrevalence/).
+
+The results generated are stored in the form of a [summarised_result](https://darwin-eu.github.io/omopgenerics/articles/summarised_result.html) object: 
+
+```{r crude inc}
+cdm <- generateDenominatorCohortSet(
   cdm = cdm,
   name = "denominator",
   cohortDateRange = as.Date(c("2008-01-01", "2020-01-01")),
-  ageGroup = list(c(0, 19), c(20, 64), c(65, 150)),
+  ageGroup = list(c(0, 19), c(20, 64), c(65, 150), c(0, 150)),
   sex = c("Male", "Female"),
   daysPriorObservation = 0
 )
-```
 
-```{r crude inc}
-inc <- IncidencePrevalence::estimateIncidence(
+inc <- estimateIncidence(
   cdm = cdm,
   denominatorTable = "denominator",
   outcomeTable = "outcome",
-  interval = "years",
+  interval = c("years", "overall"),
   outcomeWashout = 0,
   repeatedEvents = FALSE
 )
+
+inc |> glimpse()
+```
+To use `EpiStandard`, we fist filter incidence results to the age groups of interest for the standardisation, and then convert the incidence results into a format which facilitates its manipulation: 
+
+## Standardise Incidence Rates
+
+```{r tidy inc}
+incidenceTidy <- inc |>
+  filterSettings(denominator_age_group %in% c("0 to 19", "20 to 64", "65 to 150")) |>
+  asIncidenceResult()
+
+incidenceTidy |> glimpse()
 ```
 
-```{r tidy}
-inc_tidy <- inc |>
-  omopgenerics::addSettings() |>
-  omopgenerics::splitAdditional() |>
-  omopgenerics::splitGroup() |>
-  dplyr::select(cdm_name, outcome_cohort_name, estimate_name, estimate_value, denominator_age_group, denominator_sex, incidence_start_date) |>
-  dplyr::filter(estimate_name %in% c("person_years", "outcome_count")) |>
-  dplyr::mutate(estimate_value = ifelse(estimate_value == "-", 4, estimate_value)) |>
-  tidyr::pivot_wider(names_from = estimate_name, values_from = estimate_value) |>
-  dplyr::rename(age_group = denominator_age_group) |>
-  dplyr::mutate(outcome_count = as.numeric(outcome_count),
-                person_years = as.numeric(person_years))
-```
-
+Now that we have incidence results in the correct format, we prepare the reference population. For this example we will use the European Standard Population ("eps2013"). This population uses 5-year band age groups, thereby we need to merge these groups to fit into the ones we used to estimate incidence
 
 ```{r standard pop}
-standardPop <- mergeAgeGroups(standardPopulation("esp2013"), newGroups = c("0 to 19", "20 to 64", "65 to 150"))
+standardPop <- mergeAgeGroups(
+  standardPopulation("esp2013"),
+  newGroups = c("0 to 19", "20 to 64", "65 to 150")
+) |>
+  rename("denominator_age_group" = "age_group")
+standardPop |> glimpse()
 ```
 
+
+Finally, we use the `dsr` function to standardise result to our reference population. Here we have to specify which columns contain the events and population counts, and person-years to use for the rates, in addition of the column identifying each age group. Additionally, since we want to standardise within each outcome, sex, and calendar time stratification, we use the `strata` argument as follows: 
+
 ```{r standard inc}
-standardInc <- dsr(data = inc_tidy,
-                   refdata = standardPop,
-                   event = "outcome_count",
-                   denominator = "person_years",
-                   age = "age_group",
-                   pop = "pop",
-                   strata = c("incidence_start_date", "denominator_sex", "outcome_cohort_name")
-                   )
+standardInc <- dsr(
+  data = incidenceTidy,
+  refdata = standardPop,
+  event = "outcome_count",
+  denominator = "person_years",
+  age = "denominator_age_group",
+  pop = "pop",
+  strata = c("incidence_start_date", "denominator_sex", "analysis_interval", "outcome_cohort_name")
+)
+standardInc |> glimpse()
 ```
