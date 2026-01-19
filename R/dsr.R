@@ -89,7 +89,7 @@ dsr <- function(data,
     cli::cli_abort("'pop' must be a column in 'refdata'")
   }
 
-  if(!age %in% names(refdata) |!age %in% names(data) ) {
+  if(!age %in% names(refdata) |!age %in% names(data)) {
     cli::cli_abort("'age' must be a column in 'refdata' and 'data'")
   }
 
@@ -99,25 +99,29 @@ dsr <- function(data,
   }
   }
 
-  if (!setequal(unique(data[age]), unique(refdata[age]))) {
-    cli::cli_abort("'age' values differ between 'data' and 'refdata'. Please
-                   ensure that both tables use the same values and format (e.g 0-4 or '0 to 4'.")
+  dataAgeGroups <- unique(data |> dplyr::pull(.data[[age]]))
+  notInRef <- !dataAgeGroups %in% unique(refdata |> dplyr::pull(.data[[age]]))
+  if (any(notInRef)) {
+    cli::cli_abort(c(
+   "x" = "{dataAgeGroups[notInRef]} value{?s} of `age` in {.strong 'data'} are not in {.strong 'refdata'}",
+   ">" = "Please ensure that both tables use the same values and format (e.g 0-4 or '0 to 4')."
+    ))
   }
 
   ## validate counts
   if(is.null(strata)){
     sum_data <- data |>
-      dplyr::summarise(n = sum(.data[[event]]))
+      dplyr::summarise(n = sum(.data[[event]], na.rm = TRUE), .groups = "drop")
   } else if(!is.null(strata)){
     sum_data <- data |>
       dplyr::group_by(!!!rlang::syms(strata)) |>
-      dplyr::summarise(n = sum(.data[[event]]))
+      dplyr::summarise(n = sum(.data[[event]], na.rm = TRUE), .groups = "drop")
   }
 
 
-  if(sum(data[event]) < 10){
+  if(sum(data[event], na.rm = TRUE) < 10){
     cli::cli_warn("Outcome count less than 10 - Standardising not advised.")
-  } else if(sum(data[event]) < 100 & method == "normal") {
+  } else if(sum(data[event], na.rm = TRUE) < 100 & method == "normal") {
     cli::cli_warn("Outcome count less than 100 - Normal approximation of
                            confidence intervals not suitable. Use different method.")
   }
@@ -129,9 +133,9 @@ dsr <- function(data,
         excl_strata <- sum_data[strata][i,]
 
         strata_msg <- excl_strata |>
-          dplyr::select(all_of(strata)) |>
-          tidyr::unite("pair", all_of(strata), sep = " and ", remove = FALSE) |>
-          dplyr::pull(pair)
+          dplyr::select(dplyr::all_of(strata)) |>
+          tidyr::unite("pair", dplyr::all_of(strata), sep = " and ", remove = FALSE) |>
+          dplyr::pull(.data$pair)
 
         cli::cli_warn(paste0("Outcome count less than 10 for ", strata_msg, ". Standardisation not advised."))
 
@@ -140,9 +144,9 @@ dsr <- function(data,
         excl_strata <- sum_data[strata][i,]
 
         strata_msg <- excl_strata |>
-          dplyr::select(all_of(strata)) |>
-          tidyr::unite("pair", all_of(strata), sep = " and ", remove = FALSE) |>
-          dplyr::pull(pair)
+          dplyr::select(dplyr::all_of(strata)) |>
+          tidyr::unite("pair", dplyr::all_of(strata), sep = " and ", remove = FALSE) |>
+          dplyr::pull(.data$pair)
 
         cli::cli_warn(paste0("Outcome count less than 100 for ", strata_msg, ". Normal approximation of
                            confidence intervals not suitable. Use different method."))
@@ -151,7 +155,7 @@ dsr <- function(data,
   }
 
 
-  #function
+  # function
 
   all_data_st <- data |>
     dplyr::left_join(refdata, by = dplyr::join_by(!!rlang::sym(age)))
@@ -173,7 +177,7 @@ dsr <- function(data,
       )))
     ) |>
     dplyr::distinct(!!!strata, .keep_all = TRUE) |>
-    dplyr::select(c(strata, "n", "d", "cr_rate", "cr_var", "st_rate", "st_var"))
+    dplyr::select(dplyr::all_of(c(strata, "n", "d", "cr_rate", "cr_var", "st_rate", "st_var")))
 
   if (!is.null(strata)) {
     all_data_st <- all_data_st |>
@@ -235,7 +239,7 @@ dsr <- function(data,
 
   #Clean up and output
   tmp1 <- tmp1 |>
-    dplyr::mutate(dplyr::across(c(c_rate, c_lower, c_upper, s_rate, s_lower, s_upper),
+    dplyr::mutate(dplyr::across(c("c_rate", "c_lower", "c_upper", "s_rate", "s_lower", "s_upper"),
                   ~ round(.x, digits = 4)))
 
   c_rate_name <- paste0('Crude Rate (per ', multiplier, ')')
