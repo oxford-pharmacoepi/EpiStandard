@@ -32,12 +32,12 @@ standardised rates.
 
 ``` r
  df_study <- data.frame(state=rep(c('Miami',"Alaska"), c(5,5)),
-                       age=rep(c('00-14','15-24','25-44','45-64','65+'),2),
+                       age=rep(c('0-14','15-24','25-44','45-64','65-150'),2),
                        deaths=c(136,57,208,1016,3605,59,18,37,90,81),
                        fu=c(114350,80259,133440,142670,92168,37164,20036,32693,14947,2077))
 
  #US standard population
- df_ref  <- data.frame(age=c('00-14','15-24','25-44','45-64','65+'),
+ df_ref  <- data.frame(age=c('0-14','15-24','25-44','45-64','65-150'),
                       pop=c(23961000,15420000,21353000,19601000,10685000))
 
  #Directly standardised Rates (per 1000) - 95% CI's using the gamma method
