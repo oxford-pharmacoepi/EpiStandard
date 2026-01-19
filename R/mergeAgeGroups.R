@@ -61,8 +61,8 @@ mergeAgeGroups <- function(refdata,
     dplyr::mutate(age_low = stringr::str_extract(.data[[age]], "\\d+"),
                   age_high = stringr::str_extract(.data[[age]], "\\d+$")) |>
     dplyr::mutate(
-      age_low  = as.integer(age_low),
-      age_high = as.integer(age_high)
+      age_low  = as.integer(.data$age_low),
+      age_high = as.integer(.data$age_high)
     )
 
   # Validate parsed bounds
