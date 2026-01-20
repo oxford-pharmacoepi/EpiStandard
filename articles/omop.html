@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>omop • EpiStandard</title>
+<title>Standardise OMOP results • EpiStandard</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="omop">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Standardise OMOP results">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -34,7 +34,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/dsr.html">dsr</a></li>
-    <li><a class="dropdown-item" href="../articles/omop.html">omop</a></li>
+    <li><a class="dropdown-item" href="../articles/omop.html">Standardise OMOP results</a></li>
   </ul>
 </li>
       </ul>
@@ -56,7 +56,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>omop</h1>
+      <h1>Standardise OMOP results</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/oxford-pharmacoepi/EpiStandard/blob/main/vignettes/omop.Rmd"><code>vignettes/omop.Rmd</code></a></small>
@@ -68,61 +68,161 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>In this vignette, we will explore how the EpiStandard functions can
-be used with results produced from the DARWIN package
-IncidencePrevalence.</p>
+<p>This vignette illustrates how <code>EpiStandard</code> can be used to
+standardise results from the <code>IncidencePrevalence</code> package, a
+DARWIN-EU package for estimating incidence and prevalence from data
+mapped to the OMOP Common Data Model.</p>
 <div class="section level3">
-<h3 id="create-cdm">Create CDM<a class="anchor" aria-label="anchor" href="#create-cdm"></a>
+<h3 id="set-up">Set-up<a class="anchor" aria-label="anchor" href="#set-up"></a>
 </h3>
+<p>We first load the relevant packages and then create a mock
+OMOP-formatted dataset containing a population and an outcome of
+interest.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://oxford-pharmacoepi.github.io/EpiStandard/" class="external-link">EpiStandard</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://darwin-eu.github.io/IncidencePrevalence/" class="external-link">IncidencePrevalence</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://darwin-eu.github.io/omopgenerics/" class="external-link">omopgenerics</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">cdm</span> <span class="op">&lt;-</span> <span class="fu">IncidencePrevalence</span><span class="fu">::</span><span class="fu"><a href="https://darwin-eu.github.io/IncidencePrevalence/reference/mockIncidencePrevalence.html" class="external-link">mockIncidencePrevalence</a></span><span class="op">(</span></span>
+<span><span class="va">cdm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://darwin-eu.github.io/IncidencePrevalence/reference/mockIncidencePrevalence.html" class="external-link">mockIncidencePrevalence</a></span><span class="op">(</span></span>
 <span>  sampleSize <span class="op">=</span> <span class="fl">10000</span>,</span>
 <span>  outPre <span class="op">=</span> <span class="fl">0.25</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">cdm</span> <span class="op">&lt;-</span> <span class="fu">IncidencePrevalence</span><span class="fu">::</span><span class="fu"><a href="https://darwin-eu.github.io/IncidencePrevalence/reference/generateDenominatorCohortSet.html" class="external-link">generateDenominatorCohortSet</a></span><span class="op">(</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="estimate-incidence-rates">Estimate Incidence Rates<a class="anchor" aria-label="anchor" href="#estimate-incidence-rates"></a>
+</h3>
+<p>We use the IncidencePrevalence package to generate a denominator
+cohort with age and sex stratifications, and then calculate overall
+outcome incidence and incidence by calendar year for each stratum
+combination. For more information on how to use this package, refer to
+its <a href="https://darwin-eu.github.io/IncidencePrevalence/" class="external-link">website</a>.</p>
+<p>Notice that the results are stored as a <a href="https://darwin-eu.github.io/omopgenerics/articles/summarised_result.html" class="external-link">summarised_result</a>
+object.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cdm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://darwin-eu.github.io/IncidencePrevalence/reference/generateDenominatorCohortSet.html" class="external-link">generateDenominatorCohortSet</a></span><span class="op">(</span></span>
 <span>  cdm <span class="op">=</span> <span class="va">cdm</span>,</span>
 <span>  name <span class="op">=</span> <span class="st">"denominator"</span>,</span>
 <span>  cohortDateRange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2008-01-01"</span>, <span class="st">"2020-01-01"</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  ageGroup <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">19</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">64</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">65</span>, <span class="fl">150</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  ageGroup <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">19</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">64</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">65</span>, <span class="fl">150</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">150</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Male"</span>, <span class="st">"Female"</span><span class="op">)</span>,</span>
 <span>  daysPriorObservation <span class="op">=</span> <span class="fl">0</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">inc</span> <span class="op">&lt;-</span> <span class="fu">IncidencePrevalence</span><span class="fu">::</span><span class="fu"><a href="https://darwin-eu.github.io/IncidencePrevalence/reference/estimateIncidence.html" class="external-link">estimateIncidence</a></span><span class="op">(</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">inc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://darwin-eu.github.io/IncidencePrevalence/reference/estimateIncidence.html" class="external-link">estimateIncidence</a></span><span class="op">(</span></span>
 <span>  cdm <span class="op">=</span> <span class="va">cdm</span>,</span>
 <span>  denominatorTable <span class="op">=</span> <span class="st">"denominator"</span>,</span>
 <span>  outcomeTable <span class="op">=</span> <span class="st">"outcome"</span>,</span>
-<span>  interval <span class="op">=</span> <span class="st">"years"</span>,</span>
+<span>  interval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"years"</span>, <span class="st">"overall"</span><span class="op">)</span>,</span>
 <span>  outcomeWashout <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  repeatedEvents <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">inc</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Rows: 1,049</span></span>
+<span><span class="co">#&gt; Columns: 13</span></span>
+<span><span class="co">#&gt; $ result_id        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 1<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>1<span style="color: #949494;">,</span>…</span></span>
+<span><span class="co">#&gt; $ cdm_name         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "mock"<span style="color: #949494;">, </span>"mock"<span style="color: #949494;">, </span>"mock"<span style="color: #949494;">, </span>"mock"<span style="color: #949494;">, </span>"mock"<span style="color: #949494;">, </span>"mock"<span style="color: #949494;">, </span>"mock…</span></span>
+<span><span class="co">#&gt; $ group_name       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "denominator_cohort_name &amp;&amp;&amp; outcome_cohort_name"<span style="color: #949494;">, </span>"d…</span></span>
+<span><span class="co">#&gt; $ group_level      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "denominator_cohort_8 &amp;&amp;&amp; cohort_1"<span style="color: #949494;">, </span>"denominator_coh…</span></span>
+<span><span class="co">#&gt; $ strata_name      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall"<span style="color: #949494;">, </span>"overall"<span style="color: #949494;">, </span>"overall"<span style="color: #949494;">, </span>"overall"<span style="color: #949494;">, </span>"overall"…</span></span>
+<span><span class="co">#&gt; $ strata_level     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall"<span style="color: #949494;">, </span>"overall"<span style="color: #949494;">, </span>"overall"<span style="color: #949494;">, </span>"overall"<span style="color: #949494;">, </span>"overall"…</span></span>
+<span><span class="co">#&gt; $ variable_name    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Denominator"<span style="color: #949494;">, </span>"Outcome"<span style="color: #949494;">, </span>"Denominator"<span style="color: #949494;">, </span>"Denominator…</span></span>
+<span><span class="co">#&gt; $ variable_level   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">N</span>…</span></span>
+<span><span class="co">#&gt; $ estimate_name    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "denominator_count"<span style="color: #949494;">, </span>"outcome_count"<span style="color: #949494;">, </span>"person_days"<span style="color: #949494;">, </span>…</span></span>
+<span><span class="co">#&gt; $ estimate_type    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "integer"<span style="color: #949494;">, </span>"integer"<span style="color: #949494;">, </span>"numeric"<span style="color: #949494;">, </span>"numeric"<span style="color: #949494;">, </span>"numeric"…</span></span>
+<span><span class="co">#&gt; $ estimate_value   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "277"<span style="color: #949494;">, </span>"14"<span style="color: #949494;">, </span>"85765"<span style="color: #949494;">, </span>"234.812"<span style="color: #949494;">, </span>"5962.217"<span style="color: #949494;">, </span>"3259.59…</span></span>
+<span><span class="co">#&gt; $ additional_name  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "incidence_start_date &amp;&amp;&amp; incidence_end_date &amp;&amp;&amp; anal…</span></span>
+<span><span class="co">#&gt; $ additional_level <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "2008-01-01 &amp;&amp;&amp; 2008-12-31 &amp;&amp;&amp; years"<span style="color: #949494;">, </span>"2008-01-01 &amp;&amp;…</span></span></code></pre></div>
+<p>To use <code>EpiStandard</code>, we first filter the incidence
+results to the age groups of interest for standardisation and then
+convert the results into a format that facilitates further
+manipulation.</p>
+</div>
+<div class="section level3">
+<h3 id="standardise-incidence-rates">Standardise Incidence Rates<a class="anchor" aria-label="anchor" href="#standardise-incidence-rates"></a>
+</h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">inc_tidy</span> <span class="op">&lt;-</span> <span class="va">inc</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">omopgenerics</span><span class="fu">::</span><span class="fu"><a href="https://darwin-eu.github.io/omopgenerics/reference/addSettings.html" class="external-link">addSettings</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">omopgenerics</span><span class="fu">::</span><span class="fu"><a href="https://darwin-eu.github.io/omopgenerics/reference/splitAdditional.html" class="external-link">splitAdditional</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">omopgenerics</span><span class="fu">::</span><span class="fu"><a href="https://darwin-eu.github.io/omopgenerics/reference/splitGroup.html" class="external-link">splitGroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">cdm_name</span>, <span class="va">outcome_cohort_name</span>, <span class="va">estimate_name</span>, <span class="va">estimate_value</span>, <span class="va">denominator_age_group</span>, <span class="va">denominator_sex</span>, <span class="va">incidence_start_date</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">estimate_name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"person_years"</span>, <span class="st">"outcome_count"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>estimate_value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">estimate_value</span> <span class="op">==</span> <span class="st">"-"</span>, <span class="fl">4</span>, <span class="va">estimate_value</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">estimate_name</span>, values_from <span class="op">=</span> <span class="va">estimate_value</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>age_group <span class="op">=</span> <span class="va">denominator_age_group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>outcome_count <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">outcome_count</span><span class="op">)</span>,</span>
-<span>                person_years <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">person_years</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">incidenceTidy</span> <span class="op">&lt;-</span> <span class="va">inc</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://darwin-eu.github.io/omopgenerics/reference/filterSettings.html" class="external-link">filterSettings</a></span><span class="op">(</span><span class="va">denominator_age_group</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0 to 19"</span>, <span class="st">"20 to 64"</span>, <span class="st">"65 to 150"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://darwin-eu.github.io/IncidencePrevalence/reference/asIncidenceResult.html" class="external-link">asIncidenceResult</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">incidenceTidy</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Rows: 69</span></span>
+<span><span class="co">#&gt; Columns: 26</span></span>
+<span><span class="co">#&gt; $ cdm_name                             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "mock"<span style="color: #949494;">, </span>"mock"<span style="color: #949494;">, </span>"mock"<span style="color: #949494;">, </span>"mock"<span style="color: #949494;">, </span>"…</span></span>
+<span><span class="co">#&gt; $ denominator_cohort_name              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "denominator_cohort_2"<span style="color: #949494;">, </span>"denomina…</span></span>
+<span><span class="co">#&gt; $ outcome_cohort_name                  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "cohort_1"<span style="color: #949494;">, </span>"cohort_1"<span style="color: #949494;">, </span>"cohort_1…</span></span>
+<span><span class="co">#&gt; $ incidence_start_date                 <span style="color: #949494; font-style: italic;">&lt;date&gt;</span> 2008-01-01<span style="color: #949494;">, </span>2009-01-01<span style="color: #949494;">, </span>2010-01-…</span></span>
+<span><span class="co">#&gt; $ incidence_end_date                   <span style="color: #949494; font-style: italic;">&lt;date&gt;</span> 2008-12-31<span style="color: #949494;">, </span>2009-12-31<span style="color: #949494;">, </span>2010-12-…</span></span>
+<span><span class="co">#&gt; $ analysis_interval                    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "years"<span style="color: #949494;">, </span>"years"<span style="color: #949494;">, </span>"years"<span style="color: #949494;">, </span>"years…</span></span>
+<span><span class="co">#&gt; $ analysis_censor_cohort_name          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "None"<span style="color: #949494;">, </span>"None"<span style="color: #949494;">, </span>"None"<span style="color: #949494;">, </span>"None"<span style="color: #949494;">, </span>"…</span></span>
+<span><span class="co">#&gt; $ analysis_complete_database_intervals <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "TRUE"<span style="color: #949494;">, </span>"TRUE"<span style="color: #949494;">, </span>"TRUE"<span style="color: #949494;">, </span>"TRUE"<span style="color: #949494;">, </span>"…</span></span>
+<span><span class="co">#&gt; $ analysis_outcome_washout             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "0"<span style="color: #949494;">, </span>"0"<span style="color: #949494;">, </span>"0"<span style="color: #949494;">, </span>"0"<span style="color: #949494;">, </span>"0"<span style="color: #949494;">, </span>"0"<span style="color: #949494;">, </span>"0"…</span></span>
+<span><span class="co">#&gt; $ analysis_repeated_events             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "FALSE"<span style="color: #949494;">, </span>"FALSE"<span style="color: #949494;">, </span>"FALSE"<span style="color: #949494;">, </span>"FALSE…</span></span>
+<span><span class="co">#&gt; $ denominator_age_group                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "0 to 19"<span style="color: #949494;">, </span>"0 to 19"<span style="color: #949494;">, </span>"0 to 19"<span style="color: #949494;">, </span>…</span></span>
+<span><span class="co">#&gt; $ denominator_days_prior_observation   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "0"<span style="color: #949494;">, </span>"0"<span style="color: #949494;">, </span>"0"<span style="color: #949494;">, </span>"0"<span style="color: #949494;">, </span>"0"<span style="color: #949494;">, </span>"0"<span style="color: #949494;">, </span>"0"…</span></span>
+<span><span class="co">#&gt; $ denominator_end_date                 <span style="color: #949494; font-style: italic;">&lt;date&gt;</span> 2020-01-01<span style="color: #949494;">, </span>2020-01-01<span style="color: #949494;">, </span>2020-01-…</span></span>
+<span><span class="co">#&gt; $ denominator_requirements_at_entry    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "FALSE"<span style="color: #949494;">, </span>"FALSE"<span style="color: #949494;">, </span>"FALSE"<span style="color: #949494;">, </span>"FALSE…</span></span>
+<span><span class="co">#&gt; $ denominator_sex                      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Female"<span style="color: #949494;">, </span>"Female"<span style="color: #949494;">, </span>"Female"<span style="color: #949494;">, </span>"Fe…</span></span>
+<span><span class="co">#&gt; $ denominator_start_date               <span style="color: #949494; font-style: italic;">&lt;date&gt;</span> 2008-01-01<span style="color: #949494;">, </span>2008-01-01<span style="color: #949494;">, </span>2008-01-…</span></span>
+<span><span class="co">#&gt; $ denominator_target_cohort_name       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "None"<span style="color: #949494;">, </span>"None"<span style="color: #949494;">, </span>"None"<span style="color: #949494;">, </span>"None"<span style="color: #949494;">, </span>"…</span></span>
+<span><span class="co">#&gt; $ denominator_time_at_risk             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "0 to Inf"<span style="color: #949494;">, </span>"0 to Inf"<span style="color: #949494;">, </span>"0 to Inf…</span></span>
+<span><span class="co">#&gt; $ denominator_count                    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 38<span style="color: #949494;">, </span>44<span style="color: #949494;">, </span>38<span style="color: #949494;">, </span>23<span style="color: #949494;">, </span>16<span style="color: #949494;">, </span>14<span style="color: #949494;">, </span>8<span style="color: #949494;">, </span>7<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>…</span></span>
+<span><span class="co">#&gt; $ outcome_count                        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 0<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>0<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>0<span style="color: #949494;">, </span>0<span style="color: #949494;">, </span>0<span style="color: #949494;">, </span>0<span style="color: #949494;">, </span>3<span style="color: #949494;">, </span>3<span style="color: #949494;">, </span>…</span></span>
+<span><span class="co">#&gt; $ person_days                          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 12529<span style="color: #949494;">, </span>12754<span style="color: #949494;">, </span>10404<span style="color: #949494;">, </span>7081<span style="color: #949494;">, </span>5510<span style="color: #949494;">, </span>…</span></span>
+<span><span class="co">#&gt; $ person_years                         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 34.303<span style="color: #949494;">, </span>34.919<span style="color: #949494;">, </span>28.485<span style="color: #949494;">, </span>19.387<span style="color: #949494;">, </span>1…</span></span>
+<span><span class="co">#&gt; $ incidence_100000_pys                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.000<span style="color: #949494;">, </span>2863.770<span style="color: #949494;">, </span>3510.620<span style="color: #949494;">, </span>0.000<span style="color: #949494;">,</span>…</span></span>
+<span><span class="co">#&gt; $ incidence_100000_pys_95CI_lower      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.000<span style="color: #949494;">, </span>72.504<span style="color: #949494;">, </span>88.881<span style="color: #949494;">, </span>0.000<span style="color: #949494;">, </span>167…</span></span>
+<span><span class="co">#&gt; $ incidence_100000_pys_95CI_upper      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 10753.810<span style="color: #949494;">, </span>15955.908<span style="color: #949494;">, </span>19559.921<span style="color: #949494;">, </span>…</span></span>
+<span><span class="co">#&gt; $ result_type                          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "tidy_incidence"<span style="color: #949494;">, </span>"tidy_incidence…</span></span></code></pre></div>
+<p>Now that the incidence results are in the correct format, we prepare
+the reference population. In this example, we use the European Standard
+Population (<code>esp2013</code>). As this population uses 5-year age
+bands, we merge these groups to match those used to estimate
+incidence.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">standardPop</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mergeAgeGroups.html">mergeAgeGroups</a></span><span class="op">(</span>refdata <span class="op">=</span> <span class="fu"><a href="../reference/standardPopulation.html">standardPopulation</a></span><span class="op">(</span><span class="st">"esp2013"</span><span class="op">)</span>, newGroups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0 to 19"</span>, <span class="st">"20 to 64"</span>, <span class="st">"65 to 150"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">standardPop</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mergeAgeGroups.html">mergeAgeGroups</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="../reference/standardPopulation.html">standardPopulation</a></span><span class="op">(</span><span class="st">"esp2013"</span><span class="op">)</span>,</span>
+<span>  newGroups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0 to 19"</span>, <span class="st">"20 to 64"</span>, <span class="st">"65 to 150"</span><span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span><span class="st">"denominator_age_group"</span> <span class="op">=</span> <span class="st">"age_group"</span><span class="op">)</span></span>
+<span><span class="va">standardPop</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Rows: 3</span></span>
+<span><span class="co">#&gt; Columns: 2</span></span>
+<span><span class="co">#&gt; $ denominator_age_group <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "0 to 19"<span style="color: #949494;">, </span>"20 to 64"<span style="color: #949494;">, </span>"65 to 150"</span></span>
+<span><span class="co">#&gt; $ pop                   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 21500<span style="color: #949494;">, </span>59000<span style="color: #949494;">, </span>19500</span></span></code></pre></div>
+<p>Finally, we use the <code><a href="../reference/dsr.html">dsr()</a></code> function to standardise the
+incidence results to the reference population. We specify the columns
+containing the event counts, person-years, and population weights, as
+well as the column identifying age groups. Since we want to standardise
+within each outcome, sex, and calendar-time stratum, we use the
+<code>strata</code> argument as follows:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">standardInc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dsr.html">dsr</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">inc_tidy</span>,</span>
-<span>                   refdata <span class="op">=</span> <span class="va">standardPop</span>,</span>
-<span>                   event <span class="op">=</span> <span class="st">"outcome_count"</span>,</span>
-<span>                   denominator <span class="op">=</span> <span class="st">"person_years"</span>,</span>
-<span>                   age <span class="op">=</span> <span class="st">"age_group"</span>,</span>
-<span>                   pop <span class="op">=</span> <span class="st">"pop"</span>,</span>
-<span>                   strata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"incidence_start_date"</span>, <span class="st">"denominator_sex"</span>, <span class="st">"outcome_cohort_name"</span><span class="op">)</span></span>
-<span>                   <span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">standardInc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dsr.html">dsr</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">incidenceTidy</span>,</span>
+<span>  refdata <span class="op">=</span> <span class="va">standardPop</span>,</span>
+<span>  event <span class="op">=</span> <span class="st">"outcome_count"</span>,</span>
+<span>  denominator <span class="op">=</span> <span class="st">"person_years"</span>,</span>
+<span>  age <span class="op">=</span> <span class="st">"denominator_age_group"</span>,</span>
+<span>  pop <span class="op">=</span> <span class="st">"pop"</span>,</span>
+<span>  strata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"incidence_start_date"</span>, <span class="st">"denominator_sex"</span>, <span class="st">"analysis_interval"</span>, <span class="st">"outcome_cohort_name"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">standardInc</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Rows: 26</span></span>
+<span><span class="co">#&gt; Columns: 12</span></span>
+<span><span class="co">#&gt; $ incidence_start_date    <span style="color: #949494; font-style: italic;">&lt;date&gt;</span> 2008-01-01<span style="color: #949494;">, </span>2009-01-01<span style="color: #949494;">, </span>2010-01-01<span style="color: #949494;">, </span>2011-01-0…</span></span>
+<span><span class="co">#&gt; $ denominator_sex         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Female"<span style="color: #949494;">, </span>"Female"<span style="color: #949494;">, </span>"Female"<span style="color: #949494;">, </span>"Female"<span style="color: #949494;">, </span>"Femal…</span></span>
+<span><span class="co">#&gt; $ analysis_interval       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "years"<span style="color: #949494;">, </span>"years"<span style="color: #949494;">, </span>"years"<span style="color: #949494;">, </span>"years"<span style="color: #949494;">, </span>"years"<span style="color: #949494;">, </span>"…</span></span>
+<span><span class="co">#&gt; $ outcome_cohort_name     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "cohort_1"<span style="color: #949494;">, </span>"cohort_1"<span style="color: #949494;">, </span>"cohort_1"<span style="color: #949494;">, </span>"cohort_1"…</span></span>
+<span><span class="co">#&gt; $ Numerator               <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 14<span style="color: #949494;">, </span>10<span style="color: #949494;">, </span>14<span style="color: #949494;">, </span>3<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>3<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>51<span style="color: #949494;">, </span>13<span style="color: #949494;">, </span>14<span style="color: #949494;">, </span>9<span style="color: #949494;">, </span>1…</span></span>
+<span><span class="co">#&gt; $ Denominator             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 234.813<span style="color: #949494;">, </span>233.057<span style="color: #949494;">, </span>209.706<span style="color: #949494;">, </span>160.778<span style="color: #949494;">, </span>132.954<span style="color: #949494;">, </span>1…</span></span>
+<span><span class="co">#&gt; $ `Crude Rate (per 1000)` <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 59.6219<span style="color: #949494;">, </span>42.9080<span style="color: #949494;">, </span>66.7601<span style="color: #949494;">, </span>18.6593<span style="color: #949494;">, </span>30.0856<span style="color: #949494;">, </span>9…</span></span>
+<span><span class="co">#&gt; $ `95% LCL (Crude)`       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 28.3906<span style="color: #949494;">, </span>16.3138<span style="color: #949494;">, </span>31.7897<span style="color: #949494;">, </span>-2.4553<span style="color: #949494;">, </span>0.6023<span style="color: #949494;">, </span>-9…</span></span>
+<span><span class="co">#&gt; $ `95% UCL (Crude)`       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 90.8532<span style="color: #949494;">, </span>69.5021<span style="color: #949494;">, </span>101.7306<span style="color: #949494;">, </span>39.7738<span style="color: #949494;">, </span>59.5689<span style="color: #949494;">, </span>…</span></span>
+<span><span class="co">#&gt; $ `Std Rate (per 1000)`   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 60.2832<span style="color: #949494;">, </span>42.7653<span style="color: #949494;">, </span>68.6842<span style="color: #949494;">, </span>17.3819<span style="color: #949494;">, </span>30.7820<span style="color: #949494;">, </span>1…</span></span>
+<span><span class="co">#&gt; $ `95% LCL (Std)`         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 27.9721<span style="color: #949494;">, </span>15.2756<span style="color: #949494;">, </span>31.5812<span style="color: #949494;">, </span>-3.0871<span style="color: #949494;">, </span>-3.6202<span style="color: #949494;">, </span>-…</span></span>
+<span><span class="co">#&gt; $ `95% UCL (Std)`         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 92.5942<span style="color: #949494;">, </span>70.2551<span style="color: #949494;">, </span>105.7872<span style="color: #949494;">, </span>37.8510<span style="color: #949494;">, </span>65.1843<span style="color: #949494;">, </span>…</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
