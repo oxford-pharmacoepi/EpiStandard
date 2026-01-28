@@ -23,7 +23,7 @@ Authors@R: c(
         role = c("aut"), comment = c(ORCID = "0000-0002-3001-1478")
     ))
 Maintainer: Elin Rowlands <elin.rowlands@ndorms.ox.ac.uk>
-Description: What the package does (one paragraph).
+Description: The goal of EpiStandard is to provide functions to allow for age standardisation of results produced from epidemiological studies.
 License: Apache License (>= 2)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
