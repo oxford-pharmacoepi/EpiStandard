@@ -1,49 +1,47 @@
-# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
-# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+name: Build and deploy pkgdown site
+
 on:
   push:
-    branches: [main, master]
-  pull_request:
-  release:
-    types: [published]
-  workflow_dispatch:
+    branches: [ main ]
 
-name: pkgdown.yaml
-
-permissions: read-all
+permissions:
+  contents: write   # required by peaceiris/actions-gh-pages to push
 
 jobs:
-  pkgdown:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    # Only restrict concurrency for non-PR jobs
-    concurrency:
-      group: pkgdown-${{ github.event_name != 'pull_request' || github.run_id }}
-    env:
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-    permissions:
-      contents: write
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: r-lib/actions/setup-pandoc@v2
-
-      - uses: r-lib/actions/setup-r@v2
+      - name: Checkout repo
+        uses: actions/checkout@v4
         with:
-          use-public-rspm: true
+          fetch-depth: 0
 
-      - uses: r-lib/actions/setup-r-dependencies@v2
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+
+      - name: Install system deps (if needed)
+        run: |
+          sudo apt-get update
+          # add system packages here only if your pkgdown build needs them
+          # sudo apt-get install -y libxml2-dev libssl-dev libcurl4-openssl-dev
+
+      - name: Install R packages
+        run: |
+          Rscript -e 'install.packages(c("pkgdown", "remotes"), repos="https://cloud.r-project.org")'
+          # If your package has dependencies for building vignettes, install them here;
+          # e.g. Rscript -e 'remotes::install_deps(dep = TRUE)'
+
+      - name: Build pkgdown site
+        run: |
+          Rscript -e 'pkgdown::build_site()'
+          # ensure .nojekyll exists so GitHub Pages will NOT run Jekyll
+          touch docs/.nojekyll
+          # show debug info (optional)
+          ls -la docs || true
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          extra-packages: any::pkgdown, local::.
-          needs: website
-
-      - name: Build site
-        run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
-        shell: Rscript {0}
-
-      - name: Deploy to GitHub pages 🚀
-        if: github.event_name != 'pull_request'
-        uses: JamesIves/github-pages-deploy-action@v4.5.0
-        with:
-          clean: false
-          branch: gh-pages
-          folder: docs
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
+          publish_branch: gh-pages
