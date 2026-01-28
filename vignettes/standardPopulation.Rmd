@@ -1,0 +1,80 @@
+---
+title: "Adjusting Age Groups"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{standardPopulation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r base, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  warning = FALSE, 
+  message = FALSE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5
+)
+```
+
+
+# Introduction
+
+This vignette illustrates how `EpiStandard` can be used to adjust age groups in the standard population and in study results. 
+
+# Standard Population
+
+`EpiStandard` includes four standard populations, which are:
+- European Standard Population 2013
+- European Standard Population 2013 by Sex
+- World Standard Population 2025
+- World Standard Population 2025 by Sex
+
+All four of these use the same age groups:
+
+```{r age groups}
+library(EpiStandard)
+library(dplyr)
+
+ageGroups <- standardPopulation(name = "esp2013") 
+
+ageGroups |>
+  pull(age_group)
+```
+However, some studies might use different age groups which are not compatible with the standard populations. This can be solved by using the function `mergeAgeGroups()`.For example, if a study only uses the age groups '0-19', '20-64' and '65 to 150', the standard population can be adjusted to match
+
+```{r merge groups 1}
+newAgeGroups <- mergeAgeGroups(refdata = ageGroups, newGroups = c("0-19", "20-64", "65-150"))
+
+newAgeGroups
+```
+
+This will also work if using a bespoke standard population.
+
+```{r merge groups 2}
+df_study <- data.frame(age=c('0-14','15-24','25-44','45-64','65-150'),
+                       pop=c(114350,80259,133440,142670,92168))
+
+new_df_study <- mergeAgeGroups(refdata = df_study, newGroups = c("0-24", "25-64", "65-150"),
+                               age = "age",
+                               pop = "pop")
+
+new_df_study |> dplyr::glimpse()
+```
+# Study Results
+
+```{r merge groups 3}
+df_study <- data.frame(state=rep(c('Miami',"Alaska"), c(5,5)),
+                       age=rep(c('0-14','15-24','25-44','45-64','65-150'),2),
+                       deaths=c(136,57,208,1016,3605,59,18,37,90,81),
+                       fu=c(114350,80259,133440,142670,92168,37164,20036,32693,14947,2077))
+
+new_df_study <- mergeAgeGroups(refdata = df_study, newGroups = c("0-24", "25-64", "65-150"),
+                               age = "age",
+                               pop = "fu",
+                               event = "deaths",
+                               strata = "state")
+
+new_df_study |> dplyr::glimpse()
+```
