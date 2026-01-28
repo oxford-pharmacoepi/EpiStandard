@@ -1,4 +1,32 @@
 url: https://github.com/oxford-pharmacoepi/EpiStandard
 template:
   bootstrap: 5
+  light-switch: true
+  bslib:
+    primary: "#0054AD"
+    border-radius: 0.5rem
+    btn-border-radius: 0.25rem
+    danger: "#A6081A"
 
+navbar:
+  structure:
+    right: [search, github, lightswitch]
+
+reference:
+- subtitle: Standard Populations by Age
+- contents:
+  - esp2013
+  - wsp2025
+- subtitle: Standard Populations by Age and Sex
+- contents:
+  - espSex2013
+  - wspSex2025
+- subtitle: Get Standard Population
+- contents:
+  - standardPopulation
+- subtitle: Adjust standard populations and results tables
+- contents:
+  - mergeAgeGroups
+- subtitle: Standardise rates
+- contents:
+  - dsr
