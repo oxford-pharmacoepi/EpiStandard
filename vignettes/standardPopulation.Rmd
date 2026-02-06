@@ -37,7 +37,7 @@ All four of these use the same age groups:
 library(EpiStandard)
 library(dplyr)
 
-ageGroups <- standardPopulation(name = "esp2013") 
+ageGroups <- standardPopulation(region = "Europe") 
 
 ageGroups |>
   pull(age_group)
