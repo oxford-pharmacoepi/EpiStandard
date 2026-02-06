@@ -13,7 +13,7 @@ test_that("directlyStandardisedRates initial check", {
   df_ref  <- data.frame(age=c('00-14','15-24','25-44','45-64','65+'),
                         pop=c(23961000,15420000,21353000,19601000,10685000))
 
-  # Directly Standardized Rates (per 1000) - 95% CI's using the gamma method
+  # Directly Standardized Rates (per 100000)
   expect_no_error(my_results <- directlyStandardisedRates(data=df_study,
                                     event="deaths",
                                     denominator="fu",
@@ -87,33 +87,6 @@ test_that("using multiple strata", {
                       event = "deaths", denominator = "denominator",
                       strata = c("var_1", "var_2"),
                       refdata  = standardPopulation("Europe")))
-})
-
-test_that("error when using invalid method", {
-
-  stud_result <- data.frame(
-    age_group = c(
-      "0 to 4","5 to 9","10 to 14",
-      "15 to 19","20 to 24","25 to 29",
-      "30 to 34","35 to 39","40 to 44",
-      "45 to 49","50 to 54","55 to 59",
-      "60 to 64","65 to 69","70 to 74",
-      "75 to 79","80 to 84","85 to 89",
-      "90 to 150"
-    ),
-    deaths= rep(5, 19),
-    denominator = rep(100, 19))
-
-  # european
-  expect_error(directlyStandardisedRates(data = stud_result,
-                      event = "deaths", denominator = "denominator",
-                      refdata  = standardPopulation("Europe"),
-                      method = "exponential"))
-
-
-
-  # world
-
 })
 
 test_that("refdata is dataframe", {

@@ -138,7 +138,7 @@ directlyStandardisedRates <- function(data,
   }
 
   method <- "normal"
-  multiplier <- 1000000
+  multiplier <- 100000
   sig <- 0.95
 
 
