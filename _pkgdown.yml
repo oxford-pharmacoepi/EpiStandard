@@ -13,14 +13,6 @@ navbar:
     right: [search, github, lightswitch]
 
 reference:
-- subtitle: Standard Populations by Age
-- contents:
-  - esp2013
-  - wsp2025
-- subtitle: Standard Populations by Age and Sex
-- contents:
-  - espSex2013
-  - wspSex2025
 - subtitle: Get Standard Population
 - contents:
   - standardPopulation
@@ -29,4 +21,4 @@ reference:
   - mergeAgeGroups
 - subtitle: Standardise rates
 - contents:
-  - dsr
+  - directlyStandardisedRates
