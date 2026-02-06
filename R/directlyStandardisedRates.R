@@ -43,7 +43,7 @@
 #'
 #' # Now we will use the function dsr to calculate the direct standardised rates
 #' # (per 1000 individuals) using a 95% CI calculated by the gamma method:
-#' my_results <- dsr(data = data,
+#' my_results <- directlyStandardisedRates(data = data,
 #'                   refdata = standardised_population,
 #'                   event = "deaths",
 #'                   denominator  = "general_population",
@@ -56,16 +56,13 @@
 #' # View results
 #' my_results
 #' @export
-dsr <- function(data,
-                refdata  = standardPopulation("esp2013"),
+directlyStandardisedRates <- function(data,
                 event,
                 denominator,
                 age = "age_group",
                 pop = "pop",
                 strata = NULL,
-                multiplier = 1000,
-                method = "normal",
-                sig = 0.95) {
+                refdata  = standardPopulation("Europe")) {
 
   #validations
 
@@ -121,9 +118,6 @@ dsr <- function(data,
 
   if(sum(data[event], na.rm = TRUE) < 10){
     cli::cli_warn("Outcome count less than 10 - Standardising not advised.")
-  } else if(sum(data[event], na.rm = TRUE) < 100 & method == "normal") {
-    cli::cli_warn("Outcome count less than 100 - Normal approximation of
-                           confidence intervals not suitable. Use different method.")
   }
 
   if(!is.null(strata)){
@@ -139,20 +133,13 @@ dsr <- function(data,
 
         cli::cli_warn(paste0("Outcome count less than 10 for ", strata_msg, ". Standardisation not advised."))
 
-      }else if(sum_data$n[i] < 100 & method == "normal") {
-
-        excl_strata <- sum_data[strata][i,]
-
-        strata_msg <- excl_strata |>
-          dplyr::select(dplyr::all_of(strata)) |>
-          tidyr::unite("pair", dplyr::all_of(strata), sep = " and ", remove = FALSE) |>
-          dplyr::pull(.data$pair)
-
-        cli::cli_warn(paste0("Outcome count less than 100 for ", strata_msg, ". Normal approximation of
-                           confidence intervals not suitable. Use different method."))
       }
     }
   }
+
+  method <- "normal"
+  multiplier <- 1000000
+  sig <- 0.95
 
 
   # function
