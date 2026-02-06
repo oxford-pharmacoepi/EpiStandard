@@ -66,15 +66,12 @@ standardised_population <- data.frame(
 # Now we will use the function dsr to calculate the direct standardised rates
 # (per 1000 individuals) using a 95\% CI calculated by the gamma method:
 my_results <- directlyStandardisedRates(data = data,
-                  refdata = standardised_population,
                   event = "deaths",
                   denominator  = "general_population",
                   age   = "age_groups",
                   pop   = "pop",
                   strata = "state",
-                  multiplier = 1000,
-                  method = "gamma",
-                  sig = 0.95)
+                  refdata = standardised_population)
 # View results
 my_results
 }
