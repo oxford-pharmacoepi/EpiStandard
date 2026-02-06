@@ -4,6 +4,9 @@
 # EpiStandard <img src="man/figures/hexsticker.png" align="right" style="width:25%;"/>
 
 <!-- badges: start -->
+
+[![Codecov test
+coverage](https://codecov.io/gh/oxford-pharmacoepi/EpiStandard/graph/badge.svg)](https://app.codecov.io/gh/oxford-pharmacoepi/EpiStandard)
 <!-- badges: end -->
 
 The goal of EpiStandard is to provide functions to allow for age

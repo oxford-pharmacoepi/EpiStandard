@@ -76,11 +76,6 @@ mergeAgeGroups <- function(refdata,
     ))
   }
 
-  if(sum(is.na(newRefdata$age_high)) > 0 | sum(is.na(newRefdata$age_low))){
-    cli::cli_abort("The minimum and maximum age for each age group in refdata
-    must be defined. For example, cannot have age group '65+'.")
-  }
-
   merged_list <- vector("list", length(newGroups))
 
   for (i in seq_along(newGroups)) {
