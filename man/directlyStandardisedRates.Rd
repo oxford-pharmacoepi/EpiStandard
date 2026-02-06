@@ -6,21 +6,16 @@
 \usage{
 directlyStandardisedRates(
   data,
-  refdata = standardPopulation("esp2013"),
   event,
   denominator,
   age = "age_group",
   pop = "pop",
-  strata = NULL
+  strata = NULL,
+  refdata = standardPopulation("Europe")
 )
 }
 \arguments{
 \item{data}{A data frame with the event counts to be standardised.}
-
-\item{refdata}{A data frame representing the standard population. It must contain two columns:
-age, with the different age groups (notice that this column name must be the same as
-in data, defined by the input age); and pop, with the number of individuals in each corresponding
-age group.}
 
 \item{event}{Name of the column in data that corresponds to the event counts.}
 
@@ -32,6 +27,11 @@ person-years etc).}
 \item{pop}{Name of the column in refdata that corresponds to the standard population in each age group.}
 
 \item{strata}{Name of the columns in data for which rates are calculated by.}
+
+\item{refdata}{A data frame representing the standard population. It must contain two columns:
+age, with the different age groups (notice that this column name must be the same as
+in data, defined by the input age); and pop, with the number of individuals in each corresponding
+age group.}
 
 \item{multiplier}{A constant to multiply rates by (e.g. multiplier = 1000 for rates per 1000).}
 

@@ -6,7 +6,7 @@
 \alias{EpiStandard-package}
 \title{EpiStandard: What the Package Does (One Line, Title Case)}
 \description{
-What the package does (one paragraph).
+The goal of EpiStandard is to provide functions to allow for age standardisation of results produced from epidemiological studies.
 }
 \seealso{
 Useful links:
