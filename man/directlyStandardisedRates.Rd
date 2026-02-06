@@ -32,14 +32,6 @@ person-years etc).}
 age, with the different age groups (notice that this column name must be the same as
 in data, defined by the input age); and pop, with the number of individuals in each corresponding
 age group.}
-
-\item{multiplier}{A constant to multiply rates by (e.g. multiplier = 1000 for rates per 1000).}
-
-\item{method}{Choose between normal, lognormal and gamma confidence intervals
-for crude and standardised rates. The default method is normal.}
-
-\item{sig}{The desired level of confidence in computing confidence intervals.
-The default is 0.95 for 95 percent CIs.}
 }
 \description{
 Computes crude and directly standardised rates. Rates can be stratified by
