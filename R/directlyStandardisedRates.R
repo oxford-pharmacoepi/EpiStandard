@@ -4,21 +4,16 @@
 #' variables of interest.
 #'
 #' @param data A data frame with the event counts to be standardised.
-#' @param refdata A data frame representing the standard population. It must contain two columns:
-#' age, with the different age groups (notice that this column name must be the same as
-#' in data, defined by the input age); and pop, with the number of individuals in each corresponding
-#' age group.
 #' @param event Name of the column in data that corresponds to the event counts.
 #' @param denominator Name of the column in data that corresponds to the denominator population (in person-time, e.g person-days,
 #' person-years etc).
 #' @param age Name of the column in data and refdata that corresponds to age groups.
 #' @param pop Name of the column in refdata that corresponds to the standard population in each age group.
 #' @param strata Name of the columns in data for which rates are calculated by.
-#' @param multiplier A constant to multiply rates by (e.g. multiplier = 1000 for rates per 1000).
-#' @param method Choose between normal, lognormal and gamma confidence intervals
-#' for crude and standardised rates. The default method is normal.
-#' @param sig The desired level of confidence in computing confidence intervals.
-#' The default is 0.95 for 95 percent CIs.
+#' @param refdata A data frame representing the standard population. It must contain two columns:
+#' age, with the different age groups (notice that this column name must be the same as
+#' in data, defined by the input age); and pop, with the number of individuals in each corresponding
+#' age group.
 #'
 #' @importFrom rlang .data
 #' @importFrom rlang ":="
