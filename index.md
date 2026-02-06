@@ -35,7 +35,7 @@ standardised rates.
                       pop=c(23961000,15420000,21353000,19601000,10685000))
 
  #Directly standardised Rates (per 1000) - 95% CI's using the gamma method
- my_results <- dsr(data = df_study,
+ my_results <- directlyStandardisedRates(data = df_study,
                    event = "deaths",
                    denominator = "fu",
                    strata = "state",

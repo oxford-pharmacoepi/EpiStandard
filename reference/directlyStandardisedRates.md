@@ -1,0 +1,93 @@
+# Calculate directly standardised rates
+
+Computes crude and directly standardised rates. Rates can be stratified
+by variables of interest.
+
+## Usage
+
+``` r
+directlyStandardisedRates(
+  data,
+  event,
+  denominator,
+  age = "age_group",
+  pop = "pop",
+  strata = NULL,
+  refdata = standardPopulation("Europe")
+)
+```
+
+## Arguments
+
+- data:
+
+  A data frame with the event counts to be standardised.
+
+- event:
+
+  Name of the column in data that corresponds to the event counts.
+
+- denominator:
+
+  Name of the column in data that corresponds to the denominator
+  population (in person-time, e.g person-days, person-years etc).
+
+- age:
+
+  Name of the column in data and refdata that corresponds to age groups.
+
+- pop:
+
+  Name of the column in refdata that corresponds to the standard
+  population in each age group.
+
+- strata:
+
+  Name of the columns in data for which rates are calculated by.
+
+- refdata:
+
+  A data frame representing the standard population. It must contain two
+  columns: age, with the different age groups (notice that this column
+  name must be the same as in data, defined by the input age); and pop,
+  with the number of individuals in each corresponding age group.
+
+## Examples
+
+``` r
+# An example of calculating directly standardised rates
+# Data example is from Table 1 (p.132) of Fundamentals of Epidemiology by Schoenbach, 2000.
+
+# The following table shows the number of deaths, for 5 different age groups,
+# in the states of Miami and Alaska:
+data <- data.frame(
+      state = rep(c('Miami',"Alaska"), c(5,5)),
+      age_groups = rep(c('00-14','15-24','25-44','45-64','65+'),2),
+      deaths = c(136, 57, 208, 1016, 3605, 59, 18, 37, 90, 81),
+      general_population = c(114350,80259,133440,142670,92168,37164,20036,32693,14947,2077))
+
+# We aim to standardise the number of deaths per each state. To do that, we will use the following
+# US standard population:
+standardised_population <- data.frame(
+                            age_groups = c('00-14','15-24','25-44','45-64','65+'),
+                            pop = c(23961000,15420000,21353000,19601000,10685000))
+
+# Now we will use the function dsr to calculate the direct standardised rates
+# (per 1000 individuals) using a 95% CI calculated by the gamma method:
+my_results <- directlyStandardisedRates(data = data,
+                  event = "deaths",
+                  denominator  = "general_population",
+                  age   = "age_groups",
+                  pop   = "pop",
+                  strata = "state",
+                  refdata = standardised_population)
+# View results
+my_results
+#> # A tibble: 2 × 9
+#>   state  Numerator Denominator `Crude Rate (per 1e+05)` `95% LCL (Crude)`
+#>   <chr>      <dbl>       <dbl>                    <dbl>             <dbl>
+#> 1 Miami       5022      562887                     892.              868.
+#> 2 Alaska       285      106917                     267.              236.
+#> # ℹ 4 more variables: `95% UCL (Crude)` <dbl>, `Std Rate (per 1e+05)` <dbl>,
+#> #   `95% LCL (Std)` <dbl>, `95% UCL (Std)` <dbl>
+```

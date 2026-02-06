@@ -51,13 +51,13 @@ Table
 # \donttest{
 
 
-esp2013|> dplyr::glimpse()
+standardPopulation("Europe")|> dplyr::glimpse()
 #> Rows: 19
 #> Columns: 2
 #> $ age_group <chr> "0 to 4", "5 to 9", "10 to 14", "15 to 19", "20 to 24", "25 …
 #> $ pop       <int> 5000, 5500, 5500, 5500, 6000, 6000, 6500, 7000, 7000, 7000, …
 
-merged_data <- mergeAgeGroups(standardPopulation("esp2013"), c("0-19", "20-64", "65-150"))
+merged_data <- mergeAgeGroups(standardPopulation("Europe"), c("0-19", "20-64", "65-150"))
 
 merged_data |> dplyr::glimpse()
 #> Rows: 3
