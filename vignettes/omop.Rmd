@@ -80,7 +80,7 @@ Now that the incidence results are in the correct format, we prepare the referen
 
 ```{r standard pop}
 standardPop <- mergeAgeGroups(
-  standardPopulation("esp2013"),
+  standardPopulation("Europe"),
   newGroups = c("0 to 19", "20 to 64", "65 to 150")
 ) |>
   rename("denominator_age_group" = "age_group")

@@ -4,10 +4,10 @@
 \alias{standardPopulation}
 \title{Standard population}
 \usage{
-standardPopulation(name = "esp2013")
+standardPopulation(region = "Europe")
 }
 \arguments{
-\item{name}{Dataset to use. One of "esp2013", "espSex2013", "wsp2025" or "wspSex2025".}
+\item{region}{Region of standard population. Can be either 'Europe' or 'World'.}
 }
 \value{
 Tibble
@@ -17,7 +17,7 @@ Standard population
 }
 \examples{
 \donttest{
-standard_data <- standardPopulation("esp2013")
+standard_data <- standardPopulation(region = "Europe")
 }
 
 }
