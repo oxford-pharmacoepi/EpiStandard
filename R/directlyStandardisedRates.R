@@ -221,18 +221,18 @@ directlyStandardisedRates <- function(data,
     dplyr::mutate(dplyr::across(c("c_rate", "c_lower", "c_upper", "s_rate", "s_lower", "s_upper"),
                   ~ round(.x, digits = 4)))
 
-  c_rate_name <- paste0('Crude Rate (per ', multiplier, ')')
-  c_lower_name <- paste0(sig * 100, '% LCL (Crude)')
-  c_upper_name <- paste0(sig * 100, '% UCL (Crude)')
-  s_rate_name <- paste0('Std Rate (per ', multiplier, ')')
-  s_lower_name <- paste0(sig * 100, '% LCL (Std)')
-  s_upper_name <- paste0(sig * 100, '% UCL (Std)')
+  c_rate_name <- 'crude_rate'
+  c_lower_name <- paste0('crude_rate_', sig*100, 'CI_lower')
+  c_upper_name <- paste0('crude_rate_', sig*100, 'CI_upper')
+  s_rate_name <- 'standardised_rate'
+  s_lower_name <- paste0('standardised_rate_', sig*100, 'CI_lower')
+  s_upper_name <- paste0('standardised_rate_', sig*100, 'CI_upper')
 
   tmp1 <- tmp1 |>
     dplyr::select(
       tidyselect::all_of(strata),
-      "Numerator" = "n",
-      "Denominator" = "d",
+      !!event := "n",
+      !!denominator := "d",
       !!c_rate_name := "c_rate",
       !!c_lower_name := "c_lower",
       !!c_upper_name := "c_upper",
