@@ -84,10 +84,10 @@ my_results <- directlyStandardisedRates(data = data,
 # View results
 my_results
 #> # A tibble: 2 × 9
-#>   state  Numerator Denominator `Crude Rate (per 1e+05)` `95% LCL (Crude)`
-#>   <chr>      <dbl>       <dbl>                    <dbl>             <dbl>
-#> 1 Miami       5022      562887                     892.              868.
-#> 2 Alaska       285      106917                     267.              236.
-#> # ℹ 4 more variables: `95% UCL (Crude)` <dbl>, `Std Rate (per 1e+05)` <dbl>,
-#> #   `95% LCL (Std)` <dbl>, `95% UCL (Std)` <dbl>
+#>   state  deaths general_population crude_rate crude_rate_95CI_lower
+#>   <chr>   <dbl>              <dbl>      <dbl>                 <dbl>
+#> 1 Miami    5022             562887       892.                  868.
+#> 2 Alaska    285             106917       267.                  236.
+#> # ℹ 4 more variables: crude_rate_95CI_upper <dbl>, standardised_rate <dbl>,
+#> #   standardised_rate_95CI_lower <dbl>, standardised_rate_95CI_upper <dbl>
 ```

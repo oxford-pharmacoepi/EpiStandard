@@ -48,13 +48,13 @@ standardised rates.
 ``` R
 ## Rows: 2
 ## Columns: 9
-## $ state                   <chr> "Miami", "Alaska"
-## $ Numerator               <dbl> 5022, 285
-## $ Denominator             <dbl> 562887, 106917
-## $ `Crude Rate (per 1000)` <dbl> 8.9219, 2.6656
-## $ `95% LCL (Crude)`       <dbl> 8.6751, 2.3561
-## $ `95% UCL (Crude)`       <dbl> 9.1686, 2.9751
-## $ `Std Rate (per 1000)`   <dbl> 6.9242, 6.7104
-## $ `95% LCL (Std)`         <dbl> 6.7304, 5.6667
-## $ `95% UCL (Std)`         <dbl> 7.1181, 7.7541
+## $ state                        <chr> "Miami", "Alaska"
+## $ deaths                       <dbl> 5022, 285
+## $ fu                           <dbl> 562887, 106917
+## $ crude_rate                   <dbl> 892.1862, 266.5619
+## $ crude_rate_95CI_lower        <dbl> 867.5107, 235.6145
+## $ crude_rate_95CI_upper        <dbl> 916.8616, 297.5093
+## $ standardised_rate            <dbl> 692.4240, 671.0406
+## $ standardised_rate_95CI_lower <dbl> 673.0405, 566.6666
+## $ standardised_rate_95CI_upper <dbl> 711.8074, 775.4146
 ```
