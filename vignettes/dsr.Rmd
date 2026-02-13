@@ -1,5 +1,5 @@
 ---
-title: "dsr"
+title: "Calculate Directly Standardised Rates"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{dsr}
@@ -14,4 +14,91 @@ knitr::opts_chunk$set(
 )
 ```
 
+# Introduction
 
+This vignette illustrates how `EpiStandard` can be used to age standardise results.
+
+# Directly Standardised Rates for Age Standardisation
+
+Directly standardised rates are used to adjust rates of outcomes, such as disease or death, within a population to account for age. They work by assigning a weight to each age group, taken from a standard population, and applying these weights to the group-specific rates. This produces adjusted rates that remove the influence of age, making longitudinal trends easier to interpret.
+
+# Example
+
+For example, let's look at incidence rates of brain cancer in Wales. To standardise this by age group, we can use the function `directlyStandardisedRates`. To do this we will need data on the outcome of interest and the number of people at risk of developing the outcome (denominator), which is our `data`, and a standard population, which is our `refdata`.
+
+```{r, example 1}
+library(dplyr)
+library(EpiStandard)
+
+brain_cancer_2022 <- data.frame(
+  age_group = c("0 to 4","5 to 9", "10 to 14", "15 to 19","20 to 24","25 to 29","30 to 34","35 to 39","40 to 44","45 to 49","50 to 54","55 to 59",
+                "60 to 64", "65 to 69", "70 to 74", "75 to 79", "80 to 84", "85 to 89", "90 to 150"),
+  cases = c(5,4,4,4,2,6,6,14,8,9,17,19,34,30,39,41,23,13,7),
+  denominator = c(152519,174409,186628,177708,184964,187669,199578,192117,181871,176614,213390,224095,206338,180033,173220,144499,90861,54621,30506))
+
+standard <- standardPopulation(region = "Europe")
+```
+
+Data on brain cancer in Wales was obtained from [Public Health Wales](https://phw.nhs.wales/services-and-teams/welsh-cancer-intelligence-and-surveillance-unit-wcisu/cancer-reporting-tool-official-statistics/cancer-incidence/). Note, the age groups used in `data` and `refdata` must match.
+
+```{r, example 1.5}
+
+directlyStandardisedRates(data = brain_cancer_2022,
+                          event = "cases",
+                          denominator = "denominator",
+                          age = "age_group",
+                          pop = "pop",
+                          refdata = standard) |>
+  glimpse()
+
+```
+
+# Using your own standard population
+
+By default, the Rather than using one of the standard populations provided by the function `standardPopulation`, it is also possible to use a bespoke standard population.
+
+Let's repeat the above example, but this time using a standard population specifically for Wales. This was obtained from the [2021 Welsh Census](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/bulletins/populationandhouseholdestimateswales/census2021#age-and-sex-of-the-population).
+
+```{r, example 3}
+wales_standard <- data.frame(
+  age_group = c("0 to 4","5 to 9", "10 to 14", "15 to 19","20 to 24","25 to 29","30 to 34","35 to 39","40 to 44","45 to 49","50 to 54","55 to 59",
+                "60 to 64", "65 to 69", "70 to 74", "75 to 79", "80 to 84", "85 to 89", "90 to 150"),
+  pop = c(162528,165436,175568,182829,194959,186466,187941,188607,198164,207383,
+          213638,209169,206018,176291,163639,129008,95844,63537,39003)
+)
+
+directlyStandardisedRates(data = brain_cancer_2022,
+                          event = "cases",
+                          denominator = "denominator",
+                          age = "age_group",
+                          pop = "pop",
+                          refdata = wales_standard) |>
+  glimpse()
+
+```
+
+# Adding stratifications
+
+Sometimes additional stratifications are required, for example sex, region, ethnicity etc. This can be added to the `directlyStandardisedRates` function using the argument `strata`. For example, if we want to look at longitudinal trends, we'd want to calculate the standardised rates for each year separately.
+
+```{r, example 2}
+brain_cancer_2122 <- data.frame(
+  age_group = rep(c("0 to 4","5 to 9", "10 to 14", "15 to 19","20 to 24","25 to 29","30 to 34","35 to 39","40 to 44","45 to 49","50 to 54","55 to 59",
+                "60 to 64", "65 to 69", "70 to 74", "75 to 79", "80 to 84", "85 to 89", "90 to 150"),2),
+  cases = c(5,4,4,4,2,6,6,14,8,9,17,19,34,30,39,41,23,13,7,
+            5,6,5,5,1,3,3,6,12,14,24,18,21,22,36,38,28,17,2),
+  denominator = c(152519,174409,186628,177708,184964,187669,199578,192117,181871,176614,213390,224095,206338,180033,173220,144499,90861,54621,30506,
+                  153564,175351,183177,174911,185152,185530,196157,186861,176206,183537,215783,222933,200666,178021,181109,133820,89018,53636,30201),
+  year = c(rep("2022",19), rep("2021", 19))
+)
+
+directlyStandardisedRates(data = brain_cancer_2122,
+                          event = "cases",
+                          denominator = "denominator",
+                          age = "age_group",
+                          pop = "pop",
+                          strata = "year",
+                          refdata = wales_standard) |> 
+  glimpse()
+
+```
