@@ -7,11 +7,12 @@ groups in the standard population and in study results.
 
 ## Standard Population
 
-`EpiStandard` includes four standard populations, which are: - European
-Standard Population 2013 - European Standard Population 2013 by Sex -
-World Standard Population 2025 - World Standard Population 2025 by Sex
+`EpiStandard` includes two standard populations, which are: - European
+Standard Population 2013 - World Standard Population 2025
 
-All four of these use the same age groups:
+Both use the same age groups, and can be used by using the function
+`standardPopulation`. You can choose which of these to use by setting
+the argument `region` to ‘Europe’ or ‘World’.
 
 ``` r
 library(EpiStandard)
@@ -65,23 +66,31 @@ new_df_study |> dplyr::glimpse()
 
 ## Study Results
 
+Additionally, you can adjust your study results to merge age groups,
+while taking into consideration additional stratifications of interest.
+For example, the data set below shows study results for the UK and
+France. If we want merge some age groups, but still look at each country
+separately, we can use the argument `strata`.
+
 ``` r
-df_study <- data.frame(state=rep(c('Miami',"Alaska"), c(5,5)),
+df_study <- data.frame(country=rep(c('UK',"France"), c(5,5)),
                        age=rep(c('0-14','15-24','25-44','45-64','65-150'),2),
-                       deaths=c(136,57,208,1016,3605,59,18,37,90,81),
+                       deaths=c(132,87,413,2316,3425,605,279,3254,9001,8182),
                        fu=c(114350,80259,133440,142670,92168,37164,20036,32693,14947,2077))
 
 new_df_study <- mergeAgeGroups(refdata = df_study, newGroups = c("0-24", "25-64", "65-150"),
                                age = "age",
                                pop = "fu",
                                event = "deaths",
-                               strata = "state")
+                               strata = "country")
 
 new_df_study |> dplyr::glimpse()
 #> Rows: 6
 #> Columns: 4
-#> $ state  <chr> "Alaska", "Miami", "Alaska", "Miami", "Alaska", "Miami"
-#> $ age    <chr> "0-24", "0-24", "25-64", "25-64", "65-150", "65-150"
-#> $ deaths <dbl> 77, 193, 127, 1224, 81, 3605
-#> $ fu     <dbl> 57200, 194609, 47640, 276110, 2077, 92168
+#> $ country <chr> "France", "UK", "France", "UK", "France", "UK"
+#> $ age     <chr> "0-24", "0-24", "25-64", "25-64", "65-150", "65-150"
+#> $ deaths  <dbl> 884, 219, 12255, 2729, 8182, 3425
+#> $ fu      <dbl> 57200, 194609, 47640, 276110, 2077, 92168
 ```
+
+Note: All data used in this vignette is artifical.

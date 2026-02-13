@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>dsr • EpiStandard</title>
+<title>Calculate Directly Standardised Rates • EpiStandard</title>
 <script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="dsr">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Calculate Directly Standardised Rates">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -33,7 +33,7 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/dsr.html">dsr</a></li>
+<li><a class="dropdown-item" href="../articles/dsr.html">Calculate Directly Standardised Rates</a></li>
     <li><a class="dropdown-item" href="../articles/omop.html">Standardise OMOP results</a></li>
     <li><a class="dropdown-item" href="../articles/standardPopulation.html">Adjusting Age Groups</a></li>
   </ul>
@@ -65,7 +65,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>dsr</h1>
+      <h1>Calculate Directly Standardised Rates</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/oxford-pharmacoepi/EpiStandard/blob/main/vignettes/dsr.Rmd"><code>vignettes/dsr.Rmd</code></a></small>
@@ -74,8 +74,150 @@
 
     
     
-
-  </main>
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
+<p>This vignette illustrates how <code>EpiStandard</code> can be used to
+age standardise results.</p>
+</div>
+<div class="section level2">
+<h2 id="directly-standardised-rates-for-age-standardisation">Directly Standardised Rates for Age Standardisation<a class="anchor" aria-label="anchor" href="#directly-standardised-rates-for-age-standardisation"></a>
+</h2>
+<p>Directly standardised rates are used to adjust rates of outcomes,
+such as disease or death, within a population to account for age. They
+work by assigning a weight to each age group, taken from a standard
+population, and applying these weights to the group-specific rates. This
+produces adjusted rates that remove the influence of age, making
+longitudinal trends easier to interpret.</p>
+</div>
+<div class="section level2">
+<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+</h2>
+<p>For example, let’s look at incidence rates of brain cancer in Wales.
+To standardise this by age group, we can use the function
+<code>directlyStandardisedRates</code>. To do this we will need data on
+the outcome of interest and the number of people at risk of developing
+the outcome (denominator), which is our <code>data</code>, and a
+standard population, which is our <code>refdata</code>.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'dplyr'</span></span>
+<span><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     filter, lag</span></span>
+<span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://oxford-pharmacoepi.github.io/EpiStandard/" class="external-link">EpiStandard</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">brain_cancer_2022</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  age_group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0 to 4"</span>,<span class="st">"5 to 9"</span>, <span class="st">"10 to 14"</span>, <span class="st">"15 to 19"</span>,<span class="st">"20 to 24"</span>,<span class="st">"25 to 29"</span>,<span class="st">"30 to 34"</span>,<span class="st">"35 to 39"</span>,<span class="st">"40 to 44"</span>,<span class="st">"45 to 49"</span>,<span class="st">"50 to 54"</span>,<span class="st">"55 to 59"</span>,</span>
+<span>                <span class="st">"60 to 64"</span>, <span class="st">"65 to 69"</span>, <span class="st">"70 to 74"</span>, <span class="st">"75 to 79"</span>, <span class="st">"80 to 84"</span>, <span class="st">"85 to 89"</span>, <span class="st">"90 to 150"</span><span class="op">)</span>,</span>
+<span>  cases <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fl">4</span>,<span class="fl">4</span>,<span class="fl">4</span>,<span class="fl">2</span>,<span class="fl">6</span>,<span class="fl">6</span>,<span class="fl">14</span>,<span class="fl">8</span>,<span class="fl">9</span>,<span class="fl">17</span>,<span class="fl">19</span>,<span class="fl">34</span>,<span class="fl">30</span>,<span class="fl">39</span>,<span class="fl">41</span>,<span class="fl">23</span>,<span class="fl">13</span>,<span class="fl">7</span><span class="op">)</span>,</span>
+<span>  denominator <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">152519</span>,<span class="fl">174409</span>,<span class="fl">186628</span>,<span class="fl">177708</span>,<span class="fl">184964</span>,<span class="fl">187669</span>,<span class="fl">199578</span>,<span class="fl">192117</span>,<span class="fl">181871</span>,<span class="fl">176614</span>,<span class="fl">213390</span>,<span class="fl">224095</span>,<span class="fl">206338</span>,<span class="fl">180033</span>,<span class="fl">173220</span>,<span class="fl">144499</span>,<span class="fl">90861</span>,<span class="fl">54621</span>,<span class="fl">30506</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">standard</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/standardPopulation.html">standardPopulation</a></span><span class="op">(</span>region <span class="op">=</span> <span class="st">"Europe"</span><span class="op">)</span></span></code></pre></div>
+<p>Data on brain cancer in Wales was obtained from <a href="https://phw.nhs.wales/services-and-teams/welsh-cancer-intelligence-and-surveillance-unit-wcisu/cancer-reporting-tool-official-statistics/cancer-incidence/" class="external-link">Public
+Health Wales</a>. Note, the age groups used in <code>data</code> and
+<code>refdata</code> must match.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="fu"><a href="../reference/directlyStandardisedRates.html">directlyStandardisedRates</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">brain_cancer_2022</span>,</span>
+<span>                          event <span class="op">=</span> <span class="st">"cases"</span>,</span>
+<span>                          denominator <span class="op">=</span> <span class="st">"denominator"</span>,</span>
+<span>                          age <span class="op">=</span> <span class="st">"age_group"</span>,</span>
+<span>                          pop <span class="op">=</span> <span class="st">"pop"</span>,</span>
+<span>                          refdata <span class="op">=</span> <span class="va">standard</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Rows: 1</span></span>
+<span><span class="co">#&gt; Columns: 8</span></span>
+<span><span class="co">#&gt; $ cases                        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 285</span></span>
+<span><span class="co">#&gt; $ denominator                  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 3131640</span></span>
+<span><span class="co">#&gt; $ crude_rate                   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 9.1007</span></span>
+<span><span class="co">#&gt; $ crude_rate_95CI_lower        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 8.0441</span></span>
+<span><span class="co">#&gt; $ crude_rate_95CI_upper        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 10.1572</span></span>
+<span><span class="co">#&gt; $ standardised_rate            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 8.6525</span></span>
+<span><span class="co">#&gt; $ standardised_rate_95CI_lower <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 7.6426</span></span>
+<span><span class="co">#&gt; $ standardised_rate_95CI_upper <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 9.6624</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="using-your-own-standard-population">Using your own standard population<a class="anchor" aria-label="anchor" href="#using-your-own-standard-population"></a>
+</h2>
+<p>By default, the Rather than using one of the standard populations
+provided by the function <code>standardPopulation</code>, it is also
+possible to use a bespoke standard population.</p>
+<p>Let’s repeat the above example, but this time using a standard
+population specifically for Wales. This was obtained from the <a href="https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/bulletins/populationandhouseholdestimateswales/census2021#age-and-sex-of-the-population" class="external-link">2021
+Welsh Census</a>.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">wales_standard</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  age_group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0 to 4"</span>,<span class="st">"5 to 9"</span>, <span class="st">"10 to 14"</span>, <span class="st">"15 to 19"</span>,<span class="st">"20 to 24"</span>,<span class="st">"25 to 29"</span>,<span class="st">"30 to 34"</span>,<span class="st">"35 to 39"</span>,<span class="st">"40 to 44"</span>,<span class="st">"45 to 49"</span>,<span class="st">"50 to 54"</span>,<span class="st">"55 to 59"</span>,</span>
+<span>                <span class="st">"60 to 64"</span>, <span class="st">"65 to 69"</span>, <span class="st">"70 to 74"</span>, <span class="st">"75 to 79"</span>, <span class="st">"80 to 84"</span>, <span class="st">"85 to 89"</span>, <span class="st">"90 to 150"</span><span class="op">)</span>,</span>
+<span>  pop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">162528</span>,<span class="fl">165436</span>,<span class="fl">175568</span>,<span class="fl">182829</span>,<span class="fl">194959</span>,<span class="fl">186466</span>,<span class="fl">187941</span>,<span class="fl">188607</span>,<span class="fl">198164</span>,<span class="fl">207383</span>,</span>
+<span>          <span class="fl">213638</span>,<span class="fl">209169</span>,<span class="fl">206018</span>,<span class="fl">176291</span>,<span class="fl">163639</span>,<span class="fl">129008</span>,<span class="fl">95844</span>,<span class="fl">63537</span>,<span class="fl">39003</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/directlyStandardisedRates.html">directlyStandardisedRates</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">brain_cancer_2022</span>,</span>
+<span>                          event <span class="op">=</span> <span class="st">"cases"</span>,</span>
+<span>                          denominator <span class="op">=</span> <span class="st">"denominator"</span>,</span>
+<span>                          age <span class="op">=</span> <span class="st">"age_group"</span>,</span>
+<span>                          pop <span class="op">=</span> <span class="st">"pop"</span>,</span>
+<span>                          refdata <span class="op">=</span> <span class="va">wales_standard</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Rows: 1</span></span>
+<span><span class="co">#&gt; Columns: 8</span></span>
+<span><span class="co">#&gt; $ cases                        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 285</span></span>
+<span><span class="co">#&gt; $ denominator                  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 3131640</span></span>
+<span><span class="co">#&gt; $ crude_rate                   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 9.1007</span></span>
+<span><span class="co">#&gt; $ crude_rate_95CI_lower        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 8.0441</span></span>
+<span><span class="co">#&gt; $ crude_rate_95CI_upper        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 10.1572</span></span>
+<span><span class="co">#&gt; $ standardised_rate            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 9.0148</span></span>
+<span><span class="co">#&gt; $ standardised_rate_95CI_lower <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 7.9644</span></span>
+<span><span class="co">#&gt; $ standardised_rate_95CI_upper <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 10.0652</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="adding-stratifications">Adding stratifications<a class="anchor" aria-label="anchor" href="#adding-stratifications"></a>
+</h2>
+<p>Sometimes additional stratifications are required, for example sex,
+region, ethnicity etc. This can be added to the
+<code>directlyStandardisedRates</code> function using the argument
+<code>strata</code>. For example, if we want to look at longitudinal
+trends, we’d want to calculate the standardised rates for each year
+separately.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">brain_cancer_2122</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  age_group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0 to 4"</span>,<span class="st">"5 to 9"</span>, <span class="st">"10 to 14"</span>, <span class="st">"15 to 19"</span>,<span class="st">"20 to 24"</span>,<span class="st">"25 to 29"</span>,<span class="st">"30 to 34"</span>,<span class="st">"35 to 39"</span>,<span class="st">"40 to 44"</span>,<span class="st">"45 to 49"</span>,<span class="st">"50 to 54"</span>,<span class="st">"55 to 59"</span>,</span>
+<span>                <span class="st">"60 to 64"</span>, <span class="st">"65 to 69"</span>, <span class="st">"70 to 74"</span>, <span class="st">"75 to 79"</span>, <span class="st">"80 to 84"</span>, <span class="st">"85 to 89"</span>, <span class="st">"90 to 150"</span><span class="op">)</span>,<span class="fl">2</span><span class="op">)</span>,</span>
+<span>  cases <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fl">4</span>,<span class="fl">4</span>,<span class="fl">4</span>,<span class="fl">2</span>,<span class="fl">6</span>,<span class="fl">6</span>,<span class="fl">14</span>,<span class="fl">8</span>,<span class="fl">9</span>,<span class="fl">17</span>,<span class="fl">19</span>,<span class="fl">34</span>,<span class="fl">30</span>,<span class="fl">39</span>,<span class="fl">41</span>,<span class="fl">23</span>,<span class="fl">13</span>,<span class="fl">7</span>,</span>
+<span>            <span class="fl">5</span>,<span class="fl">6</span>,<span class="fl">5</span>,<span class="fl">5</span>,<span class="fl">1</span>,<span class="fl">3</span>,<span class="fl">3</span>,<span class="fl">6</span>,<span class="fl">12</span>,<span class="fl">14</span>,<span class="fl">24</span>,<span class="fl">18</span>,<span class="fl">21</span>,<span class="fl">22</span>,<span class="fl">36</span>,<span class="fl">38</span>,<span class="fl">28</span>,<span class="fl">17</span>,<span class="fl">2</span><span class="op">)</span>,</span>
+<span>  denominator <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">152519</span>,<span class="fl">174409</span>,<span class="fl">186628</span>,<span class="fl">177708</span>,<span class="fl">184964</span>,<span class="fl">187669</span>,<span class="fl">199578</span>,<span class="fl">192117</span>,<span class="fl">181871</span>,<span class="fl">176614</span>,<span class="fl">213390</span>,<span class="fl">224095</span>,<span class="fl">206338</span>,<span class="fl">180033</span>,<span class="fl">173220</span>,<span class="fl">144499</span>,<span class="fl">90861</span>,<span class="fl">54621</span>,<span class="fl">30506</span>,</span>
+<span>                  <span class="fl">153564</span>,<span class="fl">175351</span>,<span class="fl">183177</span>,<span class="fl">174911</span>,<span class="fl">185152</span>,<span class="fl">185530</span>,<span class="fl">196157</span>,<span class="fl">186861</span>,<span class="fl">176206</span>,<span class="fl">183537</span>,<span class="fl">215783</span>,<span class="fl">222933</span>,<span class="fl">200666</span>,<span class="fl">178021</span>,<span class="fl">181109</span>,<span class="fl">133820</span>,<span class="fl">89018</span>,<span class="fl">53636</span>,<span class="fl">30201</span><span class="op">)</span>,</span>
+<span>  year <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"2022"</span>,<span class="fl">19</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"2021"</span>, <span class="fl">19</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/directlyStandardisedRates.html">directlyStandardisedRates</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">brain_cancer_2122</span>,</span>
+<span>                          event <span class="op">=</span> <span class="st">"cases"</span>,</span>
+<span>                          denominator <span class="op">=</span> <span class="st">"denominator"</span>,</span>
+<span>                          age <span class="op">=</span> <span class="st">"age_group"</span>,</span>
+<span>                          pop <span class="op">=</span> <span class="st">"pop"</span>,</span>
+<span>                          strata <span class="op">=</span> <span class="st">"year"</span>,</span>
+<span>                          refdata <span class="op">=</span> <span class="va">wales_standard</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Rows: 2</span></span>
+<span><span class="co">#&gt; Columns: 9</span></span>
+<span><span class="co">#&gt; $ year                         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "2022"<span style="color: #949494;">, </span>"2021"</span></span>
+<span><span class="co">#&gt; $ cases                        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 285<span style="color: #949494;">, </span>266</span></span>
+<span><span class="co">#&gt; $ denominator                  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 3131640<span style="color: #949494;">, </span>3105633</span></span>
+<span><span class="co">#&gt; $ crude_rate                   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 9.1007<span style="color: #949494;">, </span>8.5651</span></span>
+<span><span class="co">#&gt; $ crude_rate_95CI_lower        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 8.0441<span style="color: #949494;">, </span>7.5358</span></span>
+<span><span class="co">#&gt; $ crude_rate_95CI_upper        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 10.1572<span style="color: #949494;">, </span>9.5944</span></span>
+<span><span class="co">#&gt; $ standardised_rate            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 9.0148<span style="color: #949494;">, </span>8.5603</span></span>
+<span><span class="co">#&gt; $ standardised_rate_95CI_lower <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 7.9644<span style="color: #949494;">, </span>7.5281</span></span>
+<span><span class="co">#&gt; $ standardised_rate_95CI_upper <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 10.0652<span style="color: #949494;">, </span>9.5925</span></span></code></pre></div>
+</div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 
