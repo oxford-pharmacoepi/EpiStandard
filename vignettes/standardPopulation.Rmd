@@ -79,4 +79,4 @@ new_df_study <- mergeAgeGroups(refdata = df_study, newGroups = c("0-24", "25-64"
 
 new_df_study |> dplyr::glimpse()
 ```
-Note: All data used in this vignette is artifical. 
+Note: All data used in this vignette is artificial. 

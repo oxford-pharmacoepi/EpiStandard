@@ -38,7 +38,7 @@
 #'
 #' # Now we will use the function dsr to calculate the direct standardised rates
 #' # (per 1000 individuals) using a 95% CI calculated by the gamma method:
-#' my_results <- directlyStandardisedRates(data = data,
+#' my_results <- directlyStandardiseRates(data = data,
 #'                   event = "deaths",
 #'                   denominator  = "general_population",
 #'                   age   = "age_groups",
@@ -48,7 +48,7 @@
 #' # View results
 #' my_results
 #' @export
-directlyStandardisedRates <- function(data,
+directlyStandardiseRates <- function(data,
                 event,
                 denominator,
                 age = "age_group",
