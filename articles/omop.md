@@ -135,7 +135,7 @@ standardPop |> glimpse()
 ```
 
 Finally, we use the
-[`directlyStandardisedRates()`](https://github.com/oxford-pharmacoepi/EpiStandard/reference/directlyStandardisedRates.md)
+[`directlyStandardiseRates()`](https://github.com/oxford-pharmacoepi/EpiStandard/reference/directlyStandardiseRates.md)
 function to standardise the incidence results to the reference
 population. We specify the columns containing the event counts,
 person-years, and population weights, as well as the column identifying
@@ -143,7 +143,7 @@ age groups. Since we want to standardise within each outcome, sex, and
 calendar-time stratum, we use the `strata` argument as follows:
 
 ``` r
-standardInc <- directlyStandardisedRates(
+standardInc <- directlyStandardiseRates(
   data = incidenceTidy,
   refdata = standardPop,
   event = "outcome_count",

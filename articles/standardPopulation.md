@@ -93,4 +93,4 @@ new_df_study |> dplyr::glimpse()
 #> $ fu      <dbl> 57200, 194609, 47640, 276110, 2077, 92168
 ```
 
-Note: All data used in this vignette is artifical.
+Note: All data used in this vignette is artificial.

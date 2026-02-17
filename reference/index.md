@@ -12,5 +12,5 @@
 
 ### Standardise rates
 
-- [`directlyStandardisedRates()`](https://github.com/oxford-pharmacoepi/EpiStandard/reference/directlyStandardisedRates.md)
+- [`directlyStandardiseRates()`](https://github.com/oxford-pharmacoepi/EpiStandard/reference/directlyStandardiseRates.md)
   : Calculate directly standardised rates

@@ -18,7 +18,7 @@ longitudinal trends easier to interpret.
 
 For example, let’s look at incidence rates of brain cancer in Wales. To
 standardise this by age group, we can use the function
-`directlyStandardisedRates`. To do this we will need data on the outcome
+`directlyStandardiseRates`. To do this we will need data on the outcome
 of interest and the number of people at risk of developing the outcome
 (denominator), which is our `data`, and a standard population, which is
 our `refdata`.
@@ -50,7 +50,7 @@ Note, the age groups used in `data` and `refdata` must match.
 
 ``` r
 
-directlyStandardisedRates(data = brain_cancer_2022,
+directlyStandardiseRates(data = brain_cancer_2022,
                           event = "cases",
                           denominator = "denominator",
                           age = "age_group",
@@ -88,7 +88,7 @@ wales_standard <- data.frame(
           213638,209169,206018,176291,163639,129008,95844,63537,39003)
 )
 
-directlyStandardisedRates(data = brain_cancer_2022,
+directlyStandardiseRates(data = brain_cancer_2022,
                           event = "cases",
                           denominator = "denominator",
                           age = "age_group",
@@ -111,7 +111,7 @@ directlyStandardisedRates(data = brain_cancer_2022,
 
 Sometimes additional stratifications are required, for example sex,
 region, ethnicity etc. This can be added to the
-`directlyStandardisedRates` function using the argument `strata`. For
+`directlyStandardiseRates` function using the argument `strata`. For
 example, if we want to look at longitudinal trends, we’d want to
 calculate the standardised rates for each year separately.
 
@@ -126,7 +126,7 @@ brain_cancer_2122 <- data.frame(
   year = c(rep("2022",19), rep("2021", 19))
 )
 
-directlyStandardisedRates(data = brain_cancer_2122,
+directlyStandardiseRates(data = brain_cancer_2122,
                           event = "cases",
                           denominator = "denominator",
                           age = "age_group",
