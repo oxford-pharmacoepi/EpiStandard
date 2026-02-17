@@ -1,4 +1,4 @@
-test_that("directlyStandardisedRates initial check", {
+test_that("directlyStandardiseRates initial check", {
   # example from original dsr package
   # An example of calculating directly standardized rates
   # Data from Table 1, Page 132 of Schoenbach (2000)
@@ -14,7 +14,7 @@ test_that("directlyStandardisedRates initial check", {
                         pop=c(23961000,15420000,21353000,19601000,10685000))
 
   # Directly Standardized Rates (per 100000)
-  expect_no_error(my_results <- directlyStandardisedRates(data=df_study,
+  expect_no_error(my_results <- directlyStandardiseRates(data=df_study,
                                     event="deaths",
                                     denominator="fu",
                                     strata="state",
@@ -39,7 +39,7 @@ test_that("using package populations", {
     deaths= rep(5, 19),
     denominator = rep(100, 19))
 
-  expect_no_error(directlyStandardisedRates(data = stud_result,
+  expect_no_error(directlyStandardiseRates(data = stud_result,
       event = "deaths", denominator = "denominator",
       refdata  = standardPopulation("Europe")))
 })
@@ -60,7 +60,7 @@ test_that("using strata", {
     deaths= c(rep(50, 190),rep(100, 190)),
     denominator = rep(1000, 380))
 
-  expect_no_error(directlyStandardisedRates(data = stud_result,
+  expect_no_error(directlyStandardiseRates(data = stud_result,
                       event = "deaths", denominator = "denominator",
                       strata = "var_1",
                       refdata  = standardPopulation("Europe")))
@@ -83,7 +83,7 @@ test_that("using multiple strata", {
     deaths= c(rep(50, 190),rep(100, 190)),
     denominator = rep(1000, 380))
 
-  expect_no_error(directlyStandardisedRates(data = stud_result,
+  expect_no_error(directlyStandardiseRates(data = stud_result,
                       event = "deaths", denominator = "denominator",
                       strata = c("var_1", "var_2"),
                       refdata  = standardPopulation("Europe")))
@@ -114,7 +114,7 @@ test_that("refdata is dataframe", {
     "90 to 150"
   )
 
-  expect_error(directlyStandardisedRates(data = stud_result,
+  expect_error(directlyStandardiseRates(data = stud_result,
                    event = "deaths", denominator = "denominator",
                    refdata  = refdata))
 
@@ -132,7 +132,7 @@ test_that("data is dataframe", {
     "90 to 150"
   )
 
-  expect_error(directlyStandardisedRates(data = stud_result,
+  expect_error(directlyStandardiseRates(data = stud_result,
                    event = "deaths", denominator = "denominator"))
 
 })
@@ -152,7 +152,7 @@ test_that("event is column in data", {
     deaths= rep(5, 19),
     denominator = rep(100, 19))
 
-  expect_error(directlyStandardisedRates(data = stud_result,
+  expect_error(directlyStandardiseRates(data = stud_result,
                    event = "death_count", denominator = "denominator"))
 
 })
@@ -172,7 +172,7 @@ test_that("denominator is column in data", {
     deaths= rep(5, 19),
     denominator = rep(100, 19))
 
-  expect_error(directlyStandardisedRates(data = stud_result,
+  expect_error(directlyStandardiseRates(data = stud_result,
                    event = "deaths", denominator = "denominator (months)"))
 
 })
@@ -192,7 +192,7 @@ test_that("strata is column in data", {
     deaths= rep(5, 19),
     denominator = rep(100, 19))
 
-  expect_error(directlyStandardisedRates(data = stud_result,
+  expect_error(directlyStandardiseRates(data = stud_result,
                    event = "deaths", denominator = "denominator",
                    strata = "sex"))
 
@@ -213,7 +213,7 @@ test_that("strata is column in data", {
     deaths= rep(5, 19),
     denominator = rep(100, 19))
 
-  expect_error(directlyStandardisedRates(data = stud_result,
+  expect_error(directlyStandardiseRates(data = stud_result,
                    event = "deaths", denominator = "denominator",
                    strata = "sex"))
 
@@ -234,7 +234,7 @@ test_that("pop is column in data", {
     deaths= rep(5, 19),
     denominator = rep(100, 19))
 
-  expect_error(directlyStandardisedRates(data = stud_result,
+  expect_error(directlyStandardiseRates(data = stud_result,
                    event = "deaths", denominator = "denominator",
                    pop = "population"))
 
@@ -255,7 +255,7 @@ test_that("age is a column in data and refdata", {
     deaths= rep(5, 19),
     denominator = rep(100, 19))
 
-  expect_error(directlyStandardisedRates(data = stud_result,
+  expect_error(directlyStandardiseRates(data = stud_result,
                    event = "deaths", denominator = "denominator",
                    age = "age_group"))
 
@@ -268,7 +268,7 @@ test_that("age is a column in data and refdata", {
   df_ref  <- data.frame(ages=c('00-14','15-24','25-44','45-64','65+'),
                         pop=c(23961000,15420000,21353000,19601000,10685000))
 
-  expect_error(directlyStandardisedRates(data = df_study,
+  expect_error(directlyStandardiseRates(data = df_study,
                    event = "deaths", denominator = "fu",
                    refdata = df_ref,
                    age = "age"))
@@ -286,7 +286,7 @@ test_that("same age values in data and refdata", {
   df_ref  <- data.frame(age=c('00-17','15-24','25-44','45-64','65+'),
                         pop=c(23961000,15420000,21353000,19601000,10685000))
 
-  expect_error(directlyStandardisedRates(data = df_study,
+  expect_error(directlyStandardiseRates(data = df_study,
                    event = "deaths", denominator = "fu",
                    refdata = df_ref,
                    age = "age"))
@@ -304,7 +304,7 @@ test_that("low outcome counts get warnings (2)",{
   df_ref  <- data.frame(age=c('00-14','15-24','25-44','45-64','65+'),
                         pop=c(23961000,15420000,21353000,19601000,10685000))
 
-  expect_warning(directlyStandardisedRates(data = df_study,
+  expect_warning(directlyStandardiseRates(data = df_study,
                      event = "deaths",
                      denominator = "fu",
                      refdata = df_ref,
