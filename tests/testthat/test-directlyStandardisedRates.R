@@ -275,25 +275,6 @@ test_that("age is a column in data and refdata", {
 
 })
 
-test_that("same age values in data and refdata", {
-
-  df_study <- data.frame(state=rep(c('Miami',"Alaska"), c(5,5)),
-                         age=rep(c('00-14','15-24','25-44','45-64','65+'),2),
-                         deaths=c(136,57,208,1016,3605,59,18,37,90,81),
-                         fu=c(114350,80259,133440,142670,92168,37164,20036,32693,14947,2077))
-
-  # US standard population
-  df_ref  <- data.frame(age=c('00-17','15-24','25-44','45-64','65+'),
-                        pop=c(23961000,15420000,21353000,19601000,10685000))
-
-  expect_error(directlyStandardiseRates(data = df_study,
-                   event = "deaths", denominator = "fu",
-                   refdata = df_ref,
-                   age = "age"))
-
-
-})
-
 test_that("low outcome counts get warnings (2)",{
 
   df_study <- data.frame(state=rep(c('Miami',"Alaska"), c(5,5)),
@@ -309,6 +290,47 @@ test_that("low outcome counts get warnings (2)",{
                      denominator = "fu",
                      refdata = df_ref,
                      age = "age"))
+})
+
+test_that("missing age groups are included", {
+  df_study <- data.frame(state=rep(c('Miami',"Alaska"), c(5,5)),
+                         age=rep(c('00-14','15-24','25-44','45-64','65+'),2),
+                         deaths=c(150,126,277,111,96,52,148,399,65,33),
+                         fu=c(114350,80259,133440,142670,92168,37164,20036,32693,14947,2077))
+
+  df_ref  <- data.frame(age=c('15-24','25-44','45-64','65+'),
+                        pop=c(15420000,21353000,19601000,10685000))
+
+  expect_no_error(
+    dsr <- directlyStandardiseRates(
+    data = df_study,
+    event = "deaths",
+    denominator = "fu",
+    refdata = df_ref,
+    age = "age"
+  ))
+
+})
+
+test_that("missing age groups but not included", {
+  df_study <- data.frame(state=rep(c('Miami',"Alaska"), c(5,5)),
+                         age=rep(c('00-14','15-24','25-44','45-64','65+'),2),
+                         deaths=c(150,126,277,111,96,52,148,399,65,33),
+                         fu=c(114350,80259,133440,142670,92168,37164,20036,32693,14947,2077))
+
+  df_ref  <- data.frame(age=c('15-24','25-44','45-64','65+'),
+                        pop=c(15420000,21353000,19601000,10685000))
+
+  expect_error(
+    dsr <- directlyStandardiseRates(
+      data = df_study,
+      event = "deaths",
+      denominator = "fu",
+      refdata = df_ref,
+      age = "age",
+      addMissingGroups = FALSE
+    ))
+
 })
 
 

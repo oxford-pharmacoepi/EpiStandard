@@ -10,6 +10,8 @@
 #' @param age Name of the column in data and refdata that corresponds to age groups.
 #' @param pop Name of the column in refdata that corresponds to the standard population in each age group.
 #' @param strata Name of the columns in data for which rates are calculated by.
+#' @param addMissingGroups If TRUE, any age groups present in refdata but not in data will be added and set to 0.
+#' If false, these age groups will be removed from refdata.
 #' @param refdata A data frame representing the standard population. It must contain two columns:
 #' age, with the different age groups (notice that this column name must be the same as
 #' in data, defined by the input age); and pop, with the number of individuals in each corresponding
@@ -54,6 +56,7 @@ directlyStandardiseRates <- function(data,
                 age = "age_group",
                 pop = "pop",
                 strata = NULL,
+                addMissingGroups = TRUE,
                 refdata  = standardPopulation("Europe")) {
 
   #validations
@@ -89,13 +92,67 @@ directlyStandardiseRates <- function(data,
   }
 
   dataAgeGroups <- unique(data |> dplyr::pull(.data[[age]]))
-  notInRef <- !dataAgeGroups %in% unique(refdata |> dplyr::pull(.data[[age]]))
-  if (any(notInRef)) {
-    cli::cli_abort(c(
-   "x" = "{dataAgeGroups[notInRef]} value{?s} of `age` in {.strong 'data'} are not in {.strong 'refdata'}",
-   ">" = "Please ensure that both tables use the same values and format (e.g 0-4 or '0 to 4')."
-    ))
+  refAgeGroups <-  unique(refdata |> dplyr::pull(.data[[age]]))
+  notInRef <- dataAgeGroups[!dataAgeGroups %in% unique(refdata |> dplyr::pull(.data[[age]]))]
+  notInData <- refAgeGroups[!refAgeGroups %in% unique(data |> dplyr::pull(.data[[age]]))]
+
+  if(isFALSE(addMissingGroups) & length(notInRef) > 0 | isFALSE(addMissingGroups) & length(notInData) > 0){
+    cli::cli_abort("Different number of age groups in data and refdata. Consider setting `addMissingGroups` as TRUE
+                   to add missing groups but with 0 count.")
   }
+
+  if(isTRUE(addMissingGroups)){
+
+    if(!is.null(strata)){
+      cli::cli_warn("When adding missing age groups, any strata values with be set to NA.")
+    }
+
+    if(length(notInRef) > 0){
+    new_rows <- data.frame(
+      age_group = notInRef,
+      population = rep(0, length(notInRef))
+    )
+
+    names(new_rows)[1] <- paste0(age)
+    names(new_rows)[2] <- paste0(pop)
+
+    refdata <- dplyr::rows_append(refdata, new_rows)
+  }
+
+    if(length(notInData) > 0){
+    new_rows <- data.frame(
+      age_group = notInData,
+      count = rep(0,length(notInData)),
+      denom = rep(0,length(notInData))
+    )
+    names(new_rows)[1] <- paste0(age)
+    names(new_rows)[2] <- paste0(event)
+    names(new_rows)[3] <- paste0(denominator)
+
+    data <- dplyr::rows_append(data, new_rows)
+  }
+  }
+
+  if(isFALSE(addMissingGroups)){
+
+    if(!is.null(strata)){
+      cli::cli_warn("Removing age groups that don't appear in both data and refdata")
+    }
+
+    if(length(notInRef) > 0){
+
+      data <- data |>
+        dplyr::filter(!.data[[age]] %in% notInRef)
+    }
+
+    if(length(notInData) > 0){
+
+      refdata <- refdata |>
+        dplyr::filter(!.data[[age]] %in% notInData)
+    }
+  }
+
+
 
   ## validate counts
   if(is.null(strata)){

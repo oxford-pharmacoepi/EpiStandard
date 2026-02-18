@@ -11,6 +11,7 @@ directlyStandardiseRates(
   age = "age_group",
   pop = "pop",
   strata = NULL,
+  addMissingGroups = TRUE,
   refdata = standardPopulation("Europe")
 )
 }
@@ -27,6 +28,9 @@ person-years etc).}
 \item{pop}{Name of the column in refdata that corresponds to the standard population in each age group.}
 
 \item{strata}{Name of the columns in data for which rates are calculated by.}
+
+\item{addMissingGroups}{If TRUE, any age groups present in refdata but not in data will be added and set to 0.
+If false, these age groups will be removed from refdata.}
 
 \item{refdata}{A data frame representing the standard population. It must contain two columns:
 age, with the different age groups (notice that this column name must be the same as
