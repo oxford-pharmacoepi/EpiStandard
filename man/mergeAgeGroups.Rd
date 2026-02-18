@@ -10,6 +10,7 @@ mergeAgeGroups(
   event = NULL,
   age = "age_group",
   pop = "pop",
+  ageRange = c(0, 150),
   strata = NULL
 )
 }
@@ -25,6 +26,8 @@ mergeAgeGroups(
 \item{pop}{Column in refdata with population counts, preferably in person-time.}
 
 \item{strata}{Column or columns to stratify by.}
+
+\item{addMissingGroups}{Whether to keep missing age groups and set to 0, or to drop them (TRUE/FALSE).}
 }
 \value{
 Table

@@ -6,6 +6,7 @@
 #' @param age Column in refdata with age values.
 #' @param pop Column in refdata with population counts, preferably in person-time.
 #' @param strata Column or columns to stratify by.
+#' @param addMissingGroups Whether to keep missing age groups and set to 0, or to drop them (TRUE/FALSE).
 #' @return Table
 #' @export
 #' @examples
@@ -26,6 +27,7 @@ mergeAgeGroups <- function(refdata,
                            event = NULL,
                            age = "age_group",
                            pop = "pop",
+                           ageRange = c(0,150),
                            strata = NULL) {
 
   if(isFALSE(is.data.frame(refdata))){
@@ -75,6 +77,10 @@ mergeAgeGroups <- function(refdata,
       for example {.val '0-4'} or {.val '0 to 4'}."
     ))
   }
+
+  newRefdata <- newRefdata |>
+    dplyr::filter(age_low >= ageRange[1],
+           age_high <= ageRange[2])
 
   merged_list <- vector("list", length(newGroups))
 
