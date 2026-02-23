@@ -96,16 +96,9 @@ directlyStandardiseRates <- function(data,
   notInRef <- dataAgeGroups[!dataAgeGroups %in% unique(refdata |> dplyr::pull(.data[[age]]))]
   notInData <- refAgeGroups[!refAgeGroups %in% unique(data |> dplyr::pull(.data[[age]]))]
 
-  if(isFALSE(addMissingGroups) & length(notInRef) > 0 | isFALSE(addMissingGroups) & length(notInData) > 0){
-    cli::cli_abort("Different number of age groups in data and refdata. Consider setting `addMissingGroups` as TRUE
-                   to add missing groups but with 0 count.")
-  }
-
   if(isTRUE(addMissingGroups)){
 
-    if(!is.null(strata)){
-      cli::cli_warn("When adding missing age groups, any strata values with be set to NA.")
-    }
+    if(is.null(strata)){
 
     if(length(notInRef) > 0){
     new_rows <- data.frame(
@@ -130,7 +123,69 @@ directlyStandardiseRates <- function(data,
     names(new_rows)[3] <- paste0(denominator)
 
     data <- dplyr::rows_append(data, new_rows)
-  }
+    }
+    } else if(!is.null(strata)){
+
+      strata_values <- data |>
+        select(!!!rlang::syms(strata))
+
+      list_strata <- list()
+
+      for (i in seq_len(ncol(strata_values))) {
+        strata_vec <- unique(strata_values[[i]])
+
+        list_strata[[colnames(strata_values)[i]]] <- strata_vec
+      }
+
+      strata_table <- tidyr::crossing(!!!list_strata)
+
+      if(length(notInRef) > 0){
+        new_rows <- data.frame(
+          age_group = notInRef,
+          population = rep(0, length(notInRef))
+        )
+
+        strata_table_ref <- strata_table |>
+          mutate(population = 0)
+
+        new_rows <- strata_table_ref |>
+          left_join(new_rows, by = "population")
+
+        new_rows <- new_rows %>%
+          rename(
+            !!age := age_group,
+            !!pop := population
+          )
+
+        refdata <- dplyr::rows_append(refdata, new_rows)
+
+      }
+
+      if(length(notInData) > 0){
+        new_rows <- data.frame(
+          age_group = notInData,
+          count = rep(0,length(notInData)),
+          denom = rep(0,length(notInData))
+        )
+
+        strata_table_data <- strata_table |>
+          mutate(denom = 0,
+                 count = 0)
+
+        new_rows <- strata_table_data |>
+          left_join(new_rows, by = c("denom", "count"))
+
+        new_rows <- new_rows %>%
+          rename(
+            !!age := age_group,
+            !!event := count,
+            !!denominator := denom
+          )
+
+        data <- dplyr::rows_append(data, new_rows)
+      }
+
+    }
   }
 
   if(isFALSE(addMissingGroups)){
