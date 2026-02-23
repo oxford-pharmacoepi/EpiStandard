@@ -106,8 +106,11 @@ directlyStandardiseRates <- function(data,
       population = rep(0, length(notInRef))
     )
 
-    names(new_rows)[1] <- paste0(age)
-    names(new_rows)[2] <- paste0(pop)
+    new_rows <- new_rows |>
+      dplyr::rename(
+        !!age := .data$age_group,
+        !!pop := .data$population
+      )
 
     refdata <- dplyr::rows_append(refdata, new_rows)
   }
@@ -118,9 +121,13 @@ directlyStandardiseRates <- function(data,
       count = rep(0,length(notInData)),
       denom = rep(0,length(notInData))
     )
-    names(new_rows)[1] <- paste0(age)
-    names(new_rows)[2] <- paste0(event)
-    names(new_rows)[3] <- paste0(denominator)
+
+    new_rows <- new_rows |>
+      dplyr::rename(
+        !!age := .data$age_group,
+        !!event := .data$count,
+        !!denominator := .data$denom
+      )
 
     data <- dplyr::rows_append(data, new_rows)
     }
@@ -153,8 +160,8 @@ directlyStandardiseRates <- function(data,
 
         new_rows <- new_rows |>
           dplyr::rename(
-            !!age := age_group,
-            !!pop := population
+            !!age := .data$age_group,
+            !!pop := .data$population
           )
 
         refdata <- dplyr::rows_append(refdata, new_rows)
@@ -177,9 +184,9 @@ directlyStandardiseRates <- function(data,
 
         new_rows <- new_rows |>
           dplyr::rename(
-            !!age := age_group,
-            !!event := count,
-            !!denominator := denom
+            !!age := .data$age_group,
+            !!event := .data$count,
+            !!denominator := .data$denom
           )
 
         data <- dplyr::rows_append(data, new_rows)
