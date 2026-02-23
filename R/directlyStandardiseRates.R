@@ -358,9 +358,6 @@ directlyStandardiseRates <- function(data,
       !!s_lower_name := "s_lower",
       !!s_upper_name := "s_upper") |>
     dplyr::distinct()
-
-  na.omit(tmp1)
-
 }
 
 
