@@ -169,7 +169,7 @@ directlyStandardiseRates <- function(data,
     cli::cli_warn("Outcome count less than 10 - Standardising not advised.")
   }
 
-  if(!is.null(strata)){
+  if(!is.null(strata) & isFALSE(addMissingGroups)){
     for(i in 1:nrow(sum_data)){
       if(sum_data$n[i] < 10){
 
@@ -200,13 +200,19 @@ directlyStandardiseRates <- function(data,
     all_data_st <- all_data_st |>
       dplyr::group_by(!!!rlang::syms(strata))
   }
+
   all_data_st <- all_data_st |>
     dplyr::mutate(n = sum(!!rlang::sym(event)),
                   d = sum(!!rlang::sym(denominator))) |>
     dplyr::mutate(
       cr_rate = .data$n / .data$d,
       cr_var = .data$n / .data$d ^ 2,
-      wts = !!rlang::sym(pop) / sum(!!rlang::sym(pop)),
+      wts = !!rlang::sym(pop) / sum(!!rlang::sym(pop))) |>
+    # REMOVE EMPTY AGE GROUPS. This will remove any age groups with outcome or denominator of 0 AFTER calculating the weights.
+    # This is mainly to avoid errors after adding missing age groups.
+    dplyr::filter(!!rlang::sym(event) != "0",
+                  !!rlang::sym(denominator) != "0") |>
+      dplyr::mutate(
       st_rate = sum(.data$wts * (!!rlang::sym(event) / !!rlang::sym(denominator))),
       st_var = sum(as.numeric((.data$wts ^ 2) * (
         !!rlang::sym(event) / (!!rlang::sym(denominator)) ^ 2
@@ -298,7 +304,7 @@ directlyStandardiseRates <- function(data,
       !!s_upper_name := "s_upper") |>
     dplyr::distinct()
 
-  tmp1
+  na.omit(tmp1)
 
 }
 
