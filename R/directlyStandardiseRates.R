@@ -127,7 +127,7 @@ directlyStandardiseRates <- function(data,
     } else if(!is.null(strata)){
 
       strata_values <- data |>
-        select(!!!rlang::syms(strata))
+        dplyr::select(!!!rlang::syms(strata))
 
       list_strata <- list()
 
@@ -146,13 +146,13 @@ directlyStandardiseRates <- function(data,
         )
 
         strata_table_ref <- strata_table |>
-          mutate(population = 0)
+          dplyr::mutate(population = 0)
 
         new_rows <- strata_table_ref |>
-          left_join(new_rows, by = "population")
+          dplyr::left_join(new_rows, by = "population")
 
         new_rows <- new_rows %>%
-          rename(
+          dplyr::rename(
             !!age := age_group,
             !!pop := population
           )
@@ -169,14 +169,14 @@ directlyStandardiseRates <- function(data,
         )
 
         strata_table_data <- strata_table |>
-          mutate(denom = 0,
+          dplyr::mutate(denom = 0,
                  count = 0)
 
         new_rows <- strata_table_data |>
-          left_join(new_rows, by = c("denom", "count"))
+          dplyr::left_join(new_rows, by = c("denom", "count"))
 
         new_rows <- new_rows %>%
-          rename(
+          dplyr::rename(
             !!age := age_group,
             !!event := count,
             !!denominator := denom
