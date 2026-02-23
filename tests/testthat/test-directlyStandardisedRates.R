@@ -321,7 +321,7 @@ test_that("missing age groups but not included", {
   df_ref  <- data.frame(age=c('15-24','25-44','45-64','65+'),
                         pop=c(15420000,21353000,19601000,10685000))
 
-  expect_error(
+  expect_no_error(
     dsr <- directlyStandardiseRates(
       data = df_study,
       event = "deaths",
