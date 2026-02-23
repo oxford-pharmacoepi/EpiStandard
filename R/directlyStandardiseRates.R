@@ -151,7 +151,7 @@ directlyStandardiseRates <- function(data,
         new_rows <- strata_table_ref |>
           dplyr::left_join(new_rows, by = "population")
 
-        new_rows <- new_rows %>%
+        new_rows <- new_rows |>
           dplyr::rename(
             !!age := age_group,
             !!pop := population
@@ -175,7 +175,7 @@ directlyStandardiseRates <- function(data,
         new_rows <- strata_table_data |>
           dplyr::left_join(new_rows, by = c("denom", "count"))
 
-        new_rows <- new_rows %>%
+        new_rows <- new_rows |>
           dplyr::rename(
             !!age := age_group,
             !!event := count,
