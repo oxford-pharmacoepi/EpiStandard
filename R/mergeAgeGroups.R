@@ -80,8 +80,8 @@ mergeAgeGroups <- function(refdata,
   }
 
   newRefdata <- newRefdata |>
-    dplyr::filter(age_low >= ageRange[1],
-           age_high <= ageRange[2])
+    dplyr::filter(.data$age_low >= ageRange[1],
+           .data$age_high <= ageRange[2])
 
   merged_list <- vector("list", length(newGroups))
 
