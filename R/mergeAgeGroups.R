@@ -7,7 +7,7 @@
 #' @param pop Column in refdata with population counts, preferably in person-time.
 #' @param strata Column or columns to stratify by.
 #' @param ageRange Specify the age range of the population of interest.
-#' @return Table
+#' @return Data frame with age groups and population counts.
 #' @export
 #' @examples
 #' \donttest{

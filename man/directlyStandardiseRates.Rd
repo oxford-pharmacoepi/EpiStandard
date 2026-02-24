@@ -37,6 +37,9 @@ age, with the different age groups (notice that this column name must be the sam
 in data, defined by the input age); and pop, with the number of individuals in each corresponding
 age group.}
 }
+\value{
+Data frame with crude and standardised rates.
+}
 \description{
 Computes crude and directly standardised rates. Rates can be stratified by
 variables of interest.

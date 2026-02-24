@@ -30,7 +30,7 @@ mergeAgeGroups(
 \item{strata}{Column or columns to stratify by.}
 }
 \value{
-Table
+Data frame with age groups and population counts.
 }
 \description{
 Create new merged age groups

@@ -16,6 +16,7 @@
 #' age, with the different age groups (notice that this column name must be the same as
 #' in data, defined by the input age); and pop, with the number of individuals in each corresponding
 #' age group.
+#' @return Data frame with crude and standardised rates.
 #'
 #' @importFrom rlang .data
 #' @importFrom rlang ":="
