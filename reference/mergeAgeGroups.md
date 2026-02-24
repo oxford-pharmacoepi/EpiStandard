@@ -11,6 +11,7 @@ mergeAgeGroups(
   event = NULL,
   age = "age_group",
   pop = "pop",
+  ageRange = c(0, 150),
   strata = NULL
 )
 ```
@@ -37,13 +38,17 @@ mergeAgeGroups(
 
   Column in refdata with population counts, preferably in person-time.
 
+- ageRange:
+
+  Specify the age range of the population of interest.
+
 - strata:
 
   Column or columns to stratify by.
 
 ## Value
 
-Table
+Data frame with age groups and population counts.
 
 ## Examples
 

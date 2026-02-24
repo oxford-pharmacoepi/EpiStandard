@@ -21,6 +21,7 @@ variables of interest."></head><body>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/dsr.html">Calculate Directly Standardised Rates</a></li>
+    <li><a class="dropdown-item" href="../articles/missingAgeGroups.html">Dealing with missing age groups</a></li>
     <li><a class="dropdown-item" href="../articles/omop.html">Standardise OMOP results</a></li>
     <li><a class="dropdown-item" href="../articles/standardPopulation.html">Adjusting Age Groups</a></li>
   </ul></li>
@@ -60,6 +61,7 @@ variables of interest.</p>
 <span>  age <span class="op">=</span> <span class="st">"age_group"</span>,</span>
 <span>  pop <span class="op">=</span> <span class="st">"pop"</span>,</span>
 <span>  strata <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  addMissingGroups <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  refdata <span class="op">=</span> <span class="fu"><a href="standardPopulation.html">standardPopulation</a></span><span class="op">(</span><span class="st">"Europe"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -93,6 +95,11 @@ person-years etc).</p></dd>
 <dd><p>Name of the columns in data for which rates are calculated by.</p></dd>
 
 
+<dt id="arg-addmissinggroups">addMissingGroups<a class="anchor" aria-label="anchor" href="#arg-addmissinggroups"></a></dt>
+<dd><p>If TRUE, any age groups present in refdata but not in data will be added and set to 0.
+If false, these age groups will be removed from refdata.</p></dd>
+
+
 <dt id="arg-refdata">refdata<a class="anchor" aria-label="anchor" href="#arg-refdata"></a></dt>
 <dd><p>A data frame representing the standard population. It must contain two columns:
 age, with the different age groups (notice that this column name must be the same as
@@ -100,6 +107,10 @@ in data, defined by the input age); and pop, with the number of individuals in e
 age group.</p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>Data frame with crude and standardised rates.</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>

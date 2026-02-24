@@ -16,7 +16,7 @@ standardPopulation(region = "Europe")
 
 ## Value
 
-Tibble
+Data frame with age groups and population counts for chosen region.
 
 ## Examples
 

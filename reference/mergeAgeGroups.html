@@ -19,6 +19,7 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/dsr.html">Calculate Directly Standardised Rates</a></li>
+    <li><a class="dropdown-item" href="../articles/missingAgeGroups.html">Dealing with missing age groups</a></li>
     <li><a class="dropdown-item" href="../articles/omop.html">Standardise OMOP results</a></li>
     <li><a class="dropdown-item" href="../articles/standardPopulation.html">Adjusting Age Groups</a></li>
   </ul></li>
@@ -56,6 +57,7 @@
 <span>  event <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  age <span class="op">=</span> <span class="st">"age_group"</span>,</span>
 <span>  pop <span class="op">=</span> <span class="st">"pop"</span>,</span>
+<span>  ageRange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">150</span><span class="op">)</span>,</span>
 <span>  strata <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -84,13 +86,17 @@
 <dd><p>Column in refdata with population counts, preferably in person-time.</p></dd>
 
 
+<dt id="arg-agerange">ageRange<a class="anchor" aria-label="anchor" href="#arg-agerange"></a></dt>
+<dd><p>Specify the age range of the population of interest.</p></dd>
+
+
 <dt id="arg-strata">strata<a class="anchor" aria-label="anchor" href="#arg-strata"></a></dt>
 <dd><p>Column or columns to stratify by.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Table</p>
+    <p>Data frame with age groups and population counts.</p>
     </div>
 
     <div class="section level2">

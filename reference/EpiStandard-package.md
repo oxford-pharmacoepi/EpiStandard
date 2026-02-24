@@ -1,4 +1,4 @@
-# EpiStandard: What the Package Does (One Line, Title Case)
+# EpiStandard: Directly standardise rates by age
 
 The goal of EpiStandard is to provide functions to allow for age
 standardisation of results produced from epidemiological studies.

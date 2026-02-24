@@ -21,11 +21,11 @@ Source:
 [`DESCRIPTION`](https://github.com/oxford-pharmacoepi/EpiStandard/blob/main/DESCRIPTION)
 
 Rowlands E, Alcalde-Herraiz M, Mercade-Besora N, Burn E, Newby D (2026).
-*EpiStandard: Directly standardise rates by age.*. R package version
+*EpiStandard: Directly standardise rates by age*. R package version
 0.0.0.9000, <https://oxford-pharmacoepi.github.io/EpiStandard/>.
 
     @Manual{,
-      title = {EpiStandard: Directly standardise rates by age.},
+      title = {EpiStandard: Directly standardise rates by age},
       author = {Elin Rowlands and Marta Alcalde-Herraiz and Nuria Mercade-Besora and Edward Burn and Danielle Newby},
       year = {2026},
       note = {R package version 0.0.0.9000},
