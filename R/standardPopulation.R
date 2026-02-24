@@ -2,7 +2,7 @@
 #'
 #' @param region Region of standard population. Can be either 'Europe' or 'World'.
 #'
-#' @return Tibble
+#' @return Data frame with age groups and population counts for chosen region.
 #' @export
 #' @examples
 #' \donttest{

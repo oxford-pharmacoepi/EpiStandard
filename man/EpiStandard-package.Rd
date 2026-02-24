@@ -4,7 +4,7 @@
 \name{EpiStandard-package}
 \alias{EpiStandard}
 \alias{EpiStandard-package}
-\title{EpiStandard: What the Package Does (One Line, Title Case)}
+\title{EpiStandard: Directly standardise rates by age}
 \description{
 The goal of EpiStandard is to provide functions to allow for age standardisation of results produced from epidemiological studies.
 }
