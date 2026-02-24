@@ -60,7 +60,7 @@ standard <- mergeAgeGroups(standardPopulation("Europe"),
 standard |> glimpse()
 ```
 
-Now, when we perform standardisation with this standard population the 0-14 age group with automatically be added to the results data but with event and denominator values will be set to 0.
+Now, when we perform standardisation with this standard population the 0-14 age group with automatically be added to the results data but with event and denominator values set to 0.
 
 ```{r, example 4}
 
@@ -90,4 +90,4 @@ res <- directlyStandardiseRates(
 
 res |> glimpse()
 ```
-
+As we can see, the standard rates vary based on whether `addMissingGroups` is TRUE / FALSE, while the crude rates remain the same. 

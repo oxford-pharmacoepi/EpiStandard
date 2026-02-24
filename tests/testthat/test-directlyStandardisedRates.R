@@ -312,14 +312,14 @@ test_that("missing age groups are included", {
 
 })
 
-test_that("missing age groups but not included", {
-  df_study <- data.frame(state=rep(c('Miami',"Alaska"), c(5,5)),
-                         age=rep(c('00-14','15-24','25-44','45-64','65+'),2),
-                         deaths=c(150,126,277,111,96,52,148,399,65,33),
-                         fu=c(114350,80259,133440,142670,92168,37164,20036,32693,14947,2077))
+test_that("add missing age groups FALSE", {
+  df_study <- data.frame(state=rep(c('Miami',"Alaska"), c(4,4)),
+                         age=rep(c('15-24','25-44','45-64','65+'),2),
+                         deaths=c(126,277,111,96,148,399,65,33),
+                         fu=c(80259,133440,142670,92168,20036,32693,14947,2077))
 
-  df_ref  <- data.frame(age=c('15-24','25-44','45-64','65+'),
-                        pop=c(15420000,21353000,19601000,10685000))
+  df_ref  <- data.frame(age=c('00-14','15-24','25-44','45-64','65+'),
+                        pop=c(1683400, 15420000,21353000,19601000,10685000))
 
   expect_no_error(
     dsr <- directlyStandardiseRates(
@@ -332,5 +332,29 @@ test_that("missing age groups but not included", {
     ))
 
 })
+
+test_that("add missing age groups TRUE", {
+  df_study <- data.frame(state=rep(c('Miami',"Alaska"), c(4,4)),
+                         age=rep(c('15-24','25-44','45-64','65+'),2),
+                         deaths=c(126,277,111,96,148,399,65,33),
+                         fu=c(80259,133440,142670,92168,20036,32693,14947,2077))
+
+  df_ref  <- data.frame(age=c('00-14','15-24','25-44','45-64','65+'),
+                        pop=c(1683400, 15420000,21353000,19601000,10685000))
+
+  expect_no_error(
+    dsr <- directlyStandardiseRates(
+      data = df_study,
+      event = "deaths",
+      denominator = "fu",
+      refdata = df_ref,
+      age = "age",
+      addMissingGroups = FALSE
+    ))
+
+})
+
+
+
 
 
