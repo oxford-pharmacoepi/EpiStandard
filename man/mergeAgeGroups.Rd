@@ -28,8 +28,6 @@ mergeAgeGroups(
 \item{ageRange}{Specify the age range of the population of interest.}
 
 \item{strata}{Column or columns to stratify by.}
-
-\item{addMissingGroups}{Whether to keep missing age groups and set to 0, or to drop them (TRUE/FALSE).}
 }
 \value{
 Table

@@ -7,7 +7,6 @@
 #' @param pop Column in refdata with population counts, preferably in person-time.
 #' @param strata Column or columns to stratify by.
 #' @param ageRange Specify the age range of the population of interest.
-#' @param addMissingGroups Whether to keep missing age groups and set to 0, or to drop them (TRUE/FALSE).
 #' @return Table
 #' @export
 #' @examples
