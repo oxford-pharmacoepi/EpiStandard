@@ -108,8 +108,8 @@ directlyStandardiseRates <- function(data,
 
     new_rows <- new_rows |>
       dplyr::rename(
-        !!age := .data$age_group,
-        !!pop := .data$population
+        !!age := "age_group",
+        !!pop := "population"
       )
 
     refdata <- dplyr::rows_append(refdata, new_rows)
@@ -124,9 +124,9 @@ directlyStandardiseRates <- function(data,
 
     new_rows <- new_rows |>
       dplyr::rename(
-        !!age := .data$age_group,
-        !!event := .data$count,
-        !!denominator := .data$denom
+        !!age := "age_group",
+        !!event := "count",
+        !!denominator := "denom"
       )
 
     data <- dplyr::rows_append(data, new_rows)
@@ -160,8 +160,8 @@ directlyStandardiseRates <- function(data,
 
         new_rows <- new_rows |>
           dplyr::rename(
-            !!age := .data$age_group,
-            !!pop := .data$population
+            !!age := "age_group",
+            !!pop := "population"
           )
 
         refdata <- dplyr::rows_append(refdata, new_rows)
@@ -184,9 +184,9 @@ directlyStandardiseRates <- function(data,
 
         new_rows <- new_rows |>
           dplyr::rename(
-            !!age := .data$age_group,
-            !!event := .data$count,
-            !!denominator := .data$denom
+            !!age := "age_group",
+            !!event := "count",
+            !!denominator := "denom"
           )
 
         data <- dplyr::rows_append(data, new_rows)
