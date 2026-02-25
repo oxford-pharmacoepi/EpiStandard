@@ -1,4 +1,4 @@
-# EpiStandard: Directly standardise rates by age
+# EpiStandard: Directly Standardise Rates by Age
 
 The goal of EpiStandard is to provide functions to allow for age
 standardisation of results produced from epidemiological studies.
@@ -10,6 +10,9 @@ Useful links:
 - <https://oxford-pharmacoepi.github.io/EpiStandard/>
 
 - <https://github.com/oxford-pharmacoepi/EpiStandard>
+
+- Report bugs at
+  <https://github.com/oxford-pharmacoepi/EpiStandard/issues>
 
 ## Author
 
