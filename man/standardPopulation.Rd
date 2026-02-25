@@ -10,7 +10,7 @@ standardPopulation(region = "Europe")
 \item{region}{Region of standard population. Can be either 'Europe' or 'World'.}
 }
 \value{
-Tibble
+Data frame with age groups and population counts for chosen region.
 }
 \description{
 Standard population

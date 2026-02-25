@@ -10,10 +10,13 @@
 #' @param age Name of the column in data and refdata that corresponds to age groups.
 #' @param pop Name of the column in refdata that corresponds to the standard population in each age group.
 #' @param strata Name of the columns in data for which rates are calculated by.
+#' @param addMissingGroups If TRUE, any age groups present in refdata but not in data will be added and set to 0.
+#' If false, these age groups will be removed from refdata.
 #' @param refdata A data frame representing the standard population. It must contain two columns:
 #' age, with the different age groups (notice that this column name must be the same as
 #' in data, defined by the input age); and pop, with the number of individuals in each corresponding
 #' age group.
+#' @return Data frame with crude and standardised rates.
 #'
 #' @importFrom rlang .data
 #' @importFrom rlang ":="
@@ -38,7 +41,7 @@
 #'
 #' # Now we will use the function dsr to calculate the direct standardised rates
 #' # (per 1000 individuals) using a 95% CI calculated by the gamma method:
-#' my_results <- directlyStandardisedRates(data = data,
+#' my_results <- directlyStandardiseRates(data = data,
 #'                   event = "deaths",
 #'                   denominator  = "general_population",
 #'                   age   = "age_groups",
@@ -48,12 +51,13 @@
 #' # View results
 #' my_results
 #' @export
-directlyStandardisedRates <- function(data,
+directlyStandardiseRates <- function(data,
                 event,
                 denominator,
                 age = "age_group",
                 pop = "pop",
                 strata = NULL,
+                addMissingGroups = TRUE,
                 refdata  = standardPopulation("Europe")) {
 
   #validations
@@ -89,13 +93,127 @@ directlyStandardisedRates <- function(data,
   }
 
   dataAgeGroups <- unique(data |> dplyr::pull(.data[[age]]))
-  notInRef <- !dataAgeGroups %in% unique(refdata |> dplyr::pull(.data[[age]]))
-  if (any(notInRef)) {
-    cli::cli_abort(c(
-   "x" = "{dataAgeGroups[notInRef]} value{?s} of `age` in {.strong 'data'} are not in {.strong 'refdata'}",
-   ">" = "Please ensure that both tables use the same values and format (e.g 0-4 or '0 to 4')."
-    ))
+  refAgeGroups <-  unique(refdata |> dplyr::pull(.data[[age]]))
+  notInRef <- dataAgeGroups[!dataAgeGroups %in% unique(refdata |> dplyr::pull(.data[[age]]))]
+  notInData <- refAgeGroups[!refAgeGroups %in% unique(data |> dplyr::pull(.data[[age]]))]
+
+  if(length(notInRef)/length(dataAgeGroups) == 1 | length(notInData)/length(refAgeGroups) == 1 ) {
+    cli::cli_abort("Different age groups used in data and refdata.")
   }
+
+  if(isTRUE(addMissingGroups)){
+
+    if(is.null(strata)){
+
+    if(length(notInRef) > 0){
+    new_rows <- data.frame(
+      age_group = notInRef,
+      population = rep(0, length(notInRef))
+    )
+
+    new_rows <- new_rows |>
+      dplyr::rename(
+        !!age := "age_group",
+        !!pop := "population"
+      )
+
+    refdata <- dplyr::rows_append(refdata, new_rows)
+  }
+
+    if(length(notInData) > 0){
+    new_rows <- data.frame(
+      age_group = notInData,
+      count = rep(0,length(notInData)),
+      denom = rep(0,length(notInData))
+    )
+
+    new_rows <- new_rows |>
+      dplyr::rename(
+        !!age := "age_group",
+        !!event := "count",
+        !!denominator := "denom"
+      )
+
+    data <- dplyr::rows_append(data, new_rows)
+    }
+    } else if(!is.null(strata)){
+
+      strata_values <- data |>
+        dplyr::select(!!!rlang::syms(strata))
+
+      list_strata <- list()
+
+      for (i in seq_len(ncol(strata_values))) {
+        strata_vec <- unique(strata_values[[i]])
+
+        list_strata[[colnames(strata_values)[i]]] <- strata_vec
+      }
+
+      strata_table <- tidyr::crossing(!!!list_strata)
+
+      if(length(notInRef) > 0){
+        new_rows <- data.frame(
+          age_group = notInRef,
+          population = rep(0, length(notInRef))
+        )
+
+        new_rows <- new_rows |>
+          dplyr::rename(
+            !!age := "age_group",
+            !!pop := "population"
+          )
+
+        refdata <- dplyr::rows_append(refdata, new_rows)
+
+      }
+
+      if(length(notInData) > 0){
+        new_rows <- data.frame(
+          age_group = notInData,
+          count = rep(0,length(notInData)),
+          denom = rep(0,length(notInData))
+        )
+
+        strata_table_data <- strata_table |>
+          dplyr::mutate(denom = 0,
+                 count = 0)
+
+        new_rows <- strata_table_data |>
+          dplyr::left_join(new_rows, by = c("denom", "count"))
+
+        new_rows <- new_rows |>
+          dplyr::rename(
+            !!age := "age_group",
+            !!event := "count",
+            !!denominator := "denom"
+          )
+
+        data <- dplyr::rows_append(data, new_rows)
+      }
+
+    }
+  }
+
+  if(isFALSE(addMissingGroups)){
+
+    if(!is.null(strata)){
+      cli::cli_warn("Removing age groups that don't appear in both data and refdata")
+    }
+
+    if(length(notInRef) > 0){
+
+      data <- data |>
+        dplyr::filter(!.data[[age]] %in% notInRef)
+    }
+
+    if(length(notInData) > 0){
+
+      refdata <- refdata |>
+        dplyr::filter(!.data[[age]] %in% notInData)
+    }
+  }
+
+
 
   ## validate counts
   if(is.null(strata)){
@@ -112,7 +230,7 @@ directlyStandardisedRates <- function(data,
     cli::cli_warn("Outcome count less than 10 - Standardising not advised.")
   }
 
-  if(!is.null(strata)){
+  if(!is.null(strata) & isFALSE(addMissingGroups)){
     for(i in 1:nrow(sum_data)){
       if(sum_data$n[i] < 10){
 
@@ -143,13 +261,19 @@ directlyStandardisedRates <- function(data,
     all_data_st <- all_data_st |>
       dplyr::group_by(!!!rlang::syms(strata))
   }
+
   all_data_st <- all_data_st |>
     dplyr::mutate(n = sum(!!rlang::sym(event)),
                   d = sum(!!rlang::sym(denominator))) |>
     dplyr::mutate(
       cr_rate = .data$n / .data$d,
       cr_var = .data$n / .data$d ^ 2,
-      wts = !!rlang::sym(pop) / sum(!!rlang::sym(pop)),
+      wts = !!rlang::sym(pop) / sum(!!rlang::sym(pop))) |>
+    # REMOVE EMPTY AGE GROUPS. This will remove any age groups with outcome or denominator of 0 AFTER calculating the weights.
+    # This is mainly to avoid errors after adding missing age groups.
+    dplyr::filter(!!rlang::sym(event) != "0",
+                  !!rlang::sym(denominator) != "0") |>
+      dplyr::mutate(
       st_rate = sum(.data$wts * (!!rlang::sym(event) / !!rlang::sym(denominator))),
       st_var = sum(as.numeric((.data$wts ^ 2) * (
         !!rlang::sym(event) / (!!rlang::sym(denominator)) ^ 2
@@ -240,9 +364,6 @@ directlyStandardisedRates <- function(data,
       !!s_lower_name := "s_lower",
       !!s_upper_name := "s_upper") |>
     dplyr::distinct()
-
-  tmp1
-
 }
 
 

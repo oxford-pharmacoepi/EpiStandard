@@ -10,6 +10,7 @@ mergeAgeGroups(
   event = NULL,
   age = "age_group",
   pop = "pop",
+  ageRange = c(0, 150),
   strata = NULL
 )
 }
@@ -24,10 +25,12 @@ mergeAgeGroups(
 
 \item{pop}{Column in refdata with population counts, preferably in person-time.}
 
+\item{ageRange}{Specify the age range of the population of interest.}
+
 \item{strata}{Column or columns to stratify by.}
 }
 \value{
-Table
+Data frame with age groups and population counts.
 }
 \description{
 Create new merged age groups

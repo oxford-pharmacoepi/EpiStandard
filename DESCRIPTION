@@ -1,5 +1,5 @@
 Package: EpiStandard
-Title: What the Package Does (One Line, Title Case)
+Title: Directly Standardise Rates by Age 
 Version: 0.0.0.9000
 Authors@R: c(
     person(
@@ -50,5 +50,6 @@ VignetteBuilder: knitr
 Depends: 
     R (>= 4.1.0)
 URL: https://oxford-pharmacoepi.github.io/EpiStandard/, https://github.com/oxford-pharmacoepi/EpiStandard
+Language: en-GB
 LazyData: true
 BugReports: https://github.com/oxford-pharmacoepi/EpiStandard/issues

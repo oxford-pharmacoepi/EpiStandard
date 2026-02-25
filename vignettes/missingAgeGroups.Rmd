@@ -1,0 +1,93 @@
+---
+title: "Dealing with missing age groups"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{missingAgeGroups}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Introduction
+
+Many epidemiological studies do not look at entire populations. Most often they will only include adults (18 and over), or age ranges specific to their outcome of interest. In these cases, age standardisation can be a bit tricky. This vignette will guide you through how to deal with missing age groups.
+
+# Specified Populations
+
+Certain studies will specify specific age ranges they want to consider, depending on the outcome of interest. The function `mergeAgeGroups` allows you to define the age of your population of interest using the argument `ageRange`.
+
+```{r, example 1}
+library(EpiStandard)
+library(dplyr)
+
+standard_adult <- mergeAgeGroups(standardPopulation("Europe"),
+                                 newGroups = c("20 to 29",
+                                              "30 to 39",
+                                              "40 to 49",
+                                              "50 to 59",
+                                              "60 to 69",
+                                              "70 to 79",
+                                              "80 to 89",
+                                              "90 to 150"),
+                                 ageRange = c(20,150))
+
+standard_adult |> glimpse()
+
+standard_child <- mergeAgeGroups(standardPopulation("Europe"),
+                                 newGroups = c("0 to 9",
+                                               "10 to 19"),
+                                 ageRange = c(0,19))
+
+standard_child |> glimpse()
+```
+
+# Missing Results
+
+Sometimes, there won't be any counts for certain age groups, but they are still part of the target population. In these situations you want to keep all the age groups in the standard population.This can be done automatically using the argument `addMissingGroups` in `directlyStandardiseRates`. The purpose of this is to ensure that the weighting of each age group is proportional to the entire standard population, and not just a subset of the population. This is not always advised, and you should consider your overall study objectives before doing this.
+
+```{r, example 2}
+df_study <- data.frame(country=rep(c('UK',"France"), c(4,4)),
+                       age_group=rep(c('15-24','25-44','45-64','65-150'),2),
+                       deaths=c(87,413,2316,3425,279,3254,9001,8182),
+                       fu=c(80259,133440,142670,92168,20036,32693,14947,2077))
+```
+
+So here we see that there are no results for the age group 0-14 in the results. Firstly, we need to make sure that our age groups in the standard population match the age groups used in the study.
+
+```{r, example 3}
+standard <- mergeAgeGroups(standardPopulation("Europe"),
+                           newGroups =c('0-14','15-24','25-44','45-64','65-150'))
+
+standard |> glimpse()
+```
+
+Now, when we perform standardisation with this standard population the 0-14 age group with automatically be added to the results data but with event and denominator values set to 0.
+
+```{r, example 4}
+
+res <- directlyStandardiseRates(
+  data = df_study,
+  event = "deaths",
+  denominator = "fu",
+  strata = c("country"),
+  refdata = standard,
+  addMissingGroups = TRUE
+)
+
+res |> glimpse()
+```
+
+If you do not want to add missing age groups, then you'll need to set 'addMissingAgeGroups' to FALSE. This will remove any age groups from data that don't appear in refdata, and vice versa. As a result, The weights for each age group will not represent the standard population, but the age range included in the study.
+
+```{r, example 5}
+res <- directlyStandardiseRates(
+  data = df_study,
+  event = "deaths",
+  denominator = "fu",
+  strata = "country",
+  refdata = standard,
+  addMissingGroups = FALSE
+)
+
+res |> glimpse()
+```
+As we can see, the standard rates vary based on whether `addMissingGroups` is TRUE / FALSE, while the crude rates remain the same. 
