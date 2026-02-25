@@ -4,7 +4,7 @@
 \name{EpiStandard-package}
 \alias{EpiStandard}
 \alias{EpiStandard-package}
-\title{EpiStandard: Directly standardise rates by age}
+\title{EpiStandard: Directly Standardise Rates by Age}
 \description{
 The goal of EpiStandard is to provide functions to allow for age standardisation of results produced from epidemiological studies.
 }
@@ -13,6 +13,7 @@ Useful links:
 \itemize{
   \item \url{https://oxford-pharmacoepi.github.io/EpiStandard/}
   \item \url{https://github.com/oxford-pharmacoepi/EpiStandard}
+  \item Report bugs at \url{https://github.com/oxford-pharmacoepi/EpiStandard/issues}
 }
 
 }
