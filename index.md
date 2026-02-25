@@ -5,6 +5,12 @@ standardisation of results produced from epidemiological studies.
 
 ## Installation
 
+The package can be installed from CRAN:
+
+``` r
+install.packages("EpiStandard")
+```
+
 You can install the development version of EpiStandard from
 [GitHub](https://github.com/) with:
 
