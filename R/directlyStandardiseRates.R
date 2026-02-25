@@ -97,6 +97,10 @@ directlyStandardiseRates <- function(data,
   notInRef <- dataAgeGroups[!dataAgeGroups %in% unique(refdata |> dplyr::pull(.data[[age]]))]
   notInData <- refAgeGroups[!refAgeGroups %in% unique(data |> dplyr::pull(.data[[age]]))]
 
+  if(length(notInRef)/length(dataAgeGroups) == 1 | length(notInData)/length(refAgeGroups) == 1 ) {
+    cli::cli_abort("Different age groups used in data and refdata.")
+  }
+
   if(isTRUE(addMissingGroups)){
 
     if(is.null(strata)){
@@ -152,12 +156,6 @@ directlyStandardiseRates <- function(data,
           age_group = notInRef,
           population = rep(0, length(notInRef))
         )
-
-        strata_table_ref <- strata_table |>
-          dplyr::mutate(population = 0)
-
-        new_rows <- strata_table_ref |>
-          dplyr::left_join(new_rows, by = "population")
 
         new_rows <- new_rows |>
           dplyr::rename(

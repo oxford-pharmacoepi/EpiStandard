@@ -354,6 +354,27 @@ test_that("add missing age groups TRUE", {
 
 })
 
+test_that("Different age groups used in both datasets", {
+  df_study <- data.frame(state=rep(c('Miami',"Alaska"), c(4,4)),
+                         age=rep(c('0-24','25-44','45-64','65+'),2),
+                         deaths=c(126,277,111,96,148,399,65,33),
+                         fu=c(80259,133440,142670,92168,20036,32693,14947,2077))
+
+  df_ref  <- data.frame(age=c('0-25','26-37','38-48','49-67','68+'),
+                        pop=c(1683400, 15420000,21353000,19601000,10685000))
+
+  expect_error(
+    dsr <- directlyStandardiseRates(
+      data = df_study,
+      event = "deaths",
+      denominator = "fu",
+      refdata = df_ref,
+      age = "age",
+      addMissingGroups = FALSE
+    ))
+
+})
+
 
 
 
