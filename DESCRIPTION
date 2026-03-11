@@ -23,7 +23,7 @@ Authors@R: c(
         role = c("aut"), comment = c(ORCID = "0000-0002-3001-1478")
     ))
 Maintainer: Elin Rowlands <elin.rowlands@ndorms.ox.ac.uk>
-Description: The goal of this package is to provide functions to allow for age standardisation of results produced from epidemiological studies.
+Description: Provides functions for age standardisation of epidemiological measures such as incidence and prevalence rates. It allows users to apply standard population structures to observed age-specific estimates in order to obtain comparable summary measures across populations or time periods. Functions support calculation of standardised rates, outcome counts, and corresponding confidence intervals. The tools are designed to facilitate reproducible and transparent adjustment for differences in age distributions in epidemiological and public health research.
 License: Apache License (>= 2)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
