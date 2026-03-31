@@ -102,3 +102,5 @@ standardInc <- directlyStandardiseRates(
 )
 standardInc |> glimpse()
 ```
+
+Note that `incidence_end_date` may differ for the last interval of the study period across age groups; therefore, it was not included in the `strata` argument.
