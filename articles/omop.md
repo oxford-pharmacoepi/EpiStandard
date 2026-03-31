@@ -168,3 +168,7 @@ standardInc |> glimpse()
 #> $ standardised_rate_95CI_lower <dbl> 1527.5585, 3158.1231, -362.0191, 2744.249…
 #> $ standardised_rate_95CI_upper <dbl> 7025.506, 10578.720, 6518.429, 4976.924, …
 ```
+
+Note that `incidence_end_date` may differ for the last interval of the
+study period across age groups; therefore, it was not included in the
+`strata` argument.
