@@ -12,6 +12,8 @@
 #' @param strata Name of the columns in data for which rates are calculated by.
 #' @param addMissingGroups If TRUE, any age groups present in refdata but not in data will be added and set to 0.
 #' If false, these age groups will be removed from refdata.
+#' @param method Specifies the method used to calculate the 95% CI for both crude and standardised rates. Includes 'dobson', 'gamma',
+#' 'lognormal', and 'normal'. Default is 'dobson'.
 #' @param refdata A data frame representing the standard population. It must contain two columns:
 #' age, with the different age groups (notice that this column name must be the same as
 #' in data, defined by the input age); and pop, with the number of individuals in each corresponding
