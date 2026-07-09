@@ -58,6 +58,7 @@ directlyStandardiseRates <- function(data,
                 pop = "pop",
                 strata = NULL,
                 addMissingGroups = TRUE,
+                method = "dobson",
                 refdata  = standardPopulation("Europe")) {
 
   #validations
@@ -247,7 +248,6 @@ directlyStandardiseRates <- function(data,
     }
   }
 
-  method <- "normal"
   multiplier <- 100000
   sig <- 0.95
 
@@ -271,8 +271,8 @@ directlyStandardiseRates <- function(data,
       wts = !!rlang::sym(pop) / sum(!!rlang::sym(pop))) |>
     # REMOVE EMPTY AGE GROUPS. This will remove any age groups with outcome or denominator of 0 AFTER calculating the weights.
     # This is mainly to avoid errors after adding missing age groups.
-    dplyr::filter(!!rlang::sym(event) != "0",
-                  !!rlang::sym(denominator) != "0") |>
+    dplyr::filter(!!rlang::sym(event) != 0,
+                  !!rlang::sym(denominator) != 0) |>
       dplyr::mutate(
       st_rate = sum(.data$wts * (!!rlang::sym(event) / !!rlang::sym(denominator))),
       st_var = sum(as.numeric((.data$wts ^ 2) * (
@@ -280,7 +280,8 @@ directlyStandardiseRates <- function(data,
       )))
     ) |>
     dplyr::distinct(!!!strata, .keep_all = TRUE) |>
-    dplyr::select(dplyr::all_of(c(strata, "n", "d", "cr_rate", "cr_var", "st_rate", "st_var")))
+    dplyr::select(dplyr::all_of(c(strata, "n", "d", "cr_rate", "cr_var", "st_rate", "st_var"))) |>
+    dplyr::distinct()
 
   if (!is.null(strata)) {
     all_data_st <- all_data_st |>
@@ -336,8 +337,54 @@ directlyStandardiseRates <- function(data,
             (.data$st_rate)
         ))
       )
+  } else if (method == "dobson") {
+
+    alpha <- 1 - sig
+
+    tmp1 <- all_data_st |>
+      dplyr::mutate(
+        c_rate = multiplier * .data$cr_rate,
+        c_lower = dplyr::if_else(
+          .data$n > 0,
+          multiplier * (
+            .data$cr_rate +
+              sqrt(.data$cr_var / .data$n) *
+              (stats::qchisq(alpha / 2, df = 2 * .data$n) / 2 - .data$n)
+          ),
+          0
+        ),
+        c_upper = dplyr::if_else(
+          .data$n > 0,
+          multiplier * (
+            .data$cr_rate +
+              sqrt(.data$cr_var / .data$n) *
+              (stats::qchisq(1 - alpha / 2, df = 2 * .data$n + 2) / 2 - .data$n)
+          ),
+          0
+        ),
+        s_rate = multiplier * .data$st_rate,
+        s_lower = dplyr::if_else(
+          .data$n > 0,
+          multiplier * (
+            .data$st_rate +
+              sqrt(.data$st_var / .data$n) *
+              (stats::qchisq(alpha / 2, df = 2 * .data$n) / 2 - .data$n)
+          ),
+          0
+        ),
+        s_upper = dplyr::if_else(
+          .data$n > 0,
+          multiplier * (
+            .data$st_rate +
+              sqrt(.data$st_var / .data$n) *
+              (stats::qchisq(1 - alpha / 2, df = 2 * .data$n + 2) / 2 - .data$n)
+          ),
+          0
+        )
+      )
+
   } else {
-    cli::cli_abort("method must be set as 'normal', 'lognormal', or 'gamma'")
+    cli::cli_abort("method must be set as 'dobson', 'normal', 'lognormal', or 'gamma'")
   }
 
   #Clean up and output
