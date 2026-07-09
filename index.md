@@ -8,6 +8,7 @@ standardisation of results produced from epidemiological studies.
 The package can be installed from CRAN:
 
 ``` r
+
 install.packages("EpiStandard")
 ```
 
@@ -15,6 +16,7 @@ You can install the development version of EpiStandard from
 [GitHub](https://github.com/) with:
 
 ``` r
+
 # install.packages("devtools")
 devtools::install_github("oxford-pharmacoepi/EpiStandard")
 ```
@@ -22,6 +24,7 @@ devtools::install_github("oxford-pharmacoepi/EpiStandard")
 ## Main functionalities
 
 ``` r
+
 library(EpiStandard)
 ```
 
@@ -31,6 +34,7 @@ standardised rates.
 ### Example
 
 ``` r
+
  df_study <- data.frame(state=rep(c('Miami',"Alaska"), c(5,5)),
                        age=rep(c('0-14','15-24','25-44','45-64','65-150'),2),
                        deaths=c(136,57,208,1016,3605,59,18,37,90,81),

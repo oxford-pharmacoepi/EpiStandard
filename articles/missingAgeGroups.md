@@ -16,6 +16,7 @@ allows you to define the age of your population of interest using the
 argument `ageRange`.
 
 ``` r
+
 library(EpiStandard)
 library(dplyr)
 ```
@@ -32,6 +33,7 @@ library(dplyr)
     ##     intersect, setdiff, setequal, union
 
 ``` r
+
 standard_adult <- mergeAgeGroups(standardPopulation("Europe"),
                                  newGroups = c("20 to 29",
                                               "30 to 39",
@@ -52,6 +54,7 @@ standard_adult |> glimpse()
     ## $ pop       <int> 12000, 13500, 14000, 13500, 11500, 9000, 4000, 1000
 
 ``` r
+
 standard_child <- mergeAgeGroups(standardPopulation("Europe"),
                                  newGroups = c("0 to 9",
                                                "10 to 19"),
@@ -78,6 +81,7 @@ advised, and you should consider your overall study objectives before
 doing this.
 
 ``` r
+
 df_study <- data.frame(country=rep(c('UK',"France"), c(4,4)),
                        age_group=rep(c('15-24','25-44','45-64','65-150'),2),
                        deaths=c(87,413,2316,3425,279,3254,9001,8182),
@@ -89,6 +93,7 @@ results. Firstly, we need to make sure that our age groups in the
 standard population match the age groups used in the study.
 
 ``` r
+
 standard <- mergeAgeGroups(standardPopulation("Europe"),
                            newGroups =c('0-14','15-24','25-44','45-64','65-150'))
 
@@ -105,6 +110,7 @@ Now, when we perform standardisation with this standard population the
 event and denominator values set to 0.
 
 ``` r
+
 res <- directlyStandardiseRates(
   data = df_study,
   event = "deaths",
@@ -136,6 +142,7 @@ weights for each age group will not represent the standard population,
 but the age range included in the study.
 
 ``` r
+
 res <- directlyStandardiseRates(
   data = df_study,
   event = "deaths",
@@ -149,6 +156,7 @@ res <- directlyStandardiseRates(
     ## Warning: Removing age groups that don't appear in both data and refdata
 
 ``` r
+
 res |> glimpse()
 ```
 

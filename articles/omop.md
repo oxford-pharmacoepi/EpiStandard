@@ -14,6 +14,7 @@ OMOP-formatted dataset containing a population and an outcome of
 interest.
 
 ``` r
+
 library(EpiStandard)
 library(IncidencePrevalence)
 library(omopgenerics)
@@ -38,6 +39,7 @@ Notice that the results are stored as a
 object.
 
 ``` r
+
 cdm <- generateDenominatorCohortSet(
   cdm = cdm,
   name = "denominator",
@@ -81,6 +83,7 @@ a format that facilitates further manipulation.
 ### Standardise Incidence Rates
 
 ``` r
+
 incidenceTidy <- inc |>
   filterSettings(denominator_age_group %in% c("0 to 19", "20 to 64", "65 to 150")) |>
   asIncidenceResult()
@@ -122,6 +125,7 @@ Population (`esp2013`). As this population uses 5-year age bands, we
 merge these groups to match those used to estimate incidence.
 
 ``` r
+
 standardPop <- mergeAgeGroups(
   standardPopulation("Europe"),
   newGroups = c("0 to 19", "20 to 64", "65 to 150")
@@ -143,6 +147,7 @@ age groups. Since we want to standardise within each outcome, sex, and
 calendar-time stratum, we use the `strata` argument as follows:
 
 ``` r
+
 standardInc <- directlyStandardiseRates(
   data = incidenceTidy,
   refdata = standardPop,
@@ -165,7 +170,7 @@ standardInc |> glimpse()
 #> $ crude_rate_95CI_lower        <dbl> 1631.3819, 3178.9678, 60.2254, 2850.7726,…
 #> $ crude_rate_95CI_upper        <dbl> 6950.210, 10173.058, 5956.893, 5007.465, …
 #> $ standardised_rate            <dbl> 4276.532, 6868.422, 3078.205, 3860.587, 5…
-#> $ standardised_rate_95CI_lower <dbl> 1527.5585, 3158.1231, -362.0191, 2744.249…
+#> $ standardised_rate_95CI_lower <dbl> 1527.5585, 3158.1231, 0.0000, 2744.2491, …
 #> $ standardised_rate_95CI_upper <dbl> 7025.506, 10578.720, 6518.429, 4976.924, …
 ```
 

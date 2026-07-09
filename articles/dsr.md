@@ -24,6 +24,7 @@ of interest and the number of people at risk of developing the outcome
 our `refdata`.
 
 ``` r
+
 library(dplyr)
 #> 
 #> Attaching package: 'dplyr'
@@ -49,6 +50,7 @@ Wales](https://phw.nhs.wales/services-and-teams/welsh-cancer-intelligence-and-su
 Note, the age groups used in `data` and `refdata` must match.
 
 ``` r
+
 
 directlyStandardiseRates(data = brain_cancer_2022,
                           event = "cases",
@@ -81,6 +83,7 @@ Welsh
 Census](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/bulletins/populationandhouseholdestimateswales/census2021#age-and-sex-of-the-population).
 
 ``` r
+
 wales_standard <- data.frame(
   age_group = c("0 to 4","5 to 9", "10 to 14", "15 to 19","20 to 24","25 to 29","30 to 34","35 to 39","40 to 44","45 to 49","50 to 54","55 to 59",
                 "60 to 64", "65 to 69", "70 to 74", "75 to 79", "80 to 84", "85 to 89", "90 to 150"),
@@ -116,6 +119,7 @@ example, if we want to look at longitudinal trends, we’d want to
 calculate the standardised rates for each year separately.
 
 ``` r
+
 brain_cancer_2122 <- data.frame(
   age_group = rep(c("0 to 4","5 to 9", "10 to 14", "15 to 19","20 to 24","25 to 29","30 to 34","35 to 39","40 to 44","45 to 49","50 to 54","55 to 59",
                 "60 to 64", "65 to 69", "70 to 74", "75 to 79", "80 to 84", "85 to 89", "90 to 150"),2),

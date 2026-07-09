@@ -15,6 +15,7 @@ Both use the same age groups, and can be used by using the function
 the argument `region` to ‘Europe’ or ‘World’.
 
 ``` r
+
 library(EpiStandard)
 library(dplyr)
 
@@ -36,6 +37,7 @@ example, if a study only uses the age groups ‘0-19’, ‘20-64’ and ‘65 t
 150’, the standard population can be adjusted to match
 
 ``` r
+
 newAgeGroups <- mergeAgeGroups(refdata = ageGroups, newGroups = c("0-19", "20-64", "65-150"))
 
 newAgeGroups
@@ -50,6 +52,7 @@ newAgeGroups
 This will also work if using a bespoke standard population.
 
 ``` r
+
 df_study <- data.frame(age=c('0-14','15-24','25-44','45-64','65-150'),
                        pop=c(114350,80259,133440,142670,92168))
 
@@ -73,6 +76,7 @@ France. If we want merge some age groups, but still look at each country
 separately, we can use the argument `strata`.
 
 ``` r
+
 df_study <- data.frame(country=rep(c('UK',"France"), c(5,5)),
                        age=rep(c('0-14','15-24','25-44','45-64','65-150'),2),
                        deaths=c(132,87,413,2316,3425,605,279,3254,9001,8182),
