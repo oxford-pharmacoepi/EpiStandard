@@ -129,11 +129,11 @@ res |> glimpse()
     ## $ deaths                       <dbl> 6241, 20716
     ## $ fu                           <dbl> 448537, 69753
     ## $ crude_rate                   <dbl> 1391.412, 29699.081
-    ## $ crude_rate_95CI_lower        <dbl> 1356.892, 29294.656
-    ## $ crude_rate_95CI_upper        <dbl> 1425.933, 30103.506
+    ## $ crude_rate_95CI_lower        <dbl> 1357.104, 29296.016
+    ## $ crude_rate_95CI_upper        <dbl> 1426.369, 30106.306
     ## $ standardised_rate            <dbl> 1249.293, 95572.931
-    ## $ standardised_rate_95CI_lower <dbl> 1218.224, 93873.604
-    ## $ standardised_rate_95CI_upper <dbl> 1280.363, 97272.258
+    ## $ standardised_rate_95CI_lower <dbl> 1218.415, 93879.317
+    ## $ standardised_rate_95CI_upper <dbl> 1280.756, 97284.021
 
 If you do not want to add missing age groups, then you’ll need to set
 ‘addMissingAgeGroups’ to FALSE. This will remove any age groups from
@@ -166,11 +166,11 @@ res |> glimpse()
     ## $ deaths                       <dbl> 6241, 20716
     ## $ fu                           <dbl> 448537, 69753
     ## $ crude_rate                   <dbl> 1391.412, 29699.081
-    ## $ crude_rate_95CI_lower        <dbl> 1356.892, 29294.656
-    ## $ crude_rate_95CI_upper        <dbl> 1425.933, 30103.506
+    ## $ crude_rate_95CI_lower        <dbl> 1357.104, 29296.016
+    ## $ crude_rate_95CI_upper        <dbl> 1426.369, 30106.306
     ## $ standardised_rate            <dbl> 1487.254, 113777.299
-    ## $ standardised_rate_95CI_lower <dbl> 1450.267, 111754.291
-    ## $ standardised_rate_95CI_upper <dbl> 1524.242, 115800.307
+    ## $ standardised_rate_95CI_lower <dbl> 1450.493, 111761.092
+    ## $ standardised_rate_95CI_upper <dbl> 1524.709, 115814.311
 
 As we can see, the standard rates vary based on whether
 `addMissingGroups` is TRUE / FALSE, while the crude rates remain the

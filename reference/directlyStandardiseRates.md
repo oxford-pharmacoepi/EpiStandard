@@ -14,6 +14,7 @@ directlyStandardiseRates(
   pop = "pop",
   strata = NULL,
   addMissingGroups = TRUE,
+  method = "dobson",
   refdata = standardPopulation("Europe")
 )
 ```
@@ -51,6 +52,12 @@ directlyStandardiseRates(
   If TRUE, any age groups present in refdata but not in data will be
   added and set to 0. If false, these age groups will be removed from
   refdata.
+
+- method:
+
+  Specifies the method used to calculate the 95% CI for both crude and
+  standardised rates. Includes 'dobson', 'gamma', 'lognormal', and
+  'normal'. Default is 'dobson'.
 
 - refdata:
 
@@ -98,7 +105,7 @@ my_results
 #>   state  deaths general_population crude_rate crude_rate_95CI_lower
 #>   <chr>   <dbl>              <dbl>      <dbl>                 <dbl>
 #> 1 Miami    5022             562887       892.                  868.
-#> 2 Alaska    285             106917       267.                  236.
+#> 2 Alaska    285             106917       267.                  237.
 #> # ℹ 4 more variables: crude_rate_95CI_upper <dbl>, standardised_rate <dbl>,
 #> #   standardised_rate_95CI_lower <dbl>, standardised_rate_95CI_upper <dbl>
 ```

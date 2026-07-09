@@ -64,11 +64,11 @@ directlyStandardiseRates(data = brain_cancer_2022,
 #> $ cases                        <dbl> 285
 #> $ denominator                  <dbl> 3131640
 #> $ crude_rate                   <dbl> 9.1007
-#> $ crude_rate_95CI_lower        <dbl> 8.0441
-#> $ crude_rate_95CI_upper        <dbl> 10.1572
+#> $ crude_rate_95CI_lower        <dbl> 8.0747
+#> $ crude_rate_95CI_upper        <dbl> 10.2209
 #> $ standardised_rate            <dbl> 8.6525
-#> $ standardised_rate_95CI_lower <dbl> 7.6426
-#> $ standardised_rate_95CI_upper <dbl> 9.6624
+#> $ standardised_rate_95CI_lower <dbl> 7.6718
+#> $ standardised_rate_95CI_upper <dbl> 9.7233
 ```
 
 ## Using your own standard population
@@ -103,11 +103,11 @@ directlyStandardiseRates(data = brain_cancer_2022,
 #> $ cases                        <dbl> 285
 #> $ denominator                  <dbl> 3131640
 #> $ crude_rate                   <dbl> 9.1007
-#> $ crude_rate_95CI_lower        <dbl> 8.0441
-#> $ crude_rate_95CI_upper        <dbl> 10.1572
+#> $ crude_rate_95CI_lower        <dbl> 8.0747
+#> $ crude_rate_95CI_upper        <dbl> 10.2209
 #> $ standardised_rate            <dbl> 9.0148
-#> $ standardised_rate_95CI_lower <dbl> 7.9644
-#> $ standardised_rate_95CI_upper <dbl> 10.0652
+#> $ standardised_rate_95CI_lower <dbl> 7.9948
+#> $ standardised_rate_95CI_upper <dbl> 10.1285
 ```
 
 ## Adding stratifications
@@ -144,9 +144,9 @@ directlyStandardiseRates(data = brain_cancer_2122,
 #> $ cases                        <dbl> 285, 266
 #> $ denominator                  <dbl> 3131640, 3105633
 #> $ crude_rate                   <dbl> 9.1007, 8.5651
-#> $ crude_rate_95CI_lower        <dbl> 8.0441, 7.5358
-#> $ crude_rate_95CI_upper        <dbl> 10.1572, 9.5944
+#> $ crude_rate_95CI_lower        <dbl> 8.0747, 7.5666
+#> $ crude_rate_95CI_upper        <dbl> 10.2209, 9.6587
 #> $ standardised_rate            <dbl> 9.0148, 8.5603
-#> $ standardised_rate_95CI_lower <dbl> 7.9644, 7.5281
-#> $ standardised_rate_95CI_upper <dbl> 10.0652, 9.5925
+#> $ standardised_rate_95CI_lower <dbl> 7.9948, 7.5591
+#> $ standardised_rate_95CI_upper <dbl> 10.1285, 9.6569
 ```
