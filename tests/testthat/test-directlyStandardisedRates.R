@@ -375,7 +375,98 @@ test_that("Different age groups used in both datasets", {
 
 })
 
+test_that("Default method is dobson", {
+  df_study <- data.frame(state=rep(c('Miami',"Alaska"), c(4,4)),
+                         age=rep(c('0-24','25-44','45-64','65+'),2),
+                         deaths=c(126,277,111,96,148,399,65,33),
+                         fu=c(80259,133440,142670,92168,20036,32693,14947,2077))
 
+  df_ref  <- data.frame(age=c('0-24','25-44','45-64','65+'),
+                        pop=c(1683400, 15420000,21353000,19601000))
 
+  def <- directlyStandardiseRates(
+    data = df_study,
+    event = "deaths",
+    denominator = "fu",
+    refdata = df_ref,
+    age = "age",
+    addMissingGroups = FALSE
+  )
+
+  spec <- directlyStandardiseRates(
+    data = df_study,
+    event = "deaths",
+    denominator = "fu",
+    refdata = df_ref,
+    age = "age",
+    method = "dobson",
+    addMissingGroups = FALSE
+  )
+
+  expect_identical(def, spec)
+})
+
+test_that("Method is normal", {
+  df_study <- data.frame(state=rep(c('Miami',"Alaska"), c(4,4)),
+                         age=rep(c('0-24','25-44','45-64','65+'),2),
+                         deaths=c(126,277,111,96,148,399,65,33),
+                         fu=c(80259,133440,142670,92168,20036,32693,14947,2077))
+
+  df_ref  <- data.frame(age=c('0-24','25-44','45-64','65+'),
+                        pop=c(1683400, 15420000,21353000,19601000))
+
+  expect_no_error(
+    dsr <- directlyStandardiseRates(
+    data = df_study,
+    event = "deaths",
+    denominator = "fu",
+    refdata = df_ref,
+    age = "age",
+    method = "normal",
+    addMissingGroups = FALSE
+  ))
+})
+
+test_that("Method is gamma", {
+  df_study <- data.frame(state=rep(c('Miami',"Alaska"), c(4,4)),
+                         age=rep(c('0-24','25-44','45-64','65+'),2),
+                         deaths=c(126,277,111,96,148,399,65,33),
+                         fu=c(80259,133440,142670,92168,20036,32693,14947,2077))
+
+  df_ref  <- data.frame(age=c('0-24','25-44','45-64','65+'),
+                        pop=c(1683400, 15420000,21353000,19601000))
+
+  expect_no_error(
+    dsr <- directlyStandardiseRates(
+      data = df_study,
+      event = "deaths",
+      denominator = "fu",
+      refdata = df_ref,
+      age = "age",
+      method = "gamma",
+      addMissingGroups = FALSE
+    ))
+})
+
+test_that("Method is lognormal", {
+  df_study <- data.frame(state=rep(c('Miami',"Alaska"), c(4,4)),
+                         age=rep(c('0-24','25-44','45-64','65+'),2),
+                         deaths=c(126,277,111,96,148,399,65,33),
+                         fu=c(80259,133440,142670,92168,20036,32693,14947,2077))
+
+  df_ref  <- data.frame(age=c('0-24','25-44','45-64','65+'),
+                        pop=c(1683400, 15420000,21353000,19601000))
+
+  expect_no_error(
+    dsr <- directlyStandardiseRates(
+      data = df_study,
+      event = "deaths",
+      denominator = "fu",
+      refdata = df_ref,
+      age = "age",
+      method = "lognormal",
+      addMissingGroups = FALSE
+    ))
+})
 
 
