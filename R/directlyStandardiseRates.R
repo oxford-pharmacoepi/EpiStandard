@@ -343,7 +343,15 @@ directlyStandardiseRates <- function(data,
   #Clean up and output
   tmp1 <- tmp1 |>
     dplyr::mutate(dplyr::across(c("c_rate", "c_lower", "c_upper", "s_rate", "s_lower", "s_upper"),
-                  ~ round(.x, digits = 4)))
+                  ~ round(.x, digits = 4))) |>
+    dplyr::mutate(c_lower = dplyr::case_when(
+      c_lower < 0 ~ 0,
+      TRUE ~ c_lower
+    ),
+    s_lower = dplyr::case_when(
+      s_lower < 0 ~ 0,
+      TRUE ~ s_lower
+    ))
 
   c_rate_name <- 'crude_rate'
   c_lower_name <- paste0('crude_rate_', sig*100, 'CI_lower')
